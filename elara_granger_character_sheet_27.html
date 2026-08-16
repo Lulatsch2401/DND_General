@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elara Granger – Druide Charakterbogen</title>
+<style>
+  :root{
+    --surface-0:#f4f2ec;
+    --surface-1:#ffffff;
+    --surface-2:#faf9f5;
+    --border:#dcd8cb;
+    --border-strong:#b9b39f;
+    --text-primary:#211f1a;
+    --text-secondary:#5a564b;
+    --text-muted:#8b8677;
+    --accent:#2f6f4f;
+    --accent-ink:#1f4d36;
+    --accent-soft:#e7f0ea;
+    --accent-2:#8a5a2b;
+    --accent-2-soft:#f3e9dc;
+    --danger:#a13a2f;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(30,28,20,.06), 0 1px 8px rgba(30,28,20,.05);
+    color-scheme: light;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--surface-0);
+    color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 80px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  /* Toolbar */
+  .toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    max-width:1180px; margin:0 auto 18px; padding:10px 16px;
+    background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); flex-wrap:wrap;
+  }
+  .toolbar-note{font-size:12.5px; color:var(--text-secondary); line-height:1.5;}
+  .btn{
+    appearance:none; border:1px solid var(--accent); background:var(--accent); color:#fff;
+    font-size:13.5px; font-weight:600; padding:9px 16px; border-radius:8px; cursor:pointer;
+  }
+  .btn:hover{background:var(--accent-ink); border-color:var(--accent-ink);}
+  .btn.secondary{background:var(--surface-1); color:var(--accent-ink); border-color:var(--accent);}
+  .btn.secondary:hover{background:var(--accent-soft);}
+  .btn.rest{background:var(--surface-1); color:var(--accent-2); border-color:var(--accent-2);}
+  .btn.rest:hover{background:var(--accent-2-soft);}
+  .btn.fantasy-toggle{background:linear-gradient(135deg,#6b4fa0,#2f6f4f); border-color:#6b4fa0;}
+  .btn.fantasy-toggle:hover{filter:brightness(1.1);}
+
+  /* Header banner */
+  .banner{
+    background:linear-gradient(135deg,var(--accent) 0%, #3f8a63 100%);
+    color:#fff; border-radius:var(--radius); padding:22px 26px; margin-bottom:18px;
+    box-shadow:var(--shadow);
+    display:flex; flex-wrap:wrap; gap:18px 32px; align-items:flex-end; justify-content:space-between;
+  }
+  .banner h1{margin:0 0 4px; font-size:30px; font-weight:700;}
+  .banner .sub{font-size:13px; opacity:.85; letter-spacing:.04em; text-transform:uppercase;}
+  .banner input.name-input{
+    background:transparent; border:none; border-bottom:2px solid rgba(255,255,255,.55);
+    color:#fff; font-size:30px; font-weight:700; padding:2px 0; width:min(420px,60vw);
+    font-family:inherit;
+  }
+  .banner input.name-input::placeholder{color:rgba(255,255,255,.6);}
+  .banner-meta{display:flex; gap:22px; flex-wrap:wrap;}
+  .banner-meta div{display:flex; flex-direction:column; gap:2px;}
+  .banner-meta label{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; opacity:.8;}
+  .banner-meta input{
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4); border-radius:6px;
+    color:#fff; font-size:14px; padding:5px 8px; width:150px; font-family:inherit;
+  }
+  .banner-meta input::placeholder{color:rgba(255,255,255,.65);}
+
+  /* Layout */
+  .cols{display:grid; grid-template-columns:280px 1fr 300px; gap:16px; align-items:start;}
+  @media (max-width:980px){ .cols{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:16px 16px 18px; margin-bottom:16px;
+  }
+  .card h2{
+    font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--accent-ink); margin:0 0 12px; padding-left:10px; border-left:3px solid var(--accent);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .card h2 .tag{
+    font-size:10px; font-weight:700; text-transform:none; letter-spacing:0;
+    background:var(--accent-2-soft); color:var(--accent-2); padding:2px 7px; border-radius:20px;
+  }
+
+  /* Ability score tiles */
+  .ability{
+    border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px 12px;
+    margin-bottom:10px; background:var(--surface-2);
+  }
+  .ability-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px;}
+  .ability-name{font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--text-secondary); text-transform:uppercase;}
+  .ability-name .ability-name-de{font-size:9px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--text-muted);}
+  .ability-score-row{display:flex; align-items:center; gap:10px; margin:2px 0 8px;}
+  .ability-score-row input.score{
+    width:52px; font-size:26px; font-weight:700; text-align:center; border:1px solid var(--border-strong);
+    border-radius:8px; padding:3px 0; color:var(--text-primary); font-family:inherit;
+  }
+  .ability-mod{font-size:19px; font-weight:700; color:var(--accent-ink); min-width:34px;}
+  .save-row{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-secondary);}
+  .save-row input.savebonus{
+    width:34px; border:1px solid var(--border); border-radius:5px; text-align:center; font-size:12.5px; padding:2px;
+    font-family:inherit; margin-left:auto;
+  }
+
+  /* Skills */
+  .skill-list{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden;}
+  .skill-row{display:flex; align-items:center; gap:8px; background:var(--surface-1); padding:5px 8px; font-size:13px;}
+  .skill-row .sname{flex:1;}
+  .skill-row .sname-de{font-size:10px; font-weight:400; color:var(--text-muted); margin-left:3px;}
+  .skill-row .sability{color:var(--text-muted); font-size:10.5px; width:26px;}
+  .skill-row input.sbonus{width:32px; border:1px solid var(--border); border-radius:5px; text-align:center; font-size:12.5px; padding:2px; font-family:inherit;}
+
+  /* generic field row */
+  .field-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:10px;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted);}
+  .label-de{font-weight:400; color:var(--text-muted); opacity:.85;}
+  .stat-tile label .label-de, .field label .label-de{text-transform:none; opacity:.75;}
+  .field input, .field textarea, .field select{
+    border:1px solid var(--border-strong); border-radius:7px; padding:6px 8px; font-size:13.5px;
+    font-family:inherit; color:var(--text-primary); background:var(--surface-1);
+  }
+  .field.big input{font-size:22px; font-weight:700; text-align:center; color:var(--accent-ink);}
+  textarea{resize:vertical; line-height:1.45;}
+
+  /* Stat tiles row (AC / HP / etc.) */
+  .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:10px; margin-bottom:14px;}
+  .stat-tile{
+    border:1px solid var(--border); background:var(--surface-2); border-radius:10px; padding:8px 6px 10px; text-align:center;
+  }
+  .stat-tile label{display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:4px;}
+  .stat-tile input{width:100%; border:none; background:transparent; text-align:center; font-size:22px; font-weight:700; color:var(--accent-ink); font-family:inherit;}
+  #cantripsTile input, #preparedTile input{font-size:15px; cursor:default;}
+  #cantripsTile.over-limit input, #preparedTile.over-limit input{color:var(--danger);}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{
+    text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted);
+    border-bottom:1px solid var(--border); padding:5px 6px;
+  }
+  td{border-bottom:1px solid var(--border); padding:5px 6px; vertical-align:middle;}
+  td input, td textarea{
+    width:100%; border:1px solid transparent; border-radius:5px; padding:3px 5px; font-family:inherit; font-size:13px;
+    background:transparent;
+  }
+  td input:hover, td input:focus, td textarea:hover, td textarea:focus{border-color:var(--border-strong); background:var(--surface-2);}
+  tr:hover td{background:var(--surface-2);}
+
+  .fav-table{font-size:11.5px;}
+  .fav-table th{padding:5px 3px;}
+  .fav-table td{padding:3px 2px;}
+  .fav-table td input{padding:2px 3px; font-size:11.5px;}
+  .fav-table .name-tip{display:flex; align-items:center; gap:3px;}
+  .fav-table .name-tip input{min-width:0;}
+  .fav-table .lvl-badge{width:18px; height:18px; font-size:9.5px; margin:0 auto;}
+
+  .checkline{display:flex; align-items:center; gap:6px;}
+  input[type=checkbox]{width:16px; height:16px; accent-color:var(--accent);}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--accent-ink);
+    background:var(--accent-soft); padding:3px 10px; border-radius:20px; margin:0 6px 6px 0;
+  }
+
+  .future-block{border:1px dashed var(--border-strong); border-radius:8px; padding:10px 12px; margin-bottom:10px; background:var(--surface-2);}
+  .future-block h3{margin:0 0 2px; font-size:13px; display:flex; align-items:center; gap:8px;}
+  .future-block h3 .lvl{
+    background:var(--accent-2); color:#fff; border-radius:20px; font-size:10.5px; padding:2px 9px; font-weight:700;
+  }
+  .future-block textarea{width:100%; border:1px solid var(--border); border-radius:6px; padding:8px; font-size:12.5px; margin-top:6px; font-family:inherit; color:var(--text-secondary); background:var(--surface-1);}
+
+  .active-block{border:1px solid var(--accent); border-radius:8px; padding:10px 12px; margin-bottom:10px; background:var(--accent-soft);}
+  .active-block h3{margin:0 0 2px; font-size:13px; display:flex; align-items:center; gap:8px; color:var(--accent-ink);}
+  .active-block h3 .lvl{background:var(--accent); color:#fff; border-radius:20px; font-size:10.5px; padding:2px 9px; font-weight:700;}
+  .active-block textarea{width:100%; border:1px solid var(--border); border-radius:6px; padding:8px; font-size:12.5px; margin-top:6px; font-family:inherit; color:var(--text-primary); background:var(--surface-1);}
+
+  .spell-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 16px;}
+  @media (max-width:640px){.spell-grid{grid-template-columns:1fr;}}
+  .spell-row{display:flex; align-items:center; gap:8px; padding:3px 0; border-bottom:1px solid var(--surface-0); font-size:12.5px;}
+  .lvl-badge{
+    width:20px; height:20px; border-radius:5px; background:var(--surface-2); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; color:var(--text-secondary); flex:none;
+  }
+  /* Zaubertrick (C) vs. 1.-Grad-Zauber (1): eigene Farbe, damit man auf einen Blick
+     unterscheidet, ohne den Buchstaben lesen zu müssen. */
+  .lvl-badge.lvl-c{background:var(--accent-soft); color:var(--accent-ink); border-color:var(--accent);}
+  .lvl-badge.lvl-1{background:var(--accent-2-soft); color:var(--accent-2); border-color:var(--accent-2);}
+  .spell-row .sname{flex:1;}
+  .spell-row .ritual{font-size:9.5px; color:var(--accent-2); font-weight:700;}
+
+  .has-tip{border-bottom:1px dotted var(--border-strong); cursor:help;}
+  .name-tip{display:inline-flex; align-items:center; gap:3px; width:100%;}
+  .name-tip input{flex:1;}
+  .info-dot{
+    flex:none; width:16px; height:16px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink);
+    font-size:11px; line-height:16px; text-align:center; cursor:help; user-select:none;
+  }
+  #tooltip{
+    position:fixed; z-index:999; max-width:300px; background:#1f2a24; color:#f2f0e8; font-size:12.5px; line-height:1.5;
+    padding:9px 12px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.28); pointer-events:none;
+    opacity:0; transform:translateY(4px); transition:opacity .12s ease, transform .12s ease;
+  }
+  #tooltip.show{opacity:1; transform:translateY(0);}
+  #tooltip strong{color:#bfe6cf;}
+
+  .spell-row .sname.has-tip, .info-dot{cursor:pointer;}
+
+  /* Click-to-view full spell description modal */
+  #spellModalOverlay{
+    display:none; position:fixed; inset:0; z-index:1000; background:rgba(20,18,12,.45);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  #spellModalOverlay.show{display:flex;}
+  /* Spell modal: same parchment / classic-rulebook look as the beast stat-block modal below */
+  #spellModal{
+    --sb-ink:#7a200f; --sb-border:#c9a35c; --sb-surface:#fdf1dc;
+    background:var(--sb-surface); color:#2a1a10; border-radius:6px; box-shadow:0 12px 40px rgba(0,0,0,.4);
+    max-width:480px; width:100%; max-height:85vh; overflow-y:auto; padding:18px 22px 20px;
+    border:1px solid var(--sb-border); font-family:Georgia,"Times New Roman",serif; position:relative;
+  }
+  #spellModal .modal-close{
+    position:absolute; top:12px; right:12px; width:26px; height:26px; border-radius:50%; border:1px solid var(--sb-border);
+    background:#f4e4c1; color:var(--sb-ink); font-size:14px; line-height:1; cursor:pointer; font-family:inherit;
+  }
+  #spellModal .modal-close:hover{background:var(--sb-ink); color:#f4e4c1;}
+  #spellModal .sb-name{font-size:20px; font-weight:700; color:var(--sb-ink); letter-spacing:.02em; padding-right:24px;}
+  #spellModal .sb-subtitle{font-style:italic; font-size:12.5px; color:#5a4530; margin-top:1px;}
+  #spellModal .sb-rule{height:4px; margin:8px 0; background:linear-gradient(to right, var(--sb-ink), #b8892f 60%, transparent); border-radius:2px;}
+  #spellModal .sb-text{font-size:13px; line-height:1.65; color:#2a1a10; white-space:pre-line;}
+  #spellModal .sb-hint{margin-top:14px; font-size:10.5px; color:#8a7355; border-top:1px solid var(--sb-border); padding-top:10px;}
+
+  /* Beast shape grid (Wild Shape reference) */
+  .beast-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:6px;}
+  .beast-cr-group{grid-column:1 / -1; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-2); margin:8px 0 2px;}
+  .beast-cr-group:first-child{margin-top:2px;}
+  .beast-pill{
+    display:flex; align-items:center; gap:6px; padding:5px 9px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface-2); font-size:12px; cursor:pointer; user-select:none; transition:background .1s ease, border-color .1s ease;
+  }
+  .beast-pill:hover{background:var(--accent-2-soft); border-color:var(--accent-2);}
+  .beast-pill .b-de{font-weight:600; color:var(--text-primary);}
+  .beast-pill .b-en{font-size:10.5px; color:var(--text-muted);}
+
+  /* Beast stat-block modal: styled like a classic monster manual entry */
+  #beastModalOverlay{
+    display:none; position:fixed; inset:0; z-index:1000; background:rgba(20,18,12,.45);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  #beastModalOverlay.show{display:flex;}
+  #beastModal{
+    --sb-ink:#7a200f; --sb-border:#c9a35c; --sb-surface:#fdf1dc;
+    background:var(--sb-surface); color:#2a1a10; border-radius:6px; box-shadow:0 12px 40px rgba(0,0,0,.4);
+    max-width:480px; width:100%; max-height:85vh; overflow-y:auto; padding:18px 22px 20px;
+    border:1px solid var(--sb-border); font-family:Georgia,"Times New Roman",serif; position:relative;
+  }
+  #beastModal .modal-close{
+    position:absolute; top:12px; right:12px; width:26px; height:26px; border-radius:50%; border:1px solid var(--sb-border);
+    background:#f4e4c1; color:var(--sb-ink); font-size:14px; line-height:1; cursor:pointer; font-family:inherit;
+  }
+  #beastModal .modal-close:hover{background:var(--sb-ink); color:#f4e4c1;}
+  #beastModal .sb-name{font-size:21px; font-weight:700; color:var(--sb-ink); letter-spacing:.02em; padding-right:24px;}
+  #beastModal .sb-subtitle{font-style:italic; font-size:12.5px; color:#5a4530; margin-top:1px;}
+  #beastModal .sb-rule{height:4px; margin:8px 0; background:linear-gradient(to right, var(--sb-ink), #b8892f 60%, transparent); border-radius:2px;}
+  #beastModal .sb-top-stats div{font-size:13px; line-height:1.6;}
+  #beastModal .sb-top-stats strong{color:var(--sb-ink);}
+  #beastModal table.sb-abilities{width:100%; border-collapse:collapse; text-align:center; font-size:12px; margin:2px 0;}
+  #beastModal table.sb-abilities th{font-weight:700; color:var(--sb-ink); padding-bottom:2px; font-size:10.5px; text-transform:uppercase;}
+  #beastModal table.sb-abilities td{padding:1px 0;}
+  #beastModal .sb-props div{font-size:12.5px; line-height:1.7;}
+  #beastModal .sb-props strong{color:var(--sb-ink);}
+  #beastModal .sb-entry{font-size:12.5px; line-height:1.55; margin:6px 0;}
+  #beastModal .sb-entry .sb-entry-name{font-weight:700; font-style:italic; color:#2a1a10;}
+  #beastModal .sb-section-title{
+    font-size:15px; font-weight:700; color:var(--sb-ink); border-bottom:1px solid var(--sb-ink); margin-top:10px; margin-bottom:4px;
+  }
+
+  footer.note{max-width:1180px; margin:20px auto 0; font-size:11.5px; color:var(--text-muted); line-height:1.6; padding:0 4px;}
+
+  @media print{
+    body{background:#fff; padding:0;}
+    .toolbar{display:none;}
+    .card{box-shadow:none; break-inside:avoid;}
+    .banner{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    input, textarea{border-color:#ccc !important;}
+  }
+
+  /* ================================================================
+     FANTASIE-MODUS -- optisch angelehnt an die D&D-Beyond-Optik
+     (olivgruene Zierrahmen, Pergament, dunkler Hintergrund), dazu
+     druidische Ranken. Reine CSS-Umverpackung: keine zusaetzlichen
+     oder duplizierten Eingabefelder, Anordnung bleibt unveraendert,
+     Speichern/Laden und alle Interaktionen funktionieren identisch.
+     ================================================================ */
+  body.fantasy-mode{
+    --f-olive:#6d7a3c; --f-olive-dark:#4a5320; --f-leaf:#7d9a54;
+    --f-gold:#b0913f; --f-parch:#f5f2e6; --f-parch-2:#ece7d5; --f-ink:#2f3323;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(150,168,110,.16) 0%, rgba(0,0,0,0) 55%),
+      radial-gradient(ellipse at 12% 100%, rgba(90,120,80,.18) 0%, rgba(0,0,0,0) 50%),
+      radial-gradient(ellipse at 88% 85%, rgba(70,95,110,.14) 0%, rgba(0,0,0,0) 45%),
+      linear-gradient(178deg,#1b1e17 0%, #23271d 40%, #1a1d16 100%);
+    background-attachment:fixed;
+    color:var(--f-ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+
+  /* ---------- Werkzeugleiste: dunkle Kopfleiste wie im Vorbild ---------- */
+  body.fantasy-mode .toolbar{
+    background:linear-gradient(180deg,#2b2f24,#20241b);
+    border:1px solid var(--f-olive); border-radius:6px;
+    box-shadow:0 6px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  body.fantasy-mode .toolbar-note{color:#cfd3c0;}
+  body.fantasy-mode .toolbar-note strong{color:#d8c47a;}
+  body.fantasy-mode .btn{
+    border-radius:4px; border-width:1px; letter-spacing:.06em; text-transform:uppercase;
+    font-size:12px; font-weight:700; padding:9px 15px;
+    background:transparent; color:#d9dcc6; border-color:var(--f-olive);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+    transition:background .15s ease, color .15s ease, transform .12s ease;
+  }
+  body.fantasy-mode .btn:hover{background:rgba(125,154,84,.22); color:#fff; transform:translateY(-1px);}
+  body.fantasy-mode .btn:active{transform:translateY(1px);}
+  body.fantasy-mode .btn.secondary{background:transparent; color:#d9dcc6; border-color:var(--f-olive);}
+  body.fantasy-mode .btn.rest{background:transparent; color:#e0cf94; border-color:#8d7530;}
+  body.fantasy-mode .btn.rest:hover{background:rgba(176,145,63,.22);}
+  body.fantasy-mode .btn.fantasy-toggle{
+    background:linear-gradient(180deg,#6d7a3c,#4a5320); color:#fff; border-color:var(--f-gold);
+    box-shadow:0 0 0 1px rgba(176,145,63,.5), inset 0 1px 0 rgba(255,255,255,.14);
+  }
+
+  /* ---------- Banner: dunkle Charakter-Kopfzeile ---------- */
+  body.fantasy-mode .banner{
+    background:linear-gradient(180deg,#2b2f24 0%, #212519 100%);
+    border:1px solid var(--f-olive); border-radius:6px; position:relative; overflow:visible;
+    box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 0 3px rgba(0,0,0,.25), inset 0 0 60px rgba(125,154,84,.08);
+    padding:24px 28px 26px;
+  }
+  body.fantasy-mode .banner::before{
+    content:""; position:absolute; left:0; right:0; bottom:-16px; height:34px;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22200%22%20height=%2234%22%20viewBox=%220%200%20200%2034%22%3E%3Cpath%20d=%22M0%204%20Q30%2016%2060%205%20T120%206%20T180%204%20T200%208%22%20stroke=%22%236d7a3c%22%20stroke-width=%221.6%22%20fill=%22none%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M22%2010%20Q24%2022%2016%2026%20Q12%2016%2022%2010%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M52%209%20Q56%2021%2048%2026%20Q44%2015%2052%209%20Z%22%20fill=%22%237d9a54%22%20opacity=%22.9%22/%3E%3Cpath%20d=%22M88%2011%20Q92%2024%2084%2029%20Q80%2018%2088%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M124%209%20Q128%2020%20120%2025%20Q116%2014%20124%209%20Z%22%20fill=%22%237d9a54%22%20opacity=%22.9%22/%3E%3Cpath%20d=%22M158%2011%20Q162%2023%20154%2028%20Q150%2017%20158%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2270%22%20cy=%228%22%20r=%222%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%22140%22%20cy=%227%22%20r=%222%22%20fill=%22%23b0913f%22/%3E%3C/svg%3E"); background-repeat:repeat-x; background-size:200px 34px;
+    opacity:.9; pointer-events:none;
+  }
+  body.fantasy-mode .banner::after{
+    content:""; position:absolute; inset:5px; border:1px solid rgba(176,145,63,.35);
+    border-radius:3px; pointer-events:none;
+  }
+  body.fantasy-mode .banner .sub{
+    font-style:normal; letter-spacing:.22em; opacity:.75; font-size:11px; color:#b9c3a2;
+  }
+  body.fantasy-mode .banner .sub::before{content:"\1F343  ";}
+  body.fantasy-mode .banner h1, body.fantasy-mode .banner input.name-input{
+    font-family:Georgia,"Iowan Old Style",Palatino,serif; font-weight:400; letter-spacing:.01em;
+    border-bottom-color:rgba(176,145,63,.55);
+    text-shadow:0 2px 10px rgba(0,0,0,.6);
+  }
+  body.fantasy-mode .banner-meta label{color:#a9b394; letter-spacing:.14em;}
+  body.fantasy-mode .banner-meta input{
+    background:rgba(255,255,255,.07); border-color:rgba(176,145,63,.4); border-radius:3px; color:#f0f1e6;
+  }
+
+  /* ---------- Karten: Pergament mit olivem Doppelrahmen + Zierecken ---------- */
+  body.fantasy-mode .card{
+    background-color:var(--f-parch);
+    background-image:
+      url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2262%22%20height=%2262%22%20viewBox=%220%200%2062%2062%22%3E%3Cg%20fill=%22none%22%20stroke=%22%236d7a3c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M58%204%20H17%20Q4%204%204%2017%20V58%22/%3E%3Cpath%20d=%22M41%204%20Q41%2015%2029%2017%20Q17%2019%2017%2031%22%20stroke-width=%221.3%22%20opacity=%220.85%22/%3E%3C/g%3E%3Cpath%20d=%22M27%2011%20Q33%205%2038%2010%20Q32%2016%2027%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M11%2027%20Q5%2033%2010%2038%20Q16%2032%2011%2027%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2231%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%2241%22%20cy=%224%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2262%22%20height=%2262%22%20viewBox=%220%200%2062%2062%22%3E%3Cg%20transform=%22rotate%2890%2031%2031%29%22%3E%3Cg%20fill=%22none%22%20stroke=%22%236d7a3c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M58%204%20H17%20Q4%204%204%2017%20V58%22/%3E%3Cpath%20d=%22M41%204%20Q41%2015%2029%2017%20Q17%2019%2017%2031%22%20stroke-width=%221.3%22%20opacity=%220.85%22/%3E%3C/g%3E%3Cpath%20d=%22M27%2011%20Q33%205%2038%2010%20Q32%2016%2027%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M11%2027%20Q5%2033%2010%2038%20Q16%2032%2011%2027%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2231%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%2241%22%20cy=%224%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2262%22%20height=%2262%22%20viewBox=%220%200%2062%2062%22%3E%3Cg%20transform=%22rotate%28180%2031%2031%29%22%3E%3Cg%20fill=%22none%22%20stroke=%22%236d7a3c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M58%204%20H17%20Q4%204%204%2017%20V58%22/%3E%3Cpath%20d=%22M41%204%20Q41%2015%2029%2017%20Q17%2019%2017%2031%22%20stroke-width=%221.3%22%20opacity=%220.85%22/%3E%3C/g%3E%3Cpath%20d=%22M27%2011%20Q33%205%2038%2010%20Q32%2016%2027%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M11%2027%20Q5%2033%2010%2038%20Q16%2032%2011%2027%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2231%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%2241%22%20cy=%224%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2262%22%20height=%2262%22%20viewBox=%220%200%2062%2062%22%3E%3Cg%20transform=%22rotate%28270%2031%2031%29%22%3E%3Cg%20fill=%22none%22%20stroke=%22%236d7a3c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M58%204%20H17%20Q4%204%204%2017%20V58%22/%3E%3Cpath%20d=%22M41%204%20Q41%2015%2029%2017%20Q17%2019%2017%2031%22%20stroke-width=%221.3%22%20opacity=%220.85%22/%3E%3C/g%3E%3Cpath%20d=%22M27%2011%20Q33%205%2038%2010%20Q32%2016%2027%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M11%2027%20Q5%2033%2010%2038%20Q16%2032%2011%2027%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2231%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%2241%22%20cy=%224%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3C/g%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22180%22%20height=%22180%22%20viewBox=%220%200%20180%20180%22%3E%3Cfilter%20id=%22n%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%220.9%22%20numOctaves=%223%22%20stitchTiles=%22stitch%22/%3E%3CfeColorMatrix%20type=%22saturate%22%20values=%220%22/%3E%3C/filter%3E%3Crect%20width=%22180%22%20height=%22180%22%20filter=%22url%28%23n%29%22%20opacity=%220.05%22/%3E%3C/svg%3E"),
+      linear-gradient(168deg,#f7f4e9 0%, #ece7d5 100%);
+    background-position:top left, top right, bottom right, bottom left, 0 0, 0 0;
+    background-size:34px 34px, 34px 34px, 34px 34px, 34px 34px, 180px 180px, auto;
+    background-repeat:no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    border:2px solid var(--f-olive); border-radius:4px; position:relative; overflow:visible;
+    padding:18px 18px 20px;
+    box-shadow:0 6px 20px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.7);
+  }
+  body.fantasy-mode .card::before{
+    content:""; position:absolute; inset:4px; border:1px solid rgba(109,122,60,.45);
+    border-radius:2px; pointer-events:none;
+  }
+  body.fantasy-mode .card::after{
+    content:""; position:absolute; top:-7px; right:16px; width:26px; height:26px;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2262%22%20height=%2262%22%20viewBox=%220%200%2062%2062%22%3E%3Cg%20transform=%22rotate%2890%2031%2031%29%22%3E%3Cg%20fill=%22none%22%20stroke=%22%236d7a3c%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%3E%3Cpath%20d=%22M58%204%20H17%20Q4%204%204%2017%20V58%22/%3E%3Cpath%20d=%22M41%204%20Q41%2015%2029%2017%20Q17%2019%2017%2031%22%20stroke-width=%221.3%22%20opacity=%220.85%22/%3E%3C/g%3E%3Cpath%20d=%22M27%2011%20Q33%205%2038%2010%20Q32%2016%2027%2011%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M11%2027%20Q5%2033%2010%2038%20Q16%2032%2011%2027%20Z%22%20fill=%22%237d9a54%22/%3E%3Ccircle%20cx=%2217%22%20cy=%2231%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3Ccircle%20cx=%2241%22%20cy=%224%22%20r=%222.3%22%20fill=%22%23b0913f%22/%3E%3C/g%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat;
+    opacity:0; pointer-events:none;
+  }
+
+  /* Kartentitel: gesperrte Serifen-Versalien + Ranken-Zierlinie darunter */
+  body.fantasy-mode .card h2{
+    font-family:Georgia,"Iowan Old Style",Palatino,serif;
+    text-transform:uppercase; letter-spacing:.16em; font-weight:400; font-size:13px;
+    color:var(--f-olive-dark); border-left:none; padding:2px 0 13px; margin:2px 0 13px;
+    border-bottom:none; justify-content:center; text-align:center;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22120%22%20height=%2214%22%20viewBox=%220%200%20120%2014%22%3E%3Cpath%20d=%22M0%207%20Q15%202%2030%207%20T60%207%20T90%207%20T120%207%22%20stroke=%22%236d7a3c%22%20stroke-width=%221.4%22%20fill=%22none%22%20stroke-linecap=%22round%22/%3E%3Cpath%20d=%22M12%205.5%20Q17%200%2023%203%20Q18%208%2012%205.5%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M42%208.5%20Q47%2014%2053%2011%20Q48%206.5%2042%208.5%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M72%205.5%20Q77%200%2083%203%20Q78%208%2072%205.5%20Z%22%20fill=%22%237d9a54%22/%3E%3Cpath%20d=%22M102%208.5%20Q107%2014%20113%2011%20Q108%206.5%20102%208.5%20Z%22%20fill=%22%237d9a54%22/%3E%3C/svg%3E");
+    background-repeat:repeat-x; background-position:0 100%; background-size:60px 7px;
+  }
+  body.fantasy-mode .card h2 .tag{
+    background:rgba(109,122,60,.14); color:var(--f-olive-dark); border:1px solid rgba(109,122,60,.5);
+    border-radius:3px; letter-spacing:.02em; text-transform:none;
+  }
+
+  /* Zier-Icons je Kartentyp -- rein dekorativ */
+  body.fantasy-mode [data-card] h2::before{
+    filter:saturate(.8) drop-shadow(0 1px 1px rgba(0,0,0,.15)); font-size:13px; margin-right:3px;
+  }
+  body.fantasy-mode [data-card="abilities"] h2::before{content:"\1F4AA\A0";}
+  body.fantasy-mode [data-card="skills"] h2::before{content:"\1F3AF\A0";}
+  body.fantasy-mode [data-card="senses"] h2::before{content:"\1F441\FE0F\A0";}
+  body.fantasy-mode [data-card="combat"] h2::before{content:"\2694\FE0F\A0";}
+  body.fantasy-mode [data-card="weapons"] h2::before{content:"\1F5E1\FE0F\A0";}
+  body.fantasy-mode [data-card="spellcasting"] h2::before{content:"\1F33F\A0";}
+  body.fantasy-mode [data-card="proficiencies"] h2::before{content:"\1F6E1\FE0F\A0";}
+  body.fantasy-mode [data-card="features"] h2::before{content:"\1F343\A0";}
+  body.fantasy-mode [data-card="circle"] h2::before{content:"\1F319\A0";}
+  body.fantasy-mode [data-card="equipment"] h2::before{content:"\1F392\A0";}
+  body.fantasy-mode [data-card="personality"] h2::before{content:"\1F4DC\A0";}
+
+  /* Attributs-Sinnbilder */
+  body.fantasy-mode .ability-str .ability-name::before{content:"\1F4AA\A0";}
+  body.fantasy-mode .ability-dex .ability-name::before{content:"\1F3F9\A0";}
+  body.fantasy-mode .ability-con .ability-name::before{content:"\2764\FE0F\A0";}
+  body.fantasy-mode .ability-int .ability-name::before{content:"\1F9E0\A0";}
+  body.fantasy-mode .ability-wis .ability-name::before{content:"\1F989\A0";}
+  body.fantasy-mode .ability-cha .ability-name::before{content:"\1F3AD\A0";}
+
+  /* ---------- Attribute: Modifikator gross, Wert im Kreis darunter ---------- */
+  body.fantasy-mode .ability{
+    background:linear-gradient(180deg,#fffefa,#f2eedf);
+    border:2px solid var(--f-olive); border-radius:6px; padding:9px 10px 12px; text-align:center;
+    box-shadow:0 2px 6px rgba(60,66,40,.13), inset 0 0 0 1px rgba(255,255,255,.8);
+    position:relative;
+  }
+  body.fantasy-mode .ability-top{justify-content:center;}
+  body.fantasy-mode .ability-name{
+    font-family:Georgia,serif; letter-spacing:.13em; color:var(--f-olive-dark); font-weight:400; font-size:10.5px;
+  }
+  body.fantasy-mode .ability-name .ability-name-de{color:#8a8f76; letter-spacing:0;}
+  body.fantasy-mode .ability-score-row{
+    flex-direction:column-reverse; align-items:center; gap:2px; margin:4px 0 8px;
+  }
+  body.fantasy-mode .ability-mod{
+    font-size:32px; line-height:1.05; color:var(--f-ink); min-width:0; font-weight:400;
+    font-family:Georgia,serif;
+  }
+  body.fantasy-mode .ability-score-row input.score{
+    width:40px; height:40px; border-radius:50%; font-size:16px; font-weight:700; padding:0;
+    border:2px solid var(--f-olive); background:#fffdf6; color:var(--f-olive-dark);
+    box-shadow:0 1px 4px rgba(60,66,40,.2);
+  }
+  body.fantasy-mode .save-row{
+    justify-content:center; font-size:11.5px; color:#5d6349; padding-top:7px;
+    border-top:1px solid rgba(109,122,60,.28);
+  }
+  body.fantasy-mode .save-row input.savebonus{
+    border:1px solid var(--f-olive); border-radius:4px; background:#fffdf6; font-weight:700; color:var(--f-olive-dark);
+  }
+  /* Attributsfarben bleiben als feiner Akzent oben erhalten */
+  body.fantasy-mode .ability::after{
+    content:""; position:absolute; left:14px; right:14px; top:-2px; height:3px; border-radius:0 0 3px 3px;
+  }
+  body.fantasy-mode .ability-str::after{background:#a8593f;}
+  body.fantasy-mode .ability-dex::after{background:#4f8a5e;}
+  body.fantasy-mode .ability-con::after{background:#b0913f;}
+  body.fantasy-mode .ability-int::after{background:#4a6f9a;}
+  body.fantasy-mode .ability-wis::after{background:#7a6aa0;}
+  body.fantasy-mode .ability-cha::after{background:#a55f88;}
+
+  /* ---------- Werte-Kacheln ---------- */
+  body.fantasy-mode .stat-tile{
+    background:linear-gradient(180deg,#fffefa,#f2eedf);
+    border:2px solid var(--f-olive); border-radius:5px; padding:7px 5px 9px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);
+  }
+  body.fantasy-mode .stat-tile label{
+    font-family:Georgia,serif; letter-spacing:.11em; color:var(--f-olive-dark); font-size:9px;
+  }
+  body.fantasy-mode .stat-tile input{color:var(--f-ink); font-weight:700;}
+  body.fantasy-mode .stat-tile:hover{transform:translateY(-1px); transition:transform .15s ease;}
+  /* Ruestungsklasse als Wappenschild -- wie im Vorbild */
+  body.fantasy-mode .stat-tile:has(input[data-field="ac"]){
+    position:relative; background:var(--f-olive); border:none; border-radius:0; box-shadow:none;
+    padding:9px 5px 26px; clip-path:polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+  }
+  body.fantasy-mode .stat-tile:has(input[data-field="ac"])::before{
+    content:""; position:absolute; inset:2px; background:linear-gradient(180deg,#fffefa,#eee9d6);
+    clip-path:polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+  }
+  body.fantasy-mode .stat-tile:has(input[data-field="ac"]) label,
+  body.fantasy-mode .stat-tile:has(input[data-field="ac"]) input{position:relative; z-index:1;}
+  body.fantasy-mode .stat-tile:has(input[data-field="ac"]) input{font-size:26px;}
+  /* Initiative als Raute */
+  body.fantasy-mode .stat-tile:has(input[data-field="initiative"]){border-radius:14px;}
+
+  /* ---------- Fertigkeiten: Uebungspunkte als Kreise ---------- */
+  body.fantasy-mode .skill-list{
+    background:rgba(109,122,60,.35); border:1px solid var(--f-olive); border-radius:5px; gap:1px;
+  }
+  body.fantasy-mode .skill-row{background:rgba(255,255,255,.72); border-radius:0; padding:5px 9px;}
+  body.fantasy-mode .skill-row:hover{background:#fffdf1;}
+  body.fantasy-mode .skill-row .sability{
+    font-family:Georgia,serif; letter-spacing:.08em; color:var(--f-olive-dark); font-size:10px;
+  }
+  body.fantasy-mode .skill-row input.sbonus, body.fantasy-mode .field input, body.fantasy-mode .field textarea{
+    border-color:rgba(109,122,60,.55); background:#fffdf6; border-radius:4px;
+  }
+  body.fantasy-mode .skill-row input.sbonus{font-weight:700; color:var(--f-olive-dark);}
+  /* runde Uebungs-Marker (nur Fertigkeiten & Rettungswuerfe) */
+  body.fantasy-mode .skill-row input[type=checkbox],
+  body.fantasy-mode .save-row input[type=checkbox]{
+    appearance:none; -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+    border:2px solid var(--f-olive); background:#fffdf6; cursor:pointer; position:relative; flex:none;
+    transition:background .12s ease, box-shadow .12s ease;
+  }
+  body.fantasy-mode .skill-row input[type=checkbox]:checked,
+  body.fantasy-mode .save-row input[type=checkbox]:checked{
+    background:var(--f-olive-dark); box-shadow:0 0 0 2px rgba(109,122,60,.25);
+  }
+
+  /* ---------- Felder & Eingaben ---------- */
+  body.fantasy-mode .field label{
+    font-family:Georgia,serif; letter-spacing:.1em; color:var(--f-olive-dark);
+  }
+  body.fantasy-mode .label-de{color:#8a8f76; letter-spacing:0;}
+  body.fantasy-mode .field.big input{color:var(--f-ink);}
+  body.fantasy-mode input:focus, body.fantasy-mode textarea:focus{
+    outline:2px solid var(--f-gold); outline-offset:1px; box-shadow:0 0 8px rgba(176,145,63,.35);
+  }
+  body.fantasy-mode input[type=checkbox]{accent-color:var(--f-olive-dark);}
+  body.fantasy-mode th{
+    font-family:Georgia,serif; letter-spacing:.1em; color:var(--f-olive-dark);
+    border-bottom-color:rgba(109,122,60,.45);
+  }
+  body.fantasy-mode td{border-bottom-color:rgba(109,122,60,.22);}
+  body.fantasy-mode tr:hover td{background:rgba(125,154,84,.09);}
+  body.fantasy-mode td input:hover, body.fantasy-mode td input:focus{background:#fffdf1;}
+
+  body.fantasy-mode .pill{
+    background:rgba(109,122,60,.14); color:var(--f-olive-dark); border:1px solid rgba(109,122,60,.5);
+    border-radius:3px; font-weight:600; letter-spacing:.03em;
+  }
+  body.fantasy-mode .lvl-badge{border-radius:3px;}
+  body.fantasy-mode .lvl-badge.lvl-c{background:#e6efdc; border-color:var(--f-leaf); color:#3d5626;}
+  body.fantasy-mode .lvl-badge.lvl-1{background:#f2ead2; border-color:var(--f-gold); color:#6d5a20;}
+  body.fantasy-mode .spell-row{border-bottom-color:rgba(109,122,60,.16);}
+  body.fantasy-mode .info-dot{background:rgba(109,122,60,.16); color:var(--f-olive-dark);}
+
+  body.fantasy-mode .beast-pill{
+    border-radius:4px; background:linear-gradient(180deg,#fffefa,#f2eedf);
+    border:1px solid var(--f-olive);
+  }
+  body.fantasy-mode .beast-pill:hover{
+    transform:translateY(-1px); transition:transform .12s ease; background:#fffdf1;
+    box-shadow:0 2px 8px rgba(60,66,40,.2);
+  }
+  body.fantasy-mode .beast-cr-group{
+    color:var(--f-olive-dark); font-family:Georgia,serif; letter-spacing:.12em;
+  }
+
+  body.fantasy-mode .active-block{
+    border:2px solid var(--f-olive); background:rgba(125,154,84,.12); border-radius:5px;
+  }
+  body.fantasy-mode .active-block h3{color:var(--f-olive-dark); font-family:Georgia,serif;}
+  body.fantasy-mode .active-block h3 .lvl{background:var(--f-olive-dark); border-radius:3px;}
+  body.fantasy-mode .future-block{border-color:rgba(109,122,60,.45); border-radius:5px; background:rgba(255,255,255,.45);}
+  body.fantasy-mode .future-block h3{font-family:Georgia,serif;}
+  body.fantasy-mode .future-block h3 .lvl{background:#8a8f6d; border-radius:3px;}
+
+  body.fantasy-mode #spellModal, body.fantasy-mode #beastModal{
+    box-shadow:0 16px 44px rgba(0,0,0,.6), 0 0 0 2px rgba(176,145,63,.45);
+  }
+  body.fantasy-mode footer.note{color:#9aa189;}
+
+  @media print{
+    body.fantasy-mode{background:#fff;}
+    body.fantasy-mode .card{box-shadow:none;}
+  }
+
+</style>
+</head>
+<body>
+<div class="toolbar no-print">
+  <div class="toolbar-note" id="toolbarNote">Alle Felder sind editierbar. <strong id="saveStatus">Noch nicht verbunden</strong> — lade zuerst deinen letzten Stand oder verbinde eine Datei zum automatischen Speichern.</div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <button class="btn fantasy-toggle" id="fantasyModeBtn" title="Zur verspielten Fantasie-Ansicht wechseln (gleiche Daten &amp; Werte, nur ein anderes Kleid)">✨ Fantasie-Modus</button>
+    <span style="width:1px; align-self:stretch; background:var(--border); margin:0 2px;"></span>
+    <button class="btn rest" id="shortRestBtn" title="Stellt Wilde-Gestalt-Nutzungen wieder her">🌙 Kurze Rast</button>
+    <button class="btn rest" id="longRestBtn" title="Stellt TP, Zauberplätze, Wilde-Gestalt-Nutzungen und Todesrettungswürfe wieder her; Trefferwürfel werden anteilig zurückerlangt">🌛 Lange Rast</button>
+    <span style="width:1px; align-self:stretch; background:var(--border); margin:0 2px;"></span>
+    <button class="btn secondary" id="connectBtn" title="Nur in Chrome/Edge: verbindet eine Datei, in die ab jetzt automatisch gespeichert wird">🔗 Mit Datei verbinden</button>
+    <button class="btn secondary" id="loadBtn">📂 Stand laden</button>
+    <button class="btn secondary" id="saveBtn">💾 Stand herunterladen</button>
+    <button class="btn" onclick="window.print()">🖨️ Drucken / Als PDF</button>
+  </div>
+  <input type="file" id="fileInput" accept="application/json" style="display:none;">
+  <input type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
+</div>
+<div id="tooltip"></div>
+
+<div id="spellModalOverlay">
+  <div id="spellModal" role="dialog" aria-modal="true" aria-labelledby="spellModalTitle">
+    <button class="modal-close" id="spellModalClose" title="Schließen" aria-label="Schließen">✕</button>
+    <div class="sb-name" id="spellModalTitle">Zaubername</div>
+    <div class="sb-subtitle" id="spellModalMeta"></div>
+    <div class="sb-rule"></div>
+    <div class="sb-text" id="spellModalText"></div>
+    <div class="sb-hint">Klicke außerhalb oder auf ✕, um zu schließen.</div>
+  </div>
+</div>
+
+<div id="beastModalOverlay">
+  <div id="beastModal" role="dialog" aria-modal="true" aria-labelledby="sbName">
+    <button class="modal-close" id="beastModalClose" title="Schließen" aria-label="Schließen">✕</button>
+    <div class="sb-name" id="sbName">Bestienname</div>
+    <div class="sb-subtitle" id="sbSubtitle"></div>
+    <div class="sb-rule"></div>
+    <div class="sb-top-stats">
+      <div><strong>Rüstungsklasse</strong> <span id="sbAC"></span></div>
+      <div><strong>Trefferpunkte</strong> <span id="sbHP"></span></div>
+      <div><strong>Bewegungsrate</strong> <span id="sbSpeed"></span></div>
+    </div>
+    <div class="sb-rule"></div>
+    <table class="sb-abilities">
+      <thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>
+      <tbody><tr id="sbAbilityRow"></tr></tbody>
+    </table>
+    <div class="sb-rule"></div>
+    <div class="sb-props">
+      <div><strong>Fertigkeiten</strong> <span id="sbSkills"></span></div>
+      <div><strong>Sinne</strong> <span id="sbSenses"></span></div>
+      <div><strong>Sprachen</strong> <span id="sbLanguages"></span></div>
+      <div><strong>Herausforderungsgrad</strong> <span id="sbCR"></span></div>
+    </div>
+    <div class="sb-rule"></div>
+    <div id="sbTraits"></div>
+    <div class="sb-section-title" id="sbActionsTitle">Aktionen</div>
+    <div id="sbActions"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="banner">
+    <div>
+      <div class="sub">Charakterbogen · Druide</div>
+      <input class="name-input" data-field="name" value="Elara Granger" placeholder="Charaktername">
+    </div>
+    <div class="banner-meta">
+      <div><label>Rasse</label><input data-field="race" value="Wood Elf"></div>
+      <div><label>Hintergrund</label><input data-field="background" value="Sage"></div>
+      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 2"></div>
+      <div><label>Erfahrung</label><input data-field="xp" value="Milestone"></div>
+      <div><label>Spieler:in</label><input data-field="player" value="wiebke961"></div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- ============ LEFT COLUMN: Abilities & Skills ============ -->
+    <div>
+      <div class="card" data-card="abilities">
+        <h2>Attribute &amp; Rettungswürfe</h2>
+
+        <div class="ability ability-str">
+          <div class="ability-top"><span class="ability-name">Strength <span class="ability-name-de">(Stärke)</span></span></div>
+          <div class="ability-score-row"><input class="score" data-field="str_score" value="8"><span class="ability-mod">-1</span></div>
+          <div class="save-row"><input type="checkbox" data-field="str_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="str_save_bonus" value="-1"></div>
+        </div>
+        <div class="ability ability-dex">
+          <div class="ability-top"><span class="ability-name">Dexterity <span class="ability-name-de">(Geschicklichkeit)</span></span></div>
+          <div class="ability-score-row"><input class="score" data-field="dex_score" value="13"><span class="ability-mod">+1</span></div>
+          <div class="save-row"><input type="checkbox" data-field="dex_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="dex_save_bonus" value="+1"></div>
+        </div>
+        <div class="ability ability-con">
+          <div class="ability-top"><span class="ability-name">Constitution <span class="ability-name-de">(Konstitution)</span></span></div>
+          <div class="ability-score-row"><input class="score" data-field="con_score" value="15"><span class="ability-mod">+2</span></div>
+          <div class="save-row"><input type="checkbox" data-field="con_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="con_save_bonus" value="+2"></div>
+        </div>
+        <div class="ability ability-int">
+          <div class="ability-top"><span class="ability-name">Intelligence <span class="ability-name-de">(Intelligenz)</span></span></div>
+          <div class="ability-score-row"><input class="score" data-field="int_score" value="10"><span class="ability-mod">+0</span></div>
+          <div class="save-row"><input type="checkbox" data-field="int_save_prof" checked> Rettungswurf-Übung <input class="savebonus" data-field="int_save_bonus" value="+2"></div>
+        </div>
+        <div class="ability ability-wis">
+          <div class="ability-top"><span class="ability-name">Wisdom <span class="ability-name-de">(Weisheit)</span></span></div>
+          <div class="ability-score-row"><input class="score" data-field="wis_score" value="17"><span class="ability-mod">+3</span></div>
+          <div class="save-row"><input type="checkbox" data-field="wis_save_prof" checked> Rettungswurf-Übung <input class="savebonus" data-field="wis_save_bonus" value="+5"></div>
+        </div>
+        <div class="ability ability-cha">
+          <div class="ability-top"><span class="ability-name">Charisma</span></div>
+          <div class="ability-score-row"><input class="score" data-field="cha_score" value="12"><span class="ability-mod">+1</span></div>
+          <div class="save-row"><input type="checkbox" data-field="cha_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="cha_save_bonus" value="+1"></div>
+        </div>
+      </div>
+
+      <div class="card" data-card="skills">
+        <h2>Fertigkeiten</h2>
+        <div class="skill-list" id="skillList"></div>
+      </div>
+
+      <div class="card" data-card="senses">
+        <h2>Sinne</h2>
+        <div class="field-grid">
+          <div class="field big"><label>Passive Perception <span class="label-de">(Passive Wahrnehmung)</span></label><input data-field="passivePerception" value="15"></div>
+          <div class="field big"><label>Passive Insight <span class="label-de">(Passive Einsicht)</span></label><input data-field="passiveInsight" value="13"></div>
+          <div class="field big"><label>Passive Investigation <span class="label-de">(Passive Untersuchung)</span></label><input data-field="passiveInvestigation" value="10"></div>
+        </div>
+        <div class="field" style="margin-top:10px;"><label>Other Senses <span class="label-de">(Weitere Sinne)</span></label><input data-field="senses" value="Dunkelsicht 18 m (60 ft.)"></div>
+      </div>
+    </div>
+
+    <!-- ============ MIDDLE COLUMN: Combat & Spells ============ -->
+    <div>
+      <div class="card" data-card="combat">
+        <h2>Kampfwerte</h2>
+        <div class="stat-row">
+          <div class="stat-tile"><label>Armor Class <span class="label-de">(Rüstungsklasse)</span></label><input data-field="ac" value="14"></div>
+          <div class="stat-tile"><label>Initiative</label><input data-field="initiative" value="+1"></div>
+          <div class="stat-tile"><label>Speed <span class="label-de">(Tempo)</span></label><input data-field="speed" value="35 ft."></div>
+          <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input data-field="profBonus" value="+2"></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="17"></div>
+          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="17"></div>
+          <div class="stat-tile"><label>Temp. HP <span class="label-de">(Temp. TP)</span></label><input data-field="tempHp" value="--"></div>
+          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
+        </div>
+        <div class="checkline" style="margin-top:4px;"><input type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
+        <div class="checkline" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
+          <strong>Death Saves <span class="label-de" style="text-transform:none;">(Todesrettungswürfe)</span></strong>&nbsp; Successes <span class="label-de" style="text-transform:none;">(Erfolge)</span>:
+          <input type="checkbox" data-field="death_succ_0"><input type="checkbox" data-field="death_succ_1"><input type="checkbox" data-field="death_succ_2">
+          &nbsp;Failures <span class="label-de" style="text-transform:none;">(Fehlschläge)</span>:
+          <input type="checkbox" data-field="death_fail_0"><input type="checkbox" data-field="death_fail_1"><input type="checkbox" data-field="death_fail_2">
+        </div>
+      </div>
+
+      <div class="card" data-card="weapons">
+        <h2>Waffen</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Angriff</th><th>Schaden/Art</th></tr></thead>
+          <tbody id="weaponTable"></tbody>
+        </table>
+      </div>
+
+      <div class="card" data-card="spellcasting">
+        <h2>Zauberwirken <span class="tag">WIS</span></h2>
+        <div class="stat-row">
+          <div class="stat-tile"><label>Angriffsbonus</label><input data-field="spellAtk" value="+5"></div>
+          <div class="stat-tile"><label>Rettungswurf-SG</label><input data-field="spellDC" value="13"></div>
+          <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input data-field="cantripsKnown" value="2 von 2" readonly></div>
+          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 5" readonly></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Zauberplätze 1. Grad (aktuell: Stufe 2)</label>
+          <div class="checkline">
+            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked>
+            <span style="font-size:11.5px; color:var(--text-muted); margin-left:6px;">3 von 3 verfügbar</span>
+          </div>
+        </div>
+
+        <h2 style="margin-top:4px;">Lieblingszauber <span class="tag">alle vorbereiteten Zauber + Zaubertricks</span></h2>
+        <div style="font-size:10.5px; color:var(--text-muted); margin:-6px 0 8px;">
+          <span class="lvl-badge lvl-c" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">C</span> Zaubertrick &nbsp;·&nbsp;
+          <span class="lvl-badge lvl-1" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">1</span> Zauber 1. Grad
+        </div>
+        <table class="fav-table" style="table-layout:fixed;">
+          <colgroup>
+            <col style="width:7%;"><col style="width:23%;"><col style="width:12%;"><col style="width:11%;"><col style="width:9%;"><col style="width:38%;">
+          </colgroup>
+          <thead><tr><th></th><th>Name</th><th>Reichw.</th><th>Zeit</th><th>Rw.</th><th>Schaden</th></tr></thead>
+          <tbody id="favSpellTable"></tbody>
+        </table>
+
+        <h2 style="margin-top:14px;">Zaubertricks &amp; vorbereitbare Zauber <span class="tag">R = Ritual</span></h2>
+        <div class="spell-grid" id="spellGrid"></div>
+        <div class="field" style="margin-top:12px;">
+          <label>Notizen (Spiel)</label>
+          <textarea rows="4" data-field="spellNotes" placeholder="…"></textarea>
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label>Bestienformen – Wilde Gestalt (Stufe 2, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
+          <div class="beast-grid" id="beastGrid"></div>
+          <div style="font-size:10.5px; color:var(--text-muted); margin-top:6px;">Name kurz drüberhalten für die Kurzwerte, anklicken für den vollen Bestiarium-Eintrag. Empfehlung: Brown Bear (viele TP, starker Grapple) oder Dire Wolf (Rudeltaktik) für Kämpfe; Panther oder Wolf für Erkundung/Heimlichkeit.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ RIGHT COLUMN: Features, Equipment, Notes ============ -->
+    <div>
+      <div class="card" data-card="proficiencies">
+        <h2>Übungen</h2>
+        <div class="pill">Leichte Rüstung</div><div class="pill">Mittlere Rüstung</div><div class="pill">Schilde</div>
+        <div class="pill">Einfache Waffen</div>
+        <div class="field" style="margin-top:8px;"><label>Werkzeuge</label><input data-field="tools" value="Kalligraphenwerkzeug, Kräuterkunde-Kit"></div>
+        <div class="field" style="margin-top:8px;"><label>Sprachen</label><input data-field="languages" value="Gemeinsprache, Druidisch, Elfisch"></div>
+      </div>
+
+      <div class="card" data-card="features">
+        <h2>Rassen- &amp; Klassenmerkmale</h2>
+        <div class="field">
+          <textarea rows="9" data-field="featuresText">WOOD ELF: Dunkelsicht 18m; Scharfe Sinne (Übung Wahrnehmung); Feenabkunft (Vorteil ggü. Bezauberung, immun gg. magischen Schlaf); Trance (4h statt 8h Schlaf); Waffenübung der Elfen (Langschwert, Kurzschwert, Kurzbogen, Langbogen); Leichtfüßigkeit (Tempo 35ft); Maske der Wildnis (verstecken bei leichter Verdeckung).
+
+DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidischer Fokus); Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast, ab Stufe 2 – Details siehe Druidenzirkel); Druidenzirkel: Kreis des Mondes.
+
+FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil; Zauber 1. Grades Vertrauten finden (1×/lange Rast ohne Zauberplatz). Sage: Attributssteigerung +2/+1.</textarea>
+        </div>
+      </div>
+
+      <div class="card" data-card="circle">
+        <h2>Druidenzirkel <span class="tag">aktiv: Mond</span></h2>
+        <div class="field" style="margin-bottom:10px;"><label>Gewählter Zirkel</label><input data-field="circleName" value="Kreis des Mondes"></div>
+        <div class="field" style="margin-bottom:10px;">
+          <label>Wilde Gestalt (Nutzungen, laden bei kurzer/langer Rast auf)</label>
+          <div class="checkline">
+            <input type="checkbox" data-field="wildshape_0" checked><input type="checkbox" data-field="wildshape_1" checked>
+            <span style="font-size:11.5px; color:var(--text-muted); margin-left:6px;">2 von 2 verfügbar</span>
+          </div>
+        </div>
+
+        <div class="active-block">
+          <h3><span class="lvl">✓ Stufe 2</span> Kampf-Wildwandel &amp; Kreisformen</h3>
+          <textarea rows="7" data-field="circle_2">Wilde Gestalt als Bonusaktion statt Aktion. Als Bonusaktion einen Zauberplatz ausgeben, um 1d8 TP pro Grad des Slots zu heilen (während verwandelt). Max. Herausforderungsgrad steigt auf 1 (statt 1/4). Achtung: Kein Schwimmen vor Stufe 4 und kein Fliegen vor Stufe 8 – diese Einschränkung der normalen Wildwandel-Tabelle gilt weiterhin, auch mit Kreis des Mondes (Korrektur ggü. vorheriger Fassung dieser Karte).</textarea>
+        </div>
+        <div class="future-block">
+          <h3><span class="lvl">Stufe 6</span> Elementarer Schlag</h3>
+          <textarea rows="2" data-field="circle_6">Angriffe in Tiergestalt gelten als magisch (überwinden Resistenz/Immunität ggü. nichtmagischem Schaden).</textarea>
+        </div>
+        <div class="future-block">
+          <h3><span class="lvl">Stufe 10</span> Elementare Wildwandel</h3>
+          <textarea rows="2" data-field="circle_10">Zwei Nutzungen von Wilder Gestalt gleichzeitig ausgeben, um dich in einen Luft-, Erd-, Feuer- oder Wasserelementar zu verwandeln.</textarea>
+        </div>
+        <div class="future-block">
+          <h3><span class="lvl">Stufe 14</span> Tausend Formen</h3>
+          <textarea rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+          Aktuell (Kreis des Mondes, Stufe 2): Wilde Gestalt in Bestien bis CR 1 – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
+          Referenz Grundgestalt ohne Zirkel (zum Vergleich): Stufe 2 → CR 1/4 (kein Fliegen/Schwimmen) · Stufe 4 → CR 1/2 (kein Fliegen) · Stufe 8 → CR 1 (keine Einschränkung).
+        </div>
+      </div>
+
+      <div class="card" data-card="equipment">
+        <h2>Ausrüstung &amp; Vermögen</h2>
+        <div class="stat-row">
+          <div class="stat-tile"><label>KM</label><input data-field="cp" value="0"></div>
+          <div class="stat-tile"><label>SM</label><input data-field="sp" value="0"></div>
+          <div class="stat-tile"><label>EM</label><input data-field="ep" value="0"></div>
+          <div class="stat-tile"><label>GM</label><input data-field="gp" value="8"></div>
+          <div class="stat-tile"><label>PM</label><input data-field="pp" value="0"></div>
+        </div>
+        <div class="field" style="margin-bottom:8px;"><label>Rüstung getragen</label><input data-field="armorWorn" value="Lederrüstung + Schild"></div>
+        <div class="field">
+          <label>Beutel / Ausrüstung</label>
+          <textarea rows="7" data-field="backpack">Quarterstaff (1), Scimitar (1), Rucksack (1), Druidischer Fokus (1), Pergament (8), Kalligraphenwerkzeug (1), Robe (1), Buch (1), Schlafrolle (1), Kochset (1), Rationen 1 Tag (10), Seil Hanf 15m (1), Zunderbüchse (1), Fackel (10), Wasserschlauch (1)</textarea>
+        </div>
+        <div class="field" style="margin-top:8px;"><label>Magische Gegenstände</label><input data-field="magicItems" value="—"></div>
+      </div>
+
+      <div class="card" data-card="personality">
+        <h2>Persönlichkeit &amp; Hintergrund</h2>
+        <div class="field" style="margin-bottom:8px;"><label>Persönlichkeitsmerkmale</label><textarea rows="2" data-field="personality" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Ideale</label><textarea rows="2" data-field="ideals" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Bindungen</label><textarea rows="2" data-field="bonds" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Makel</label><textarea rows="2" data-field="flaws" placeholder="…"></textarea></div>
+        <div class="field"><label>Hintergrundgeschichte</label><textarea rows="5" data-field="backstory" placeholder="…"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="note">
+  Elara Granger · Wood Elf Druide · erstellt aus dem D&amp;D-Beyond-Export. Alle Werte sind frei editierbar – Änderungen werden im Browser-Tab gehalten (kein automatisches Cloud-Speichern), zum dauerhaften Sichern bitte drucken/als PDF exportieren oder mich bitten, eine neue Version zu erzeugen.
+</footer>
+
+<script>
+  // [Englisch, Deutsch, Attribut, Bonus, geübt?] -- Religion ist in beiden
+  // Sprachen gleich, deshalb ohne deutschen Zusatz.
+  const skills = [
+    ["Acrobatics","Akrobatik","DEX","+1",false], ["Animal Handling","Tierumgang","WIS","+5",true], ["Arcana","Arkane Kunde","INT","+2",true],
+    ["Athletics","Athletik","STR","-1",false], ["Deception","Täuschen","CHA","+1",false], ["History","Geschichte","INT","+2",true],
+    ["Insight","Einsicht","WIS","+3",false], ["Intimidation","Einschüchtern","CHA","+1",false], ["Investigation","Nachforschung","INT","+0",false],
+    ["Medicine","Heilkunde","WIS","+3",false], ["Nature","Naturkunde","INT","+2",true], ["Perception","Wahrnehmung","WIS","+5",true],
+    ["Performance","Auftreten","CHA","+1",false], ["Persuasion","Überreden","CHA","+1",false], ["Religion","",  "INT","+0",false],
+    ["Sleight of Hand","Fingerfertigkeit","DEX","+1",false], ["Stealth","Heimlichkeit","DEX","+1",false], ["Survival","Überlebenskunst","WIS","+3",false]
+  ];
+  const skillList = document.getElementById('skillList');
+  skills.forEach(([nameEn,nameDe,ab,bonus,prof],i)=>{
+    const row = document.createElement('div');
+    row.className='skill-row';
+    row.innerHTML = `<input type="checkbox" data-field="skill_${i}_prof" ${prof?'checked':''}><span class="sname">${nameEn}${nameDe?` <span class="sname-de">(${nameDe})</span>`:''}</span><span class="sability">${ab}</span><input class="sbonus" data-field="skill_${i}_bonus" value="${bonus}">`;
+    skillList.appendChild(row);
+  });
+
+  const weapons = [
+    ["Quarterstaff","+1","1d6-1 Wucht"],
+    ["Scimitar","+3","1d6+1 Hieb"],
+    ["Unbewaffneter Schlag","+1","0 Wucht"]
+  ];
+  const weaponTable = document.getElementById('weaponTable');
+  weapons.forEach(([n,a,d],i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input data-field="weapon_${i}_name" value="${n}"></td><td><input data-field="weapon_${i}_atk" value="${a}"></td><td><input data-field="weapon_${i}_dmg" value="${d}"></td>`;
+    weaponTable.appendChild(tr);
+  });
+
+  // Short hover-tooltip text: current-level effect only (no scaling at higher
+  // levels/slots) and no spell school/class labeling, per user request.
+  // Sourced and cross-checked against the user's local 5etools data.
+  const SPELL_INFO = {
+    "Shillelagh": "Bonusaktion, Berührung, 1 Min. Dein Kampfstab oder Knüppel wird zur Zauberwaffe: Angriff und Schaden nutzen deinen Zaubermodifikator (WIS) statt STR, der Schadenswürfel wird zu 1W8, und die Waffe zählt als magisch. <strong>Elara: +5 zum Treffen, 1W8+3 Wucht.</strong>",
+    "Create Bonfire": "Aktion, 60 ft., Konzentration 1 Min. Erschafft ein Feuer in einem 5-ft-Würfel. Kreaturen darin: GES-Rettungswurf oder 1W8 Feuerschaden, erneut am Ende jedes eigenen Zuges darin. <strong>Elara: SG 13.</strong>",
+    "Produce Flame": "Aktion, Selbst (Wurf bis 30 ft.), 10 Min. Flamme in deiner Hand spendet Licht; als Aktion wirfst du sie: <strong>Fernkampf-Zauberangriff (+5)</strong>, Treffer 1W8 Feuerschaden – der Zauber endet dabei.",
+    "Thorn Whip": "Aktion, 30 ft., Nahkampf-Zauberangriff. Treffer: 1W6 Stichschaden; ist das Ziel groß oder kleiner, ziehst du es bis zu 10 ft zu dir heran. <strong>Elara: +5 zum Treffen.</strong>",
+    "Poison Spray": "Aktion, 10 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W12 Giftschaden.",
+    "Primal Savagery": "Aktion, Selbst, Nahkampf-Zauberangriff (5 ft). Treffer: 1W10 Säureschaden. <strong>Elara: +5 zum Treffen.</strong>",
+    "Frostbite": "Aktion, 60 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Kälteschaden und Nachteil beim nächsten Waffenangriff vor Ende des nächsten Zuges.",
+    "Control Flames": "Aktion, 60 ft. Manipuliert nichtmagisches Feuer in einem 5-ft-Würfel: ausdehnen, löschen, Helligkeit/Farbe ändern (1 Std.) oder einfache animierte Formen im Feuer erscheinen lassen (1 Std.).",
+    "Druidcraft": "Aktion, 30 ft. Kleiner Natureffekt nach Wahl: Wetter der nächsten 24 Std. vorhersagen, eine Blüte/Knospe sofort öffnen, harmlose Sinneseffekte (Blätter, Windhauch, Tiergeräusch, Geruch) erzeugen oder eine Kerze/Fackel/kleines Lagerfeuer entzünden/löschen.",
+    "Guidance": "Aktion, Berührung, Konzentration 1 Min. Berührte Kreatur darf einmal vor Ende des Zaubers 1W4 zu einer Fertigkeitsprobe addieren.",
+    "Gust": "Aktion, 30 ft. Effekt nach Wahl: mittelgroße/kleinere Kreatur macht <strong>STR-Rettungswurf (SG 13)</strong> oder wird 5 ft weggestoßen; oder du bewegst ein leichtes, freies Objekt (≤5 lb) bis 10 ft; oder harmloser Windeffekt.",
+    "Infestation": "Aktion, 30 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Giftschaden und wird 5 ft in zufällige Richtung bewegt (falls möglich).",
+    "Magic Stone": "Bonusaktion, Berührung, 1 Min. Verzaubert 1-3 Kieselsteine; ein Wurf/Schuss damit (60 ft) ist ein Fernkampf-Zauberangriff, Treffer 1W6+WIS Wuchtschaden. <strong>Elara: +5 zum Treffen, +3 Schaden.</strong>",
+    "Mending": "Gießzeit 1 Min., Berührung. Repariert einen einzelnen Bruch oder Riss (max. 1 Fuß) an einem berührten Objekt spurlos.",
+    "Mold Earth": "Aktion, 30 ft. Manipuliert Erde/Gestein in einem 5-ft-Würfel: bis 5 ft verschieben, Muster/Schrift einprägen (1 Std.) oder Boden zu schwierigem Gelände machen/normalisieren (1 Std.).",
+    "Resistance": "Aktion, Berührung, Konzentration 1 Min. Berührte Kreatur darf einmal vor Ende des Zaubers 1W4 zu einem Rettungswurf addieren.",
+    "Shape Water": "Aktion, 30 ft. Manipuliert Wasser in einem 5-ft-Würfel: bis 5 ft bewegen/umlenken, zu einfachen animierten Formen formen (1 Std.), Farbe/Trübung ändern (1 Std.) oder einfrieren (kreaturfrei, taut nach 1 Std.).",
+    "Thunderclap": "Aktion, 5 ft um dich. Andere Kreaturen im Bereich: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Donnerschaden. Hörbar bis 100 ft.",
+    "Detect Magic": "Ritual · Aktion, Konzentration 10 Min., 30-ft-Radius um dich. Du spürst Magie in Reichweite; mit einer Aktion siehst du die Aura an sichtbaren magischen Dingen.",
+    "Entangle": "Aktion, 90 ft., Konzentration 1 Min. Ranken sprießen in einem 20-ft-Quadrat und machen den Boden zu schwierigem Gelände. Kreaturen darin: <strong>STR-Rettungswurf (SG 13)</strong> oder festgehalten, solange sie bleiben; Befreiung durch eigene STR-Probe gegen SG 13.",
+    "Healing Word": "Bonusaktion, 60 ft. Ziel heilt 1W4 + WIS-Mod TP. <strong>Elara: 1W4+3 TP.</strong>",
+    "Ice Knife": "Aktion, 60 ft., Zauberangriff. Trifft: 1W10 Stichschaden, danach GES-Rettungswurf aller Kreaturen in 5 ft um das Ziel oder 2W6 Kälteschaden. <strong>Elara: +5 zum Treffen, SG 13 GES.</strong>",
+    "Animal Friendship": "Aktion, 30 ft., 24 Std. Ein Tier (INT ≤ 3) macht WIS-Rettungswurf oder gilt als bezaubert und greift dich nicht an. <strong>SG 13.</strong>",
+    "Charm Person": "Aktion, 30 ft., 1 Std. Humanoid macht WIS-Rettungswurf (Vorteil für das Ziel im Kampf) oder gilt als bezaubert, hält dich für einen Freund. <strong>SG 13.</strong>",
+    "Create or Destroy Water": "Aktion, 30 ft. Erschafft bis 10 Gallonen Wasser (oder Regen in 30-ft-Würfel) oder vernichtet Wasser/Nebel in 30-ft-Würfel.",
+    "Cure Wounds": "Aktion, Berührung. Ziel heilt 1W8 + WIS-Mod TP (nicht bei Untoten/Konstrukten). <strong>Elara: 1W8+3 TP.</strong>",
+    "Detect Poison and Disease": "Ritual · Aktion, Konzentration 10 Min. Du erkennst Gift, giftige Kreaturen und Krankheiten in 30 ft sowie deren Art.",
+    "Faerie Fire": "Aktion, 60 ft., Konzentration 1 Min. Objekte/Kreaturen in 20-ft-Würfel: DEX-Rettungswurf oder leuchten – Angriffe gegen sie haben Vorteil, sie profitieren nicht von Unsichtbarkeit. <strong>SG 13.</strong>",
+    "Fog Cloud": "Aktion, 120 ft., Konzentration 1 Std. 20-ft-Radius-Kugel dichten Nebels (blockiert auch deine eigene Sicht), bis starker Wind ihn verweht.",
+    "Goodberry": "Aktion, Berührung. Erschafft 10 magische Beeren; je 1 TP Heilung beim Essen (eine Aktion) + Sättigung für einen Tag. Verderben nach 24 Std.",
+    "Jump": "Aktion, Berührung, 1 Min. Sprungweite der berührten Kreatur verdreifacht sich.",
+    "Longstrider": "Aktion, Berührung, 1 Std. Tempo der berührten Kreatur +10 ft.",
+    "Purify Food and Drink": "Ritual · Aktion, 10 ft., 5-ft-Kugel. Entfernt Verunreinigung/Gift aus nichtmagischen Speisen/Getränken in Reichweite.",
+    "Speak with Animals": "Ritual · Aktion, 10 Min. Du verstehst Tiere und kommunizierst einfach mit ihnen (begrenzt durch deren Intelligenz).",
+    "Thunderwave": "Aktion, 15-ft-Würfel ab dir. Kreaturen darin: <strong>KON-Rettungswurf (SG 13)</strong> oder 2W8 Donnerschaden + 10 ft zurückgestoßen (halb Schaden, kein Stoß bei Erfolg).",
+    "Absorb Elements": "Reaktion (bei Säure/Kälte/Feuer/Blitz/Wucht-Schaden). Halbiert diesen Schaden bis zu deinem nächsten Zug; nächster Nahkampftreffer bis Ende des nächsten Zuges fügt +1W6 desselben Typs zu.",
+    "Beast Bond": "Aktion, Berührung, Konzentration 10 Min. Telepathische Verbindung zu einem vertrauten Tier – solange Sichtlinie besteht, habt ihr beide Vorteil bei Angriffen gegen Kreaturen in 5 ft des jeweils anderen.",
+    "Earth Tremor": "Aktion, 10-ft-Radius um dich. Andere Kreaturen darin: <strong>DEX-Rettungswurf (SG 13)</strong> oder 1W6 Wuchtschaden + liegend.",
+    "Protection from Evil and Good": "Aktion, Berührung, Konzentration 10 Min. Schutz vor bestimmten Kreaturentypen (u.a. Untote, Feen, Elementare, Teufel/Dämonen): keine Bezauberung/Angst/Besessenheit durch sie, ihre Angriffe gegen das Ziel haben Nachteil.",
+    "Snare": "Gießzeit 1 Min., Berührung, 8 Std. Legt eine fast unsichtbare Falle in einem 5-ft-Radius-Kreis (SG 13 Nachforschung zum Entdecken). Eine kleine bis große Kreatur, die den Bereich betritt: <strong>DEX-Rettungswurf (SG 13)</strong> oder wird kopfüber hochgezogen und hängt festgehalten in der Luft, bis sie sich befreit oder der Zauber endet."
+  };
+
+  // Full click-to-view descriptions: complete translated 5etools text for the
+  // spell's effect at Elara's current level, again without scaling text or
+  // school/class labeling. "meta" is time · range · components · duration.
+  const SPELL_LONG = {
+    "Shillelagh": { meta:"Zaubertrick · Bonusaktion · Berührung · V, S, M · 1 Minute",
+      text:"Das Holz eines Knüppels oder Kampfstabs, den du hältst, wird von Naturmagie durchdrungen. Für die Dauer kannst du deine Zauberfähigkeit anstelle von Stärke für Angriffs- und Schadenswürfe von Nahkampfangriffen mit dieser Waffe verwenden, und der Schadenswürfel der Waffe wird zu einem W8. Die Waffe wird außerdem magisch, falls sie es nicht schon ist. Der Zauber endet, wenn du ihn erneut wirkst oder die Waffe loslässt." },
+    "Create Bonfire": { meta:"Zaubertrick · Aktion · 60 Fuß · V, S · Konzentration, bis zu 1 Minute",
+      text:"Du erschaffst ein Lagerfeuer auf sichtbarem Boden in Reichweite. Bis der Zauber endet, füllt das magische Feuer einen 5-Fuß-Würfel. Jede Kreatur, die sich beim Wirken im Bereich des Feuers befindet, muss einen erfolgreichen Geschicklichkeitsrettungswurf ablegen oder erleidet 1W8 Feuerschaden. Eine Kreatur muss den Rettungswurf auch ablegen, wenn sie zum ersten Mal in einem Zug in den Bereich des Feuers zieht oder ihren Zug dort beendet. Das Feuer entzündet brennbare Objekte in seinem Bereich, die nicht getragen werden." },
+    "Produce Flame": { meta:"Zaubertrick · Aktion · Selbst · V, S · 10 Minuten",
+      text:"Eine flackernde Flamme erscheint in deiner Hand. Sie bleibt für die Dauer bestehen und schadet weder dir noch deiner Ausrüstung. Die Flamme verbreitet helles Licht in einem Radius von 10 Fuß und schwaches Licht für weitere 10 Fuß. Der Zauber endet, wenn du ihn als Aktion beendest oder erneut wirkst. Du kannst mit der Flamme auch angreifen, wodurch der Zauber jedoch endet. Beim Wirken dieses Zaubers oder als Aktion in einem späteren Zug kannst du die Flamme auf eine Kreatur innerhalb von 30 Fuß schleudern. Wirf einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 1W8 Feuerschaden." },
+    "Thorn Whip": { meta:"Zaubertrick · Aktion · 30 Fuß · V, S, M · Sofort",
+      text:"Du erschaffst eine lange, rankenartige Peitsche voller Dornen, die auf deinen Befehl nach einer Kreatur in Reichweite schlägt. Wirf einen Nahkampf-Zauberangriff gegen das Ziel. Bei einem Treffer erleidet die Kreatur 1W6 Stichschaden, und wenn sie groß oder kleiner ist, ziehst du sie bis zu 10 Fuß näher zu dir heran." },
+    "Poison Spray": { meta:"Zaubertrick · Aktion · 10 Fuß · V, S · Sofort",
+      text:"Du streckst deine Hand nach einer Kreatur aus, die du in Reichweite sehen kannst, und versprühst einen Schwall giftigen Gases aus deiner Handfläche. Die Kreatur muss einen erfolgreichen Konstitutionsrettungswurf ablegen oder erleidet 1W12 Giftschaden." },
+    "Primal Savagery": { meta:"Zaubertrick · Aktion · Selbst · S · Sofort",
+      text:"Du kanalisierst primale Magie, sodass sich deine Zähne oder Fingernägel schärfen, bereit für einen ätzenden Angriff. Wirf einen Nahkampf-Zauberangriff gegen eine Kreatur innerhalb von 5 Fuß um dich. Bei einem Treffer erleidet das Ziel 1W10 Säureschaden. Nach dem Angriff kehren deine Zähne oder Fingernägel wieder in ihren normalen Zustand zurück." },
+    "Frostbite": { meta:"Zaubertrick · Aktion · 60 Fuß · V, S · Sofort",
+      text:"Du lässt betäubenden Frost auf einer Kreatur entstehen, die du in Reichweite sehen kannst. Das Ziel muss einen Konstitutionsrettungswurf ablegen. Bei einem Fehlschlag erleidet es 1W6 Kälteschaden und hat Nachteil bei seinem nächsten Waffenangriffswurf vor Ende seines nächsten Zuges." },
+    "Control Flames": { meta:"Zaubertrick · Aktion · 60 Fuß · S · Sofort oder 1 Stunde",
+      text:"Du wählst nichtmagisches Feuer, das du in Reichweite sehen kannst und das in einen 5-Fuß-Würfel passt. Du beeinflusst es auf eine der folgenden Arten: Du lässt die Flamme sofort 5 Fuß in eine Richtung wachsen, sofern dort Holz oder anderer Brennstoff vorhanden ist. Du löschst die Flammen im Würfel sofort. Du verdoppelst oder halbierst den Bereich hellen und schwachen Lichts, den das Feuer wirft, änderst seine Farbe, oder beides; die Änderung hält 1 Stunde an. Du lässt einfache Formen – etwa die vage Gestalt einer Kreatur, eines Objekts oder eines Ortes – in den Flammen erscheinen und sich nach deinem Willen bewegen; die Formen halten 1 Stunde an. Wirkst du diesen Zauber mehrfach, kannst du bis zu drei nicht-sofortige Effekte gleichzeitig aktiv haben und einen davon als Aktion auflösen." },
+    "Druidcraft": { meta:"Zaubertrick · Aktion · 30 Fuß · V, S · Sofort",
+      text:"Flüsternd zu den Geistern der Natur erschaffst du einen der folgenden Effekte in Reichweite: Du erzeugst einen winzigen, harmlosen Sinneseffekt, der das Wetter an deinem Standort für die nächsten 24 Stunden vorhersagt (z. B. eine goldene Kugel für klaren Himmel, eine Wolke für Regen, fallende Schneeflocken für Schnee); der Effekt hält 1 Runde an. Du lässt sofort eine Blüte aufblühen, eine Samenkapsel aufspringen oder eine Blattknospe erblühen. Du erschaffst einen sofortigen, harmlosen Sinneseffekt, etwa fallende Blätter, einen Windhauch, das Geräusch eines kleinen Tieres oder den schwachen Geruch von Stinktier; der Effekt muss in einen 5-Fuß-Würfel passen. Du entzündest oder löschst sofort eine Kerze, eine Fackel oder ein kleines Lagerfeuer." },
+    "Guidance": { meta:"Zaubertrick · Aktion · Berührung · V, S · Konzentration, bis zu 1 Minute",
+      text:"Du berührst eine willige Kreatur. Einmal, bevor der Zauber endet, kann das Ziel 1W4 würfeln und das Ergebnis zu einer Fertigkeitsprobe seiner Wahl addieren. Es kann den Würfel vor oder nach der Probe werfen. Danach endet der Zauber." },
+    "Gust": { meta:"Zaubertrick · Aktion · 30 Fuß · V, S · Sofort",
+      text:"Du ergreifst die Luft und zwingst sie, an einem sichtbaren Punkt in Reichweite einen der folgenden Effekte zu erzeugen: Eine mittelgroße oder kleinere Kreatur deiner Wahl muss einen erfolgreichen Stärkerettungswurf ablegen oder wird bis zu 5 Fuß von dir weggestoßen. Du erschaffst einen kleinen Luftstoß, der ein Objekt bewegt, das weder gehalten noch getragen wird und höchstens 5 Pfund wiegt; das Objekt wird bis zu 10 Fuß von dir weggestoßen, ohne genug Kraft, um Schaden zu verursachen. Du erschaffst einen harmlosen Sinneseffekt mit Luft, etwa raschelnde Blätter, zuschlagende Fensterläden im Wind oder wehende Kleidung." },
+    "Infestation": { meta:"Zaubertrick · Aktion · 30 Fuß · V, S, M · Sofort",
+      text:"Du lässt eine Wolke aus Milben, Flöhen und anderen Parasiten kurzzeitig auf einer Kreatur erscheinen, die du in Reichweite sehen kannst. Das Ziel muss einen erfolgreichen Konstitutionsrettungswurf ablegen, sonst erleidet es 1W6 Giftschaden und bewegt sich 5 Fuß in eine zufällige Richtung, sofern es sich bewegen kann und sein Tempo mindestens 5 Fuß beträgt. Diese Bewegung provoziert keine Gelegenheitsangriffe; ist die gewürfelte Richtung versperrt, bewegt sich das Ziel nicht." },
+    "Magic Stone": { meta:"Zaubertrick · Bonusaktion · Berührung · V, S · 1 Minute",
+      text:"Du berührst einen bis drei Kieselsteine und durchdringst sie mit Magie. Du oder eine andere Kreatur kann mit einem der Steine einen Fernkampf-Zauberangriff ausführen, indem der Stein geworfen oder mit einer Schleuder geschleudert wird. Geworfen hat ein Stein eine Reichweite von 60 Fuß. Greift eine andere Kreatur mit einem Stein an, addiert sie deinen Zaubermodifikator anstelle ihres eigenen zum Angriffswurf. Bei einem Treffer erleidet das Ziel Wuchtschaden in Höhe von 1W6 + deinem Zaubermodifikator. Ob Treffer oder Fehlschlag, der Zauber endet danach auf diesem Stein. Wirkst du diesen Zauber erneut, endet er auf allen noch betroffenen Steinen aus früheren Wirkungen." },
+    "Mending": { meta:"Zaubertrick · Gießzeit 1 Minute · Berührung · V, S, M · Sofort",
+      text:"Dieser Zauber repariert einen einzelnen Bruch oder Riss in einem Objekt, das du berührst, etwa ein zerbrochenes Kettenglied, zwei Hälften eines zerbrochenen Schlüssels, einen zerrissenen Umhang oder einen leckenden Weinschlauch. Solange der Bruch oder Riss in keiner Dimension größer als 1 Fuß ist, reparierst du ihn spurlos. Der Zauber kann auch einen magischen Gegenstand oder ein Konstrukt physisch reparieren, kann diesem Objekt jedoch keine Magie zurückgeben." },
+    "Mold Earth": { meta:"Zaubertrick · Aktion · 30 Fuß · S · Sofort oder 1 Stunde",
+      text:"Du wählst einen Bereich aus Erde oder Gestein, den du in Reichweite sehen kannst und der in einen 5-Fuß-Würfel passt. Du manipulierst ihn auf eine der folgenden Arten: Zielst du auf lockere Erde, kannst du sie sofort ausheben, entlang des Bodens bewegen und bis zu 5 Fuß entfernt ablegen; diese Bewegung verursacht keinen Schaden. Du lässt Formen, Farben oder beides auf der Erde oder dem Gestein erscheinen, die Worte buchstabieren, Bilder erzeugen oder Muster formen; die Änderung hält 1 Stunde an. Befindet sich die Erde oder das Gestein am Boden, machst du sie zu schwierigem Gelände, oder du machst bereits schwieriges Gelände wieder normal; diese Änderung hält 1 Stunde an. Wirkst du diesen Zauber mehrfach, kannst du höchstens zwei nicht-sofortige Effekte gleichzeitig aktiv haben und einen davon als Aktion auflösen." },
+    "Resistance": { meta:"Zaubertrick · Aktion · Berührung · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Du berührst eine willige Kreatur. Einmal, bevor der Zauber endet, kann das Ziel 1W4 würfeln und das Ergebnis zu einem Rettungswurf seiner Wahl addieren. Es kann den Würfel vor oder nach dem Rettungswurf werfen. Danach endet der Zauber." },
+    "Shape Water": { meta:"Zaubertrick · Aktion · 30 Fuß · S · Sofort oder 1 Stunde",
+      text:"Du wählst einen Bereich aus Wasser, den du in Reichweite sehen kannst und der in einen 5-Fuß-Würfel passt. Du manipulierst ihn auf eine der folgenden Arten: Du bewegst das Wasser sofort oder änderst seine Fließrichtung nach deiner Weisung, um bis zu 5 Fuß in eine beliebige Richtung; diese Bewegung verursacht keinen Schaden. Du lässt das Wasser einfache Formen annehmen und sich nach deiner Weisung bewegen; die Änderung hält 1 Stunde an. Du änderst die Farbe oder Trübung des Wassers; die Änderung muss überall gleich sein und hält 1 Stunde an. Du frierst das Wasser ein, sofern sich keine Kreaturen darin befinden; es taut nach 1 Stunde wieder auf. Wirkst du diesen Zauber mehrfach, kannst du höchstens zwei nicht-sofortige Effekte gleichzeitig aktiv haben und einen davon als Aktion auflösen." },
+    "Thunderclap": { meta:"Zaubertrick · Aktion · 5 Fuß · S · Sofort",
+      text:"Du erzeugst einen Donnerknall, der bis zu 100 Fuß weit zu hören ist. Jede Kreatur außer dir selbst im Wirkungsbereich muss einen Konstitutionsrettungswurf ablegen, sonst erleidet sie 1W6 Donnerschaden." },
+    "Detect Magic": { meta:"1. Grad (Ritual) · Aktion · Selbst (30-Fuß-Radius) · V, S · Konzentration, bis zu 10 Minuten",
+      text:"Für die Dauer spürst du die Anwesenheit von Magie in einem Umkreis von 30 Fuß um dich. Wenn du auf diese Weise Magie spürst, kannst du mit einer Aktion eine schwache Aura um jedes sichtbare magische Objekt oder jede sichtbare magische Kreatur im Bereich sehen. Der Zauber durchdringt die meisten Hindernisse, wird aber von 30 cm Stein, 2,5 cm gewöhnlichem Metall, einer dünnen Bleischicht oder 90 cm Holz oder Erde blockiert." },
+    "Entangle": { meta:"1. Grad · Aktion · 90 Fuß · V, S · Konzentration, bis zu 1 Minute",
+      text:"Greifende Ranken und Kräuter sprießen aus dem Boden in einem 20-Fuß-Quadrat, ausgehend von einem Punkt in Reichweite. Für die Dauer verwandeln diese Pflanzen den Boden im Bereich in schwieriges Gelände. Eine Kreatur, die sich beim Wirken des Zaubers im Bereich befindet, muss einen erfolgreichen Stärkerettungswurf ablegen oder gilt als festgehalten, solange sie sich in den Ranken befindet. Eine festgehaltene Kreatur kann eine Aktion nutzen, um eine Stärkeprobe gegen deinen Zauberrettungswurf-SG abzulegen; bei Erfolg befreit sie sich. Wenn der Zauber endet, verwelken die herbeigerufenen Pflanzen." },
+    "Healing Word": { meta:"1. Grad · Bonusaktion · 60 Fuß · V · Sofort",
+      text:"Eine Kreatur deiner Wahl, die du in Reichweite sehen kannst, erhält Trefferpunkte in Höhe von 1W4 + deinem Zaubermodifikator zurück. Dieser Zauber hat keine Wirkung auf Untote oder Konstrukte." },
+    "Ice Knife": { meta:"1. Grad · Aktion · 60 Fuß · S, M · Sofort",
+      text:"Du erschaffst einen Eissplitter und schleuderst ihn auf eine Kreatur in Reichweite. Wirf einen Fernkampf-Zauberangriff gegen das Ziel. Bei einem Treffer erleidet das Ziel 1W10 Stichschaden. Ob Treffer oder Fehlschlag, danach explodiert der Splitter: Das Ziel und jede Kreatur innerhalb von 5 Fuß um es herum müssen einen erfolgreichen Geschicklichkeitsrettungswurf ablegen oder 2W6 Kälteschaden erleiden." },
+    "Animal Friendship": { meta:"1. Grad · Aktion · 30 Fuß · V, S, M · 24 Stunden",
+      text:"Dieser Zauber erlaubt es dir, ein Tier davon zu überzeugen, dass du ihm nichts Böses willst. Wähle ein Tier, das du in Reichweite sehen kannst. Es muss dich sehen und hören. Wenn die Intelligenz des Tieres 4 oder höher ist, schlägt der Zauber fehl. Andernfalls muss das Tier einen erfolgreichen Weisheitsrettungswurf ablegen oder gilt für die Dauer des Zaubers als von dir bezaubert. Wenn du oder einer deiner Begleiter dem Ziel schadet, endet der Zauber." },
+    "Charm Person": { meta:"1. Grad · Aktion · 30 Fuß · V, S · 1 Stunde",
+      text:"Du versuchst, ein Humanoid, das du sehen kannst, in Reichweite zu bezaubern. Es muss einen Weisheitsrettungswurf ablegen und tut dies mit Vorteil, wenn du oder deine Begleiter gerade mit ihm kämpfen. Bei einem Fehlschlag gilt es bis zum Ende des Zaubers oder bis du oder deine Begleiter ihm etwas Schädliches antun als von dir bezaubert. Die bezauberte Kreatur betrachtet dich als freundlichen Bekannten. Wenn der Zauber endet, weiß die Kreatur, dass sie von dir bezaubert wurde." },
+    "Create or Destroy Water": { meta:"1. Grad · Aktion · 30 Fuß · V, S, M · Sofort",
+      text:"Du erschaffst oder vernichtest Wasser. Du erschaffst bis zu 10 Gallonen sauberes Wasser in Reichweite in einem offenen Behälter. Alternativ fällt das Wasser als Regen in einem 30-Fuß-Würfel in Reichweite und löscht dabei offene Flammen im Bereich. Du vernichtest bis zu 10 Gallonen Wasser in einem offenen Behälter in Reichweite. Alternativ vernichtest du Nebel in einem 30-Fuß-Würfel in Reichweite." },
+    "Cure Wounds": { meta:"1. Grad · Aktion · Berührung · V, S · Sofort",
+      text:"Eine Kreatur, die du berührst, erhält Trefferpunkte in Höhe von 1W8 + deinem Zaubermodifikator zurück. Dieser Zauber hat keine Wirkung auf Untote oder Konstrukte." },
+    "Detect Poison and Disease": { meta:"1. Grad (Ritual) · Aktion · Selbst (30-Fuß-Radius) · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Für die Dauer kannst du die Anwesenheit und den Ort von Giften, giftigen Kreaturen und Krankheiten in einem Umkreis von 30 Fuß um dich spüren. Du erkennst außerdem die Art des jeweiligen Gifts, der giftigen Kreatur oder der Krankheit. Der Zauber durchdringt die meisten Hindernisse, wird aber von 30 cm Stein, 2,5 cm gewöhnlichem Metall, einer dünnen Bleischicht oder 90 cm Holz oder Erde blockiert." },
+    "Faerie Fire": { meta:"1. Grad · Aktion · 60 Fuß · V · Konzentration, bis zu 1 Minute",
+      text:"Jedes Objekt in einem 20-Fuß-Würfel in Reichweite wird in blauem, grünem oder violettem Licht umrandet (deine Wahl). Jede Kreatur im Bereich wird bei Wirkung ebenfalls umrandet, wenn sie einen Geschicklichkeitsrettungswurf verfehlt. Für die Dauer strahlen betroffene Objekte und Kreaturen schwaches Licht in einem Radius von 10 Fuß ab. Jeder Angriffswurf gegen eine betroffene Kreatur oder ein betroffenes Objekt hat Vorteil, wenn der Angreifer sie sehen kann, und die betroffene Kreatur oder das Objekt kann nicht von Unsichtbarkeit profitieren." },
+    "Fog Cloud": { meta:"1. Grad · Aktion · 120 Fuß · V, S · Konzentration, bis zu 1 Stunde",
+      text:"Du erschaffst eine Kugel aus dichtem Nebel mit 20 Fuß Radius um einen Punkt deiner Wahl in Reichweite. Die Kugel breitet sich um Ecken aus, und ihr Bereich ist stark verhüllt. Sie hält für die Dauer an oder bis ein mäßiger oder stärkerer Wind (mindestens 16 km/h) sie verweht." },
+    "Goodberry": { meta:"1. Grad · Aktion · Berührung · V, S, M · Sofort",
+      text:"Bis zu zehn Beeren erscheinen in deiner Hand und sind für die Dauer mit Magie durchdrungen. Eine Kreatur kann eine Aktion nutzen, um eine Beere zu essen. Der Verzehr einer Beere stellt 1 Trefferpunkt wieder her, und die Beere liefert genug Nahrung, um eine Kreatur für einen Tag zu ernähren. Die Beeren verlieren ihre Wirkung, wenn sie nicht innerhalb von 24 Stunden nach dem Wirken dieses Zaubers verzehrt wurden." },
+    "Jump": { meta:"1. Grad · Aktion · Berührung · V, S, M · 1 Minute",
+      text:"Du berührst eine Kreatur. Die Sprungweite der Kreatur verdreifacht sich, bis der Zauber endet." },
+    "Longstrider": { meta:"1. Grad · Aktion · Berührung · V, S, M · 1 Stunde",
+      text:"Du berührst eine Kreatur. Das Lauftempo des Ziels erhöht sich um 10 Fuß, bis der Zauber endet." },
+    "Purify Food and Drink": { meta:"1. Grad (Ritual) · Aktion · 10 Fuß · V, S · Sofort",
+      text:"Alle nichtmagischen Speisen und Getränke in einer 5-Fuß-Radius-Kugel um einen Punkt deiner Wahl in Reichweite werden gereinigt und von Verunreinigung und Gift befreit." },
+    "Speak with Animals": { meta:"1. Grad (Ritual) · Aktion · Selbst · V, S · 10 Minuten",
+      text:"Du erhältst für die Dauer die Fähigkeit, Tiere zu verstehen und verbal mit ihnen zu kommunizieren. Das Wissen und die Wahrnehmung vieler Tiere ist durch ihre Intelligenz begrenzt, aber zumindest können sie dir Informationen über nahegelegene Orte und Monster geben, einschließlich allem, was sie innerhalb des letzten Tages wahrgenommen haben. Du kannst ein Tier eventuell überreden, dir einen kleinen Gefallen zu tun, nach Ermessen der Spielleitung." },
+    "Thunderwave": { meta:"1. Grad · Aktion · Selbst (15-Fuß-Würfel) · V, S · Sofort",
+      text:"Eine Welle donnernder Kraft breitet sich von dir aus. Jede Kreatur in einem 15-Fuß-Würfel, der von dir ausgeht, muss einen Konstitutionsrettungswurf ablegen. Bei einem Fehlschlag erleidet eine Kreatur 2W8 Donnerschaden und wird 10 Fuß von dir weggestoßen. Bei einem Erfolg erleidet sie nur halb so viel Schaden und wird nicht weggestoßen. Zusätzlich werden unbefestigte Objekte, die sich vollständig im Wirkungsbereich befinden, automatisch 10 Fuß von dir weggestoßen, und der Zauber erzeugt einen donnernden Knall, der bis zu 300 Fuß weit zu hören ist." },
+    "Absorb Elements": { meta:"1. Grad · Reaktion · Selbst · S · 1 Runde",
+      text:"Der Zauber fängt einen Teil der eintreffenden Energie ab, mildert ihre Wirkung auf dich und speichert sie für deinen nächsten Nahkampfangriff. Du hast Resistenz gegen den auslösenden Schadenstyp bis zum Beginn deines nächsten Zuges. Außerdem fügt dein erster Treffer mit einem Nahkampfangriff in deinem nächsten Zug dem Ziel zusätzlich 1W6 Schaden des auslösenden Typs zu, und der Zauber endet." },
+    "Beast Bond": { meta:"1. Grad · Aktion · Berührung · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Du errichtest eine telepathische Verbindung zu einem Tier, das du berührst und das dir freundlich gesinnt oder von dir bezaubert ist. Der Zauber schlägt fehl, wenn der Intelligenzwert des Tieres 4 oder höher ist. Bis der Zauber endet, ist die Verbindung aktiv, solange du und das Tier sich in Sichtlinie befinden. Über die Verbindung kann das Tier deine telepathischen Botschaften verstehen und dir einfache Gefühle und Konzepte telepathisch mitteilen. Solange die Verbindung aktiv ist, erhält das Tier Vorteil bei Angriffswürfen gegen jede Kreatur innerhalb von 5 Fuß um dich, die es sehen kann." },
+    "Earth Tremor": { meta:"1. Grad · Aktion · 10 Fuß · V, S · Sofort",
+      text:"Du verursachst ein Beben im Boden in Reichweite. Jede andere Kreatur als du in diesem Bereich muss einen Geschicklichkeitsrettungswurf ablegen. Bei einem Fehlschlag erleidet eine Kreatur 1W6 Wuchtschaden und wird zu Boden gestoßen. Besteht der Boden in diesem Bereich aus lockerer Erde oder Gestein, wird er zu schwierigem Gelände, bis er beseitigt wird; jeder 5-Fuß-Durchmesser-Abschnitt benötigt mindestens 1 Minute, um von Hand geräumt zu werden." },
+    "Protection from Evil and Good": { meta:"1. Grad · Aktion · Berührung · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Bis der Zauber endet, ist eine willige Kreatur, die du berührst, vor bestimmten Kreaturenarten geschützt: Aberrationen, Himmlischen, Elementaren, Feen, Teuflischen Wesen und Untoten. Kreaturen dieser Arten haben Nachteil bei Angriffswürfen gegen das Ziel. Das Ziel kann außerdem nicht von ihnen bezaubert, verängstigt oder besessen werden. Ist das Ziel bereits bezaubert, verängstigt oder besessen von einer solchen Kreatur, hat es Vorteil bei jedem neuen Rettungswurf gegen den entsprechenden Effekt." },
+    "Snare": { meta:"1. Grad · Gießzeit 1 Minute · Berührung · S, M · 8 Stunden",
+      text:"Während du diesen Zauber wirkst, formst du mit dem Seil einen Kreis mit 5 Fuß Radius auf dem Boden. Wenn du das Wirken beendest, verschwindet das Seil, und der Kreis wird zu einer magischen Falle. Die Falle ist nahezu unsichtbar; sie wird nur durch eine erfolgreiche Intelligenz(Nachforschung)-Probe gegen deinen Zauberrettungswurf-SG entdeckt. Die Falle löst aus, wenn eine kleine, mittelgroße oder große Kreatur den Boden im Wirkungsbereich betritt. Diese Kreatur muss einen erfolgreichen Geschicklichkeitsrettungswurf ablegen oder wird magisch kopfüber in die Luft gehoben und hängt dort 3 Fuß über dem Boden, festgehalten, bis der Zauber endet. Eine festgehaltene Kreatur kann am Ende jedes ihrer Züge einen Geschicklichkeitsrettungswurf ablegen; bei Erfolg endet der Effekt bei ihr. Alternativ kann sie selbst oder jemand anderes in Reichweite eine Aktion nutzen, um eine Intelligenz(Arkane Kunde)-Probe gegen deinen Zauberrettungswurf-SG abzulegen; bei Erfolg endet der Festgehalten-Effekt. Nachdem die Falle ausgelöst wurde, endet der Zauber, sobald keine Kreatur mehr durch sie festgehalten wird." }
+  };
+
+  // [Grad("C"=Zaubertrick/"1"=1.Grad), Name, Ritual?, aktuell bekannt/vorbereitet?]
+  // Zaubertricks: vollständige Druiden-Liste (PHB + XGE-Erweiterung), geprüft
+  // gegen die 5etools-Quelldaten. Elara kennt auf Stufe 2 zwei Zaubertricks
+  // (Shillelagh, Produce Flame) fest markiert; die übrigen stehen als
+  // Wahlmöglichkeit für einen Levelaufstieg/Change bereit.
+  // 1. Grad: vollständige Liste der vorbereitbaren Druidenzauber (PHB + XGE).
+  // Vorbereitbar sind WIS-Mod + Druidenstufe = 3 + 2 = 5 Zauber gleichzeitig;
+  // fünf davon sind unten als aktuell vorbereitet markiert.
+  const spells = [
+    ["C","Shillelagh",false,true], ["C","Create Bonfire",false,false], ["C","Produce Flame",false,true],
+    ["C","Thorn Whip",false,false], ["C","Poison Spray",false,false], ["C","Primal Savagery",false,false],
+    ["C","Frostbite",false,false], ["C","Control Flames",false,false], ["C","Druidcraft",false,false],
+    ["C","Guidance",false,false], ["C","Gust",false,false], ["C","Infestation",false,false],
+    ["C","Magic Stone",false,false], ["C","Mending",false,false], ["C","Mold Earth",false,false],
+    ["C","Resistance",false,false], ["C","Shape Water",false,false], ["C","Thunderclap",false,false],
+    ["1","Detect Magic",true,false], ["1","Entangle",false,true], ["1","Healing Word",false,true],
+    ["1","Ice Knife",false,false], ["1","Animal Friendship",false,false], ["1","Charm Person",false,false],
+    ["1","Create or Destroy Water",false,false], ["1","Cure Wounds",false,false],
+    ["1","Detect Poison and Disease",true,false], ["1","Faerie Fire",false,true], ["1","Fog Cloud",false,false],
+    ["1","Goodberry",false,true], ["1","Jump",false,false], ["1","Longstrider",false,false],
+    ["1","Purify Food and Drink",true,false], ["1","Speak with Animals",true,false], ["1","Thunderwave",false,false],
+    ["1","Absorb Elements",false,true], ["1","Beast Bond",false,false], ["1","Earth Tremor",false,false],
+    ["1","Protection from Evil and Good",false,false], ["1","Snare",false,false]
+  ];
+  const spellGrid = document.getElementById('spellGrid');
+  const mid = Math.ceil(spells.length/2);
+  const spellCols = [spells.map((s,i)=>[s,i]).slice(0,mid), spells.map((s,i)=>[s,i]).slice(mid)];
+  spellCols.forEach(col=>{
+    const div = document.createElement('div');
+    col.forEach(([[lvl,name,ritual,known],i])=>{
+      const row = document.createElement('div');
+      row.className='spell-row';
+      row.innerHTML = `<span class="lvl-badge ${lvl==='C'?'lvl-c':'lvl-1'}">${lvl}</span><input type="checkbox" data-field="spell_${i}_prepared"${known?' checked':''}><span class="sname has-tip" data-tip-key="${name}">${name}</span>${ritual?'<span class="ritual">R</span>':''}`;
+      div.appendChild(row);
+    });
+    spellGrid.appendChild(div);
+  });
+
+  // Lieblingszauber-Tabelle: wird bei jeder Änderung an den "vorbereitet"-
+  // Häkchen komplett neu aus dem AKTUELLEN Zustand der Checkboxen aufgebaut
+  // (nicht nur einmalig aus dem "known"-Startwert), damit ein Abwählen einen
+  // Zauber sofort aus den Favoriten entfernt und ein Anwählen ihn sofort
+  // ergänzt. Reichweite/Zeit/Rettungswurf/Schaden je Zauber stehen in
+  // FAV_DATA; die erzeugten fav_<i>_* Felder bleiben frei editierbar. Da die
+  // Zeilen bei jeder Häkchen-Änderung neu erzeugt werden, gehen manuelle
+  // Text-Anpassungen dabei verloren -- über Speichern/Laden bleiben sie aber
+  // erhalten, solange sich die vorbereitete Auswahl zwischen Speichern und
+  // Laden nicht ändert (siehe applyState unten).
+  const FAV_DATA = {
+    "Shillelagh": { range:"Selbst", time:"Bonus", save:"--", dmg:"1W8+3 Wucht" },
+    "Produce Flame": { range:"30 ft.", time:"Akt.", save:"--", dmg:"1W8 Feuer" },
+    "Entangle": { range:"90 ft.", time:"Akt.", save:"STR", dmg:"-- (festgehalten)" },
+    "Healing Word": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W4+3)" },
+    "Faerie Fire": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"-- (Vorteil)" },
+    "Goodberry": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1)" },
+    "Absorb Elements": { range:"Selbst", time:"Reakt.", save:"--", dmg:"-- (Resistenz +1W6)" }
+  };
+  const favSpellTable = document.getElementById('favSpellTable');
+  function renderFavTable(){
+    favSpellTable.innerHTML = '';
+    const checkedEntries = spells.filter((s,idx)=>{
+      const cb = spellGrid.querySelector(`[data-field="spell_${idx}_prepared"]`);
+      return cb ? cb.checked : s[3];
+    });
+    checkedEntries.forEach(([lvl,name],i)=>{
+      const fd = FAV_DATA[name] || {range:"", time:"", save:"--", dmg:"--"};
+      const badgeClass = lvl==='C' ? 'lvl-c' : 'lvl-1';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvl==='C'?'Zaubertrick':'1. Grad'}">${lvl}</span></td><td><span class="name-tip"><input data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input data-field="fav_${i}_range" value="${fd.range}"></td><td><input data-field="fav_${i}_time" value="${fd.time}"></td><td><input data-field="fav_${i}_save" value="${fd.save}"></td><td><input data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
+      favSpellTable.appendChild(tr);
+    });
+  }
+  // Kapazitäten fürs Zauberwirken-Kärtchen: Zaubertricks bekannt ist eine
+  // feste Zahl aus der Druidentabelle (2 auf Stufe 1-3); vorbereitbare
+  // 1.-Grad-Zauber = WIS-Mod (+3) + Druidenstufe (2) = 5. Bei Levelaufstieg
+  // hier anpassen.
+  const CANTRIP_MAX = 2;
+  const PREPARED_MAX = 5;
+  const cantripsTile = document.getElementById('cantripsTile');
+  const preparedTile = document.getElementById('preparedTile');
+  const cantripsKnownEl = document.querySelector('[data-field="cantripsKnown"]');
+  const spellsPreparedEl = document.querySelector('[data-field="spellsPrepared"]');
+  function updateSpellCounts(){
+    let cantripCount = 0, spellCount = 0;
+    spells.forEach((s,idx)=>{
+      const cb = spellGrid.querySelector(`[data-field="spell_${idx}_prepared"]`);
+      const checked = cb ? cb.checked : s[3];
+      if(!checked) return;
+      if(s[0] === 'C') cantripCount++; else spellCount++;
+    });
+    cantripsKnownEl.value = `${cantripCount} von ${CANTRIP_MAX}`;
+    spellsPreparedEl.value = `${spellCount} von ${PREPARED_MAX}`;
+    cantripsTile.classList.toggle('over-limit', cantripCount > CANTRIP_MAX);
+    preparedTile.classList.toggle('over-limit', spellCount > PREPARED_MAX);
+  }
+
+  renderFavTable();
+  updateSpellCounts();
+  // Live-Sync: jede Änderung an einer "vorbereitet"-Checkbox (im gesamten
+  // Grid, per Delegation) baut die Favoriten-Tabelle neu auf und
+  // aktualisiert die Zähler "X von Y" für Zaubertricks/vorbereitete Zauber.
+  spellGrid.addEventListener('change', (e)=>{
+    if(e.target.matches('input[type=checkbox]')){ renderFavTable(); updateSpellCounts(); }
+  });
+
+  const BEAST_DATA = {
+    "Baboon": {
+      de:"Pavian", size:"Kleine", cr:"0", crxp:"0/10",
+      ac:"12", hp:"3 (1W6)", speed:"30 ft., klettern 30 ft.",
+      str:8, dex:14, con:11, int:4, wis:12, cha:6,
+      skills:"—", senses:"Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Rudeltaktik", text:"Der Pavian hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Pavians sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +1 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 (1W4-1) Stichschaden."}
+      ]
+    },
+    "Badger": {
+      de:"Dachs", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"10", hp:"3 (1W4+1)", speed:"20 ft., graben 5 ft.",
+      str:4, dex:11, con:12, int:2, wis:12, cha:5,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Dachs hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +2 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Stichschaden."}
+      ]
+    },
+    "Cat": {
+      de:"Katze", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"12", hp:"2 (1W4)", speed:"40 ft., klettern 30 ft.",
+      str:3, dex:15, con:10, int:3, wis:12, cha:7,
+      skills:"Wahrnehmung +3, Heimlichkeit +4", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Die Katze hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Krallen", text:"Nahkampfwaffenangriff: +0 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Hiebschaden."}
+      ]
+    },
+    "Deer": {
+      de:"Hirsch", size:"Mittelgroße", cr:"0", crxp:"0/10",
+      ac:"13", hp:"4 (1W8)", speed:"50 ft.",
+      str:11, dex:16, con:11, int:2, wis:14, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 12", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +2 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 2 (1W4) Stichschaden."}
+      ]
+    },
+    "Giant Fire Beetle": {
+      de:"Riesiger Feuerkäfer", size:"Kleine", cr:"0", crxp:"0/10",
+      ac:"13 (natürliche Rüstung)", hp:"4 (1W6+1)", speed:"30 ft.",
+      str:8, dex:10, con:12, int:1, wis:7, cha:3,
+      skills:"—", senses:"Blindsicht 30 ft., Passive Wahrnehmung 8", languages:"—",
+      traits:[
+        {name:"Leuchten", text:"Der Käfer verströmt in einem Radius von 10 Fuß helles und in weiteren 10 Fuß dämmriges Licht."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +1 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 2 (1W6-1) Hiebschaden."}
+      ]
+    },
+    "Goat": {
+      de:"Ziege", size:"Mittelgroße", cr:"0", crxp:"0/10",
+      ac:"10", hp:"4 (1W8)", speed:"40 ft.",
+      str:12, dex:10, con:11, int:2, wis:10, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Ansturm", text:"Bewegt sich die Ziege mindestens 20 Fuß geradewegs auf ein Ziel zu und trifft es im selben Zug mit einem Stoß-Angriff, erleidet das Ziel zusätzlich 2 (1W4) Wuchtschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 10) schaffen, sonst wird es zu Boden gestoßen."},
+        {name:"Trittsicher", text:"Die Ziege hat Vorteil bei Stärke- und Geschicklichkeitsrettungswürfen gegen Effekte, die sie zu Boden stoßen würden."}
+      ],
+      actions:[
+        {name:"Stoß", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 3 (1W4+1) Wuchtschaden."}
+      ]
+    },
+    "Hyena": {
+      de:"Hyäne", size:"Mittelgroße", cr:"0", crxp:"0/10",
+      ac:"11", hp:"5 (1W8+1)", speed:"50 ft.",
+      str:11, dex:13, con:12, int:2, wis:12, cha:5,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Rudeltaktik", text:"Die Hyäne hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter der Hyäne sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +2 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 3 (1W6) Stichschaden."}
+      ]
+    },
+    "Jackal": {
+      de:"Schakal", size:"Kleine", cr:"0", crxp:"0/10",
+      ac:"12", hp:"3 (1W6)", speed:"40 ft.",
+      str:8, dex:15, con:11, int:3, wis:12, cha:6,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Der Schakal hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."},
+        {name:"Rudeltaktik", text:"Der Schakal hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Schakals sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +1 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 (1W4-1) Stichschaden."}
+      ]
+    },
+    "Lizard": {
+      de:"Echse", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"10", hp:"2 (1W4)", speed:"20 ft., klettern 20 ft.",
+      str:2, dex:11, con:10, int:1, wis:8, cha:3,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 9", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +0 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Stichschaden."}
+      ]
+    },
+    "Rat": {
+      de:"Ratte", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"10", hp:"1 (1W4-1)", speed:"20 ft.",
+      str:2, dex:11, con:9, int:2, wis:10, cha:4,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Die Ratte hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +0 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Stichschaden."}
+      ]
+    },
+    "Scorpion": {
+      de:"Skorpion", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"11 (natürliche Rüstung)", hp:"1 (1W4-1)", speed:"10 ft.",
+      str:2, dex:11, con:8, int:1, wis:8, cha:2,
+      skills:"—", senses:"Blindsicht 10 ft., Passive Wahrnehmung 9", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Stich", text:"Nahkampfwaffenangriff: +2 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 1 Stichschaden. Zusätzlich muss die Kreatur einen Konstitutionsrettungswurf (SG 9) schaffen und erleidet bei Fehlschlag 4 (1W8) Giftschaden (bei Erfolg halbiert)."}
+      ]
+    },
+    "Spider": {
+      de:"Spinne", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"12", hp:"1 (1W4-1)", speed:"20 ft., klettern 20 ft.",
+      str:2, dex:14, con:8, int:1, wis:10, cha:2,
+      skills:"Heimlichkeit +4", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Spinnenklettern", text:"Die Spinne kann schwierige Oberflächen erklimmen, auch kopfüber an Decken, ohne dafür eine Probe abzulegen."},
+        {name:"Netzsinn", text:"Solange die Spinne ein Spinnennetz berührt, kennt sie den genauen Standort jeder anderen Kreatur, die dasselbe Netz berührt."},
+        {name:"Netzläufer", text:"Die Spinne ignoriert durch Spinnweben verursachte Bewegungseinschränkungen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 1 Stichschaden. Zusätzlich muss die Kreatur einen erfolgreichen Konstitutionsrettungswurf (SG 9) schaffen, sonst erleidet sie 2 (1W4) Giftschaden."}
+      ]
+    },
+    "Weasel": {
+      de:"Wiesel", size:"Winzige", cr:"0", crxp:"0/10",
+      ac:"13", hp:"1 (1W4-1)", speed:"30 ft.",
+      str:3, dex:16, con:8, int:2, wis:12, cha:3,
+      skills:"Wahrnehmung +3, Heimlichkeit +5", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Das Wiesel hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 1 Stichschaden."}
+      ]
+    },
+    "Camel": {
+      de:"Kamel", size:"Große", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"9", hp:"15 (2W10+4)", speed:"50 ft.",
+      str:16, dex:8, con:14, int:2, wis:8, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 9", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 2 (1W4) Wuchtschaden."}
+      ]
+    },
+    "Giant Rat": {
+      de:"Riesenratte", size:"Kleine", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"12", hp:"7 (2W6)", speed:"30 ft.",
+      str:7, dex:15, con:11, int:2, wis:10, cha:4,
+      skills:"—", senses:"Dunkelsicht 60 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Die Riesenratte hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."},
+        {name:"Rudeltaktik", text:"Die Riesenratte hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter der Riesenratte sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W4+2) Stichschaden."}
+      ]
+    },
+    "Giant Weasel": {
+      de:"Riesenwiesel", size:"Mittelgroße", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"13", hp:"9 (2W8)", speed:"40 ft.",
+      str:11, dex:16, con:10, int:4, wis:12, cha:5,
+      skills:"Wahrnehmung +3, Heimlichkeit +5", senses:"Dunkelsicht 60 ft., Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Das Riesenwiesel hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 5 (1W4+3) Stichschaden."}
+      ]
+    },
+    "Mastiff": {
+      de:"Mastiff", size:"Mittelgroße", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"12", hp:"5 (1W8+1)", speed:"40 ft.",
+      str:13, dex:14, con:12, int:3, wis:12, cha:7,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Der Mastiff hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Stichschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 11) schaffen, sonst wird es zu Boden gestoßen."}
+      ]
+    },
+    "Mule": {
+      de:"Maultier", size:"Mittelgroße", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"10", hp:"11 (2W8+2)", speed:"40 ft.",
+      str:14, dex:10, con:13, int:2, wis:10, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Lasttier", text:"Das Maultier gilt zur Berechnung seiner Tragkraft als große Kreatur."},
+        {name:"Trittsicher", text:"Das Maultier hat Vorteil bei Stärke- und Geschicklichkeitsrettungswürfen gegen Effekte, die es zu Boden stoßen würden."}
+      ],
+      actions:[
+        {name:"Hufe", text:"Nahkampfwaffenangriff: +2 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W4+2) Wuchtschaden."}
+      ]
+    },
+    "Pony": {
+      de:"Pony", size:"Mittelgroße", cr:"1/8", crxp:"1/8 (25 EP)",
+      ac:"10", hp:"11 (2W8+2)", speed:"40 ft.",
+      str:15, dex:10, con:13, int:2, wis:11, cha:7,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Hufe", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (2W4+2) Wuchtschaden."}
+      ]
+    },
+    "Axe Beak": {
+      de:"Beilschnabel", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"11", hp:"19 (3W10+3)", speed:"50 ft.",
+      str:14, dex:12, con:12, int:2, wis:10, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Schnabel", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W8+2) Hiebschaden."}
+      ]
+    },
+    "Boar": {
+      de:"Wildschwein", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"11 (natürliche Rüstung)", hp:"11 (2W8+2)", speed:"40 ft.",
+      str:13, dex:11, con:12, int:2, wis:9, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 9", languages:"—",
+      traits:[
+        {name:"Ansturm", text:"Bewegt sich das Wildschwein mindestens 20 Fuß geradewegs auf ein Ziel zu und trifft es im selben Zug mit einem Hauer-Angriff, erleidet das Ziel zusätzlich 3 (1W6) Hiebschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 11) schaffen, sonst wird es zu Boden gestoßen."},
+        {name:"Unbeirrbar (1×/Rast)", text:"Erleidet das Wildschwein 7 Schaden oder weniger, der es auf 0 Trefferpunkte bringen würde, sinkt es stattdessen auf 1 Trefferpunkt. Lädt bei einer kurzen oder langen Rast wieder auf."}
+      ],
+      actions:[
+        {name:"Hauer", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Hiebschaden."}
+      ]
+    },
+    "Draft Horse": {
+      de:"Kaltblutpferd", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"10", hp:"19 (3W10+3)", speed:"40 ft.",
+      str:18, dex:10, con:12, int:2, wis:11, cha:7,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Hufe", text:"Nahkampfwaffenangriff: +6 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 9 (2W4+4) Wuchtschaden."}
+      ]
+    },
+    "Elk": {
+      de:"Elch", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"10", hp:"13 (2W10+2)", speed:"50 ft.",
+      str:16, dex:10, con:12, int:2, wis:10, cha:6,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Ansturm", text:"Bewegt sich der Elch mindestens 20 Fuß geradewegs auf ein Ziel zu und trifft es im selben Zug mit einem Stoß-Angriff, erleidet das Ziel zusätzlich 7 (2W6) Schaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 13) schaffen, sonst wird es zu Boden gestoßen."}
+      ],
+      actions:[
+        {name:"Stoß", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W6+3) Wuchtschaden."},
+        {name:"Hufe", text:"Nur gegen eine am Boden liegende Kreatur. Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 8 (2W4+3) Wuchtschaden."}
+      ]
+    },
+    "Giant Badger": {
+      de:"Riesendachs", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"10", hp:"13 (2W8+4)", speed:"30 ft., graben 10 ft.",
+      str:13, dex:10, con:15, int:2, wis:12, cha:5,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Riesendachs hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Mehrfachangriff", text:"Der Riesendachs führt zwei Angriffe aus: einen mit dem Biss und einen mit den Krallen."},
+        {name:"Biss", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Stichschaden."},
+        {name:"Krallen", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (2W4+1) Hiebschaden."}
+      ]
+    },
+    "Giant Centipede": {
+      de:"Riesentausendfüßler", size:"Kleine", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"13 (natürliche Rüstung)", hp:"4 (1W6+1)", speed:"30 ft., klettern 30 ft.",
+      str:5, dex:14, con:12, int:1, wis:7, cha:3,
+      skills:"—", senses:"Blindsicht 30 ft., Passive Wahrnehmung 8", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 4 (1W4+2) Stichschaden. Zusätzlich muss die Kreatur einen erfolgreichen Konstitutionsrettungswurf (SG 11) schaffen, sonst erleidet sie 10 (3W6) Giftschaden. Sinkt sie dadurch auf 0 Trefferpunkte, ist sie stabilisiert, aber für 1 Stunde vergiftet (auch nach Wiedererlangen von TP) und dabei gelähmt."}
+      ]
+    },
+    "Giant Lizard": {
+      de:"Riesenechse", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"12 (natürliche Rüstung)", hp:"19 (3W10+3)", speed:"30 ft., klettern 30 ft.",
+      str:15, dex:12, con:13, int:2, wis:10, cha:5,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W8+2) Stichschaden."}
+      ]
+    },
+    "Giant Wolf Spider": {
+      de:"Riesenwolfsspinne", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"13", hp:"11 (2W8+2)", speed:"40 ft., klettern 40 ft.",
+      str:12, dex:16, con:13, int:3, wis:12, cha:4,
+      skills:"Wahrnehmung +3, Heimlichkeit +7", senses:"Blindsicht 10 ft., Dunkelsicht 60 ft., Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Spinnenklettern", text:"Die Spinne kann schwierige Oberflächen erklimmen, auch kopfüber an Decken, ohne dafür eine Probe abzulegen."},
+        {name:"Netzsinn", text:"Solange die Spinne ein Spinnennetz berührt, kennt sie den genauen Standort jeder anderen Kreatur, die dasselbe Netz berührt."},
+        {name:"Netzläufer", text:"Die Spinne ignoriert durch Spinnweben verursachte Bewegungseinschränkungen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 4 (1W6+1) Stichschaden. Zusätzlich muss die Kreatur einen Konstitutionsrettungswurf (SG 11) schaffen und erleidet bei Fehlschlag 7 (2W6) Giftschaden (bei Erfolg halbiert). Sinkt sie dadurch auf 0 Trefferpunkte, ist sie stabilisiert, aber für 1 Stunde vergiftet (auch nach Wiedererlangen von TP) und dabei gelähmt."}
+      ]
+    },
+    "Panther": {
+      de:"Panther", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"12", hp:"13 (3W8)", speed:"50 ft., klettern 40 ft.",
+      str:14, dex:15, con:10, int:3, wis:14, cha:7,
+      skills:"Wahrnehmung +4, Heimlichkeit +6", senses:"Passive Wahrnehmung 14", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Panther hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."},
+        {name:"Sprungangriff", text:"Bewegt sich der Panther mindestens 20 Fuß geradewegs auf eine Kreatur zu und trifft sie im selben Zug mit einem Krallenangriff, muss das Ziel einen erfolgreichen Stärkerettungswurf (SG 12) schaffen, sonst wird es zu Boden gestoßen. Liegt das Ziel danach, kann der Panther als Bonusaktion einen Bissangriff gegen es ausführen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 5 (1W6+2) Stichschaden."},
+        {name:"Kralle", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W4+2) Hiebschaden."}
+      ]
+    },
+    "Riding Horse": {
+      de:"Reitpferd", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"10", hp:"13 (2W10+2)", speed:"60 ft.",
+      str:16, dex:10, con:12, int:2, wis:11, cha:7,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Hufe", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 8 (2W4+3) Wuchtschaden."}
+      ]
+    },
+    "Wolf": {
+      de:"Wolf", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)",
+      ac:"13 (natürliche Rüstung)", hp:"11 (2W8+2)", speed:"40 ft.",
+      str:12, dex:15, con:12, int:3, wis:12, cha:6,
+      skills:"Wahrnehmung +3, Heimlichkeit +4", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Der Wolf hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."},
+        {name:"Rudeltaktik", text:"Der Wolf hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Wolfes sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (2W4+2) Stichschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 11) schaffen, sonst wird es zu Boden gestoßen."}
+      ]
+    },
+    "Ape": {
+      de:"Menschenaffe", size:"Mittelgroße", cr:"1/2", crxp:"1/2 (100 EP)",
+      ac:"12", hp:"19 (3W8+6)", speed:"30 ft., klettern 30 ft.",
+      str:16, dex:14, con:14, int:6, wis:12, cha:7,
+      skills:"Athletik +5, Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+
+      ],
+      actions:[
+        {name:"Mehrfachangriff", text:"Der Menschenaffe führt zwei Faustangriffe aus."},
+        {name:"Faust", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W6+3) Wuchtschaden."},
+        {name:"Stein", text:"Fernkampfwaffenangriff: +5 zum Treffen, Reichweite 25/50 Fuß, ein Ziel. Treffer: 6 (1W6+3) Wuchtschaden."}
+      ]
+    },
+    "Black Bear": {
+      de:"Schwarzbär", size:"Mittelgroße", cr:"1/2", crxp:"1/2 (100 EP)",
+      ac:"11 (natürliche Rüstung)", hp:"19 (3W8+6)", speed:"40 ft., klettern 30 ft.",
+      str:15, dex:10, con:14, int:2, wis:12, cha:7,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Schwarzbär hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Mehrfachangriff", text:"Der Schwarzbär führt zwei Angriffe aus: einen mit dem Biss und einen mit den Krallen."},
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 5 (1W6+2) Stichschaden."},
+        {name:"Krallen", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (2W4+2) Hiebschaden."}
+      ]
+    },
+    "Giant Goat": {
+      de:"Riesenziege", size:"Große", cr:"1/2", crxp:"1/2 (100 EP)",
+      ac:"11 (natürliche Rüstung)", hp:"19 (3W10+3)", speed:"40 ft.",
+      str:17, dex:11, con:12, int:3, wis:12, cha:6,
+      skills:"—", senses:"Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Ansturm", text:"Bewegt sich die Riesenziege mindestens 20 Fuß geradewegs auf ein Ziel zu und trifft es im selben Zug mit einem Stoß-Angriff, erleidet das Ziel zusätzlich 5 (2W4) Wuchtschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 13) schaffen, sonst wird es zu Boden gestoßen."},
+        {name:"Trittsicher", text:"Die Riesenziege hat Vorteil bei Stärke- und Geschicklichkeitsrettungswürfen gegen Effekte, die sie zu Boden stoßen würden."}
+      ],
+      actions:[
+        {name:"Stoß", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 8 (2W4+3) Wuchtschaden."}
+      ]
+    },
+    "Warhorse": {
+      de:"Streitross", size:"Große", cr:"1/2", crxp:"1/2 (100 EP)",
+      ac:"11", hp:"19 (3W10+3)", speed:"60 ft.",
+      str:18, dex:12, con:13, int:2, wis:12, cha:7,
+      skills:"—", senses:"Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Nieder-Ansturm", text:"Bewegt sich das Streitross mindestens 20 Fuß geradewegs auf eine Kreatur zu und trifft sie im selben Zug mit einem Huf-Angriff, muss das Ziel einen erfolgreichen Stärkerettungswurf (SG 14) schaffen, sonst wird es zu Boden gestoßen. Liegt das Ziel danach, kann das Streitross als Bonusaktion einen weiteren Huf-Angriff gegen es ausführen."}
+      ],
+      actions:[
+        {name:"Hufe", text:"Nahkampfwaffenangriff: +6 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 11 (2W6+4) Wuchtschaden."}
+      ]
+    },
+    "Brown Bear": {
+      de:"Braunbär", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"11 (natürliche Rüstung)", hp:"34 (4W10+12)", speed:"40 ft., klettern 30 ft.",
+      str:19, dex:10, con:16, int:2, wis:13, cha:7,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Braunbär hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."}
+      ],
+      actions:[
+        {name:"Mehrfachangriff", text:"Der Braunbär führt zwei Angriffe aus: einen mit dem Biss und einen mit den Krallen."},
+        {name:"Biss", text:"Nahkampfwaffenangriff: +6 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 8 (1W8+4) Stichschaden."},
+        {name:"Krallen", text:"Nahkampfwaffenangriff: +6 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 11 (2W6+4) Hiebschaden."}
+      ]
+    },
+    "Dire Wolf": {
+      de:"Schreckenswolf", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"14 (natürliche Rüstung)", hp:"37 (5W10+10)", speed:"50 ft.",
+      str:17, dex:15, con:15, int:3, wis:12, cha:7,
+      skills:"Wahrnehmung +3, Heimlichkeit +4", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feines Gehör und Geruch", text:"Der Schreckenswolf hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Gehör oder Geruchssinn beruhen."},
+        {name:"Rudeltaktik", text:"Der Schreckenswolf hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Schreckenswolfs sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 10 (2W6+3) Stichschaden. Ist das Ziel eine Kreatur, muss es einen erfolgreichen Stärkerettungswurf (SG 13) schaffen, sonst wird es zu Boden gestoßen."}
+      ]
+    },
+    "Giant Hyena": {
+      de:"Riesenhyäne", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"12", hp:"45 (6W10+12)", speed:"50 ft.",
+      str:16, dex:14, con:14, int:2, wis:12, cha:7,
+      skills:"Wahrnehmung +3", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Blutrausch", text:"Reduziert die Riesenhyäne eine Kreatur mit einem Nahkampfangriff in ihrem Zug auf 0 Trefferpunkte, kann sie als Bonusaktion bis zur Hälfte ihres Tempos ziehen und einen Bissangriff ausführen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 10 (2W6+3) Stichschaden."}
+      ]
+    },
+    "Giant Spider": {
+      de:"Riesenspinne", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"14 (natürliche Rüstung)", hp:"26 (4W10+4)", speed:"30 ft., klettern 30 ft.",
+      str:14, dex:16, con:12, int:2, wis:11, cha:4,
+      skills:"Heimlichkeit +7", senses:"Blindsicht 10 ft., Dunkelsicht 60 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Spinnenklettern", text:"Die Spinne kann schwierige Oberflächen erklimmen, auch kopfüber an Decken, ohne dafür eine Probe abzulegen."},
+        {name:"Netzsinn", text:"Solange die Spinne ein Spinnennetz berührt, kennt sie den genauen Standort jeder anderen Kreatur, die dasselbe Netz berührt."},
+        {name:"Netzläufer", text:"Die Spinne ignoriert durch Spinnweben verursachte Bewegungseinschränkungen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 7 (1W8+3) Stichschaden. Zusätzlich muss die Kreatur einen Konstitutionsrettungswurf (SG 11) schaffen und erleidet bei Fehlschlag 9 (2W8) Giftschaden (bei Erfolg halbiert). Sinkt sie dadurch auf 0 Trefferpunkte, ist sie stabilisiert, aber für 1 Stunde vergiftet (auch nach Wiedererlangen von TP) und dabei gelähmt."},
+        {name:"Netz (Aufladung 5–6)", text:"Fernkampfwaffenangriff: +5 zum Treffen, Reichweite 30/60 Fuß, eine Kreatur. Treffer: Das Ziel wird von Spinnweben festgehalten. Es kann als Aktion eine Stärkeprobe (SG 12) ablegen und sich bei Erfolg befreien. Das Netz kann auch angegriffen und zerstört werden (RK 10, TP 5, verwundbar gegenüber Feuerschaden, immun gegen Wucht-, Gift- und psychischen Schaden)."}
+      ]
+    },
+    "Lion": {
+      de:"Löwe", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"12", hp:"26 (4W10+4)", speed:"50 ft.",
+      str:17, dex:15, con:13, int:3, wis:12, cha:8,
+      skills:"Wahrnehmung +3, Heimlichkeit +6", senses:"Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Löwe hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."},
+        {name:"Rudeltaktik", text:"Der Löwe hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Löwen sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."},
+        {name:"Sprungangriff", text:"Bewegt sich der Löwe mindestens 20 Fuß geradewegs auf eine Kreatur zu und trifft sie im selben Zug mit einem Krallenangriff, muss das Ziel einen erfolgreichen Stärkerettungswurf (SG 13) schaffen, sonst wird es zu Boden gestoßen. Liegt das Ziel danach, kann der Löwe als Bonusaktion einen Bissangriff gegen es ausführen."},
+        {name:"Anlaufsprung", text:"Mit 10 Fuß Anlauf kann der Löwe bis zu 25 Fuß weit springen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (1W8+3) Stichschaden."},
+        {name:"Kralle", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W6+3) Hiebschaden."}
+      ]
+    },
+    "Tiger": {
+      de:"Tiger", size:"Große", cr:"1", crxp:"1 (200 EP)",
+      ac:"12", hp:"37 (5W10+10)", speed:"40 ft.",
+      str:17, dex:15, con:14, int:3, wis:12, cha:8,
+      skills:"Wahrnehmung +3, Heimlichkeit +6", senses:"Dunkelsicht 60 ft., Passive Wahrnehmung 13", languages:"—",
+      traits:[
+        {name:"Feiner Geruchssinn", text:"Der Tiger hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf den Geruchssinn beruhen."},
+        {name:"Sprungangriff", text:"Bewegt sich der Tiger mindestens 20 Fuß geradewegs auf eine Kreatur zu und trifft sie im selben Zug mit einem Krallenangriff, muss das Ziel einen erfolgreichen Stärkerettungswurf (SG 13) schaffen, sonst wird es zu Boden gestoßen. Liegt das Ziel danach, kann der Tiger als Bonusaktion einen Bissangriff gegen es ausführen."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 8 (1W10+3) Stichschaden."},
+        {name:"Kralle", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (1W8+3) Hiebschaden."}
+      ]
+    },
+  };
+
+  const BEAST_ORDER = ["0", "1/8", "1/4", "1/2", "1"];
+  const BEAST_BY_CR = {
+    "0": ["Baboon", "Badger", "Cat", "Deer", "Giant Fire Beetle", "Goat", "Hyena", "Jackal", "Lizard", "Rat", "Scorpion", "Spider", "Weasel"],
+    "1/8": ["Camel", "Giant Rat", "Giant Weasel", "Mastiff", "Mule", "Pony"],
+    "1/4": ["Axe Beak", "Boar", "Draft Horse", "Elk", "Giant Badger", "Giant Centipede", "Giant Lizard", "Giant Wolf Spider", "Panther", "Riding Horse", "Wolf"],
+    "1/2": ["Ape", "Black Bear", "Giant Goat", "Warhorse"],
+    "1": ["Brown Bear", "Dire Wolf", "Giant Hyena", "Giant Spider", "Lion", "Tiger"],
+  };
+
+  const CR_LABEL = {"0":"CR 0", "1/8":"CR 1/8", "1/4":"CR 1/4", "1/2":"CR 1/2", "1":"CR 1"};
+  const beastGrid = document.getElementById('beastGrid');
+  BEAST_ORDER.forEach(cr=>{
+    const header = document.createElement('div');
+    header.className = 'beast-cr-group';
+    header.textContent = CR_LABEL[cr];
+    beastGrid.appendChild(header);
+    BEAST_BY_CR[cr].forEach(en=>{
+      const b = BEAST_DATA[en];
+      const pill = document.createElement('div');
+      pill.className = 'beast-pill has-tip';
+      pill.dataset.tipKey = en;
+      pill.dataset.tipKind = 'beast';
+      pill.innerHTML = `<span class="b-de">${b.de}</span><span class="b-en">(${en})</span>`;
+      beastGrid.appendChild(pill);
+    });
+  });
+
+  function autosizeTextareas(){
+    document.querySelectorAll('textarea').forEach(t=>{
+      t.style.height='auto';
+      t.style.height=(t.scrollHeight+3)+'px';
+    });
+  }
+  window.addEventListener('load', autosizeTextareas);
+  document.querySelectorAll('textarea').forEach(t=>t.addEventListener('input', ()=>{
+    t.style.height='auto'; t.style.height=(t.scrollHeight+3)+'px';
+  }));
+
+  /* ============ Save / Load state to a local file ============
+     No localStorage/sessionStorage used anywhere -- state only ever
+     lives in this page's memory until you explicitly save it to a
+     file (download, or auto-write via the File System Access API in
+     Chrome/Edge) and explicitly load it back in. */
+  function collectState(){
+    const state = {};
+    document.querySelectorAll('[data-field]').forEach(el=>{
+      state[el.dataset.field] = (el.type === 'checkbox') ? el.checked : el.value;
+    });
+    return state;
+  }
+  function applyState(state){
+    if(!state) return;
+    document.querySelectorAll('[data-field]').forEach(el=>{
+      const key = el.dataset.field;
+      if(!(key in state)) return;
+      if(el.type === 'checkbox') el.checked = !!state[key];
+      else el.value = state[key];
+    });
+    // Fantasie-Modus-Häkchen ist jetzt aus dem geladenen Stand gesetzt --
+    // die dazugehörige CSS-Klasse auf <body> passend nachziehen.
+    setFantasyMode(fantasyModeField.checked);
+    // Die geladenen "vorbereitet"-Häkchen sind jetzt gesetzt -- Favoriten-
+    // Tabelle passend dazu neu aufbauen (statt die von vorher stehen zu
+    // lassen), und danach eventuell gespeicherten individuellen Text für die
+    // Favoriten-Felder erneut darüberlegen (greift, wenn beim Speichern
+    // dieselben Zauber vorbereitet waren wie jetzt beim Laden).
+    renderFavTable();
+    updateSpellCounts();
+    document.querySelectorAll('#favSpellTable [data-field]').forEach(el=>{
+      const key = el.dataset.field;
+      if(key in state) el.value = state[key];
+    });
+    autosizeTextareas();
+  }
+  function stateToBlob(){
+    return new Blob([JSON.stringify(collectState(), null, 2)], {type:'application/json'});
+  }
+
+  const saveStatusEl = document.getElementById('saveStatus');
+  function setStatus(text){ saveStatusEl.textContent = text; }
+
+  /* ============ Fantasie-Modus ============
+     Reine Optik-Umschaltung per Klasse auf <body> -- alle Felder, Werte und
+     Interaktionen bleiben identisch, es ändert sich nur das CSS-Kleid. Der
+     Zustand hängt an einem versteckten data-field, damit er beim Speichern/
+     Laden erhalten bleibt. */
+  const fantasyModeBtn = document.getElementById('fantasyModeBtn');
+  const fantasyModeField = document.getElementById('fantasyModeField');
+  function setFantasyMode(on){
+    document.body.classList.toggle('fantasy-mode', on);
+    fantasyModeField.checked = on;
+    fantasyModeBtn.textContent = on ? '📋 Standardansicht' : '✨ Fantasie-Modus';
+    fantasyModeBtn.title = on
+      ? 'Zurück zur schlichten Standardansicht wechseln'
+      : 'Zur verspielten Fantasie-Ansicht wechseln (gleiche Daten & Werte, nur ein anderes Kleid)';
+  }
+  fantasyModeBtn.addEventListener('click', ()=> setFantasyMode(!document.body.classList.contains('fantasy-mode')));
+
+  /* ============ Kurze / Lange Rast ============
+     Setzt die betroffenen Häkchen und Werte zurück. Fragt vorher kurz nach,
+     damit man nicht aus Versehen mitten im Kampf draufklickt. */
+  function setChecked(selector, checked){
+    document.querySelectorAll(selector).forEach(cb=>{ cb.checked = checked; });
+  }
+  document.getElementById('shortRestBtn').addEventListener('click', ()=>{
+    if(!confirm('Kurze Rast durchführen?\n\nStellt wieder her: Wilde-Gestalt-Nutzungen.\n\n(Zauberplätze, TP und Trefferwürfel ändern sich dadurch nicht -- Heilung durch Trefferwürfel-Ausgeben musst du selbst eintragen.)')) return;
+    setChecked('[data-field^="wildshape_"]', true);
+    setStatus('Kurze Rast durchgeführt ✓');
+  });
+  document.getElementById('longRestBtn').addEventListener('click', ()=>{
+    if(!confirm('Lange Rast durchführen?\n\nStellt wieder her: TP auf Maximum, alle Zauberplätze, Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
+    const maxHpEl = document.querySelector('[data-field="maxHp"]');
+    const curHpEl = document.querySelector('[data-field="curHp"]');
+    if(maxHpEl && curHpEl && maxHpEl.value) curHpEl.value = maxHpEl.value;
+    setChecked('[data-field^="slot1_"]', true);
+    setChecked('[data-field^="wildshape_"]', true);
+    setChecked('[data-field^="death_succ_"], [data-field^="death_fail_"]', false);
+    // Format: "verfügbar / gesamt (dX)" -- eine lange Rast erstattet die Hälfte
+    // der Gesamtzahl an Trefferwürfeln zurück (aufgerundet ab 1), gedeckelt auf
+    // die Gesamtzahl.
+    const hdEl = document.querySelector('[data-field="hitDice"]');
+    if(hdEl){
+      const m = hdEl.value.match(/^\s*(\d+)\s*\/\s*(\d+)(.*)$/);
+      if(m){
+        const available = parseInt(m[1],10), total = parseInt(m[2],10), rest = m[3];
+        const recover = Math.max(1, Math.floor(total/2));
+        hdEl.value = `${Math.min(total, available + recover)} / ${total}${rest}`;
+      }
+    }
+    setStatus('Lange Rast durchgeführt ✓');
+  });
+
+  // Manual download (works in every browser).
+  document.getElementById('saveBtn').addEventListener('click', ()=>{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(stateToBlob());
+    a.download = 'elara-granger-stand.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus('Heruntergeladen ✓');
+  });
+
+  // Manual load via file picker (works in every browser).
+  const fileInput = document.getElementById('fileInput');
+  document.getElementById('loadBtn').addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', async ()=>{
+    const file = fileInput.files[0];
+    if(!file) return;
+    try{
+      applyState(JSON.parse(await file.text()));
+      setStatus('Stand geladen ✓');
+    }catch(e){
+      alert('Diese Datei konnte nicht gelesen werden (kein gültiger gespeicherter Stand).');
+    }
+    fileInput.value = '';
+  });
+
+  // Progressive enhancement: File System Access API (Chrome/Edge only).
+  // Lets the page write directly back into a chosen file, so every change
+  // auto-saves without repeated manual downloads.
+  let fileHandle = null;
+  let writeTimer = null;
+  async function writeToHandle(){
+    if(!fileHandle) return;
+    try{
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(collectState(), null, 2));
+      await writable.close();
+      setStatus('Automatisch gespeichert ✓ (' + new Date().toLocaleTimeString('de-DE') + ')');
+    }catch(e){ /* permission revoked or handle stale -- ignore */ }
+  }
+  function scheduleAutoSave(){
+    if(!fileHandle) return;
+    clearTimeout(writeTimer);
+    writeTimer = setTimeout(writeToHandle, 700);
+  }
+
+  const connectBtn = document.getElementById('connectBtn');
+  if(window.showSaveFilePicker){
+    connectBtn.addEventListener('click', async ()=>{
+      try{
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName:'elara-granger-stand.json',
+          types:[{description:'Charakterbogen-Stand', accept:{'application/json':['.json']}}]
+        });
+        // If the chosen file already has content, offer to load it first.
+        try{
+          const existing = await (await fileHandle.getFile()).text();
+          if(existing.trim()){
+            applyState(JSON.parse(existing));
+          }
+        }catch(e){}
+        await writeToHandle();
+        connectBtn.textContent = '🔗 Verbunden — speichert automatisch';
+        connectBtn.disabled = true;
+      }catch(e){ /* user cancelled */ }
+    });
+  } else {
+    connectBtn.style.display = 'none';
+  }
+
+  document.addEventListener('input', (e)=>{
+    if(e.target.matches('[data-field]')) scheduleAutoSave();
+  });
+  document.addEventListener('change', (e)=>{
+    if(e.target.matches('[data-field]')) scheduleAutoSave();
+  });
+
+  setStatus(window.showSaveFilePicker
+    ? 'Noch nicht verbunden — Stand laden oder Datei verbinden'
+    : 'Stand laden, dann am Ende wieder herunterladen');
+
+  /* ============ Spell tooltips ============ */
+  const tooltipEl = document.getElementById('tooltip');
+  function positionTooltip(target){
+    const r = target.getBoundingClientRect();
+    const tw = tooltipEl.offsetWidth, th = tooltipEl.offsetHeight;
+    let left = r.left + r.width/2 - tw/2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    let top = r.top - th - 10;
+    if(top < 8) top = r.bottom + 10; // flip below if no room above
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top = top + 'px';
+  }
+  function beastShortTip(en){
+    const b = BEAST_DATA[en];
+    if(!b) return null;
+    const a0 = b.actions[0];
+    const excerpt = a0 ? (a0.text.split('. ')[0] + '.') : '';
+    return `RK ${b.ac} · TP ${b.hp} · Tempo ${b.speed}<br>${a0 ? `<em>${a0.name}:</em> ${excerpt}` : ''}`;
+  }
+  function showTip(target){
+    const key = target.dataset.tipKey;
+    const kind = target.dataset.tipKind;
+    let label = key, text;
+    if(kind === 'beast'){
+      const b = BEAST_DATA[key];
+      if(!b) return;
+      label = `${b.de} (${key})`;
+      text = beastShortTip(key);
+    } else {
+      text = SPELL_INFO[key];
+    }
+    if(!text) return;
+    tooltipEl.innerHTML = `<strong>${label}</strong><br>${text}`;
+    tooltipEl.classList.add('show');
+    positionTooltip(target);
+  }
+  function hideTip(){ tooltipEl.classList.remove('show'); }
+
+  document.addEventListener('mouseover', (e)=>{
+    const t = e.target.closest('[data-tip-key]');
+    if(t) showTip(t);
+  });
+  document.addEventListener('mouseout', (e)=>{
+    const t = e.target.closest('[data-tip-key]');
+    if(t) hideTip();
+  });
+
+  /* ============ Click-to-view: full spell description modal ============ */
+  const spellModalOverlay = document.getElementById('spellModalOverlay');
+  const spellModalTitle = document.getElementById('spellModalTitle');
+  const spellModalMeta = document.getElementById('spellModalMeta');
+  const spellModalText = document.getElementById('spellModalText');
+
+  function openSpellModal(key){
+    const entry = SPELL_LONG[key];
+    if(!entry) return;
+    hideTip();
+    spellModalTitle.textContent = key;
+    spellModalMeta.textContent = entry.meta;
+    spellModalText.textContent = entry.text;
+    spellModalOverlay.classList.add('show');
+  }
+  function closeSpellModal(){ spellModalOverlay.classList.remove('show'); }
+
+  /* ============ Click-to-view: beast stat-block modal ============ */
+  const beastModalOverlay = document.getElementById('beastModalOverlay');
+  const sbName = document.getElementById('sbName');
+  const sbSubtitle = document.getElementById('sbSubtitle');
+  const sbAC = document.getElementById('sbAC');
+  const sbHP = document.getElementById('sbHP');
+  const sbSpeed = document.getElementById('sbSpeed');
+  const sbAbilityRow = document.getElementById('sbAbilityRow');
+  const sbSkills = document.getElementById('sbSkills');
+  const sbSenses = document.getElementById('sbSenses');
+  const sbLanguages = document.getElementById('sbLanguages');
+  const sbCR = document.getElementById('sbCR');
+  const sbTraits = document.getElementById('sbTraits');
+  const sbActions = document.getElementById('sbActions');
+
+  function abilityMod(score){ const m = Math.floor((score-10)/2); return (m>=0?'+':'')+m; }
+
+  function openBeastModal(en){
+    const b = BEAST_DATA[en];
+    if(!b) return;
+    hideTip();
+    sbName.textContent = `${b.de} (${en})`;
+    sbSubtitle.textContent = `${b.size} Bestie, ohne Ausrichtung`;
+    sbAC.textContent = b.ac;
+    sbHP.textContent = b.hp;
+    sbSpeed.textContent = b.speed;
+    sbAbilityRow.innerHTML = ['str','dex','con','int','wis','cha'].map(k=>`<td>${b[k]} (${abilityMod(b[k])})</td>`).join('');
+    sbSkills.textContent = b.skills;
+    sbSenses.textContent = b.senses;
+    sbLanguages.textContent = b.languages;
+    sbCR.textContent = b.crxp;
+    sbTraits.innerHTML = b.traits.map(t=>`<div class="sb-entry"><span class="sb-entry-name">${t.name}.</span> ${t.text}</div>`).join('');
+    sbActions.innerHTML = b.actions.map(a=>`<div class="sb-entry"><span class="sb-entry-name">${a.name}.</span> ${a.text}</div>`).join('');
+    beastModalOverlay.classList.add('show');
+  }
+  function closeBeastModal(){ beastModalOverlay.classList.remove('show'); }
+
+  document.addEventListener('click', (e)=>{
+    const t = e.target.closest('[data-tip-key]');
+    if(t){
+      if(t.dataset.tipKind === 'beast') openBeastModal(t.dataset.tipKey);
+      else openSpellModal(t.dataset.tipKey);
+      return;
+    }
+    if(e.target === spellModalOverlay) closeSpellModal();
+    if(e.target === beastModalOverlay) closeBeastModal();
+  });
+  document.getElementById('spellModalClose').addEventListener('click', closeSpellModal);
+  document.getElementById('beastModalClose').addEventListener('click', closeBeastModal);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ closeSpellModal(); closeBeastModal(); }
+  });
+</script>
+</body>
+</html>
