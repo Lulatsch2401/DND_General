@@ -81,7 +81,8 @@
 
   /* Layout */
   .cols{display:grid; grid-template-columns:280px 1fr 300px; gap:16px; align-items:start;}
-  @media (max-width:980px){ .cols{grid-template-columns:1fr;} }
+  @media (max-width:980px){ .cols{grid-template-columns:minmax(0,1fr);} }
+  .cols > div{min-width:0;}
 
   .card{
     background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius);
@@ -146,6 +147,7 @@
   .stat-tile label{display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:4px;}
   .stat-tile input{width:100%; border:none; background:transparent; text-align:center; font-size:22px; font-weight:700; color:var(--accent-ink); font-family:inherit;}
   #cantripsTile input, #preparedTile input{font-size:15px; cursor:default;}
+  @media (max-width:640px){ .stat-tile input[data-field="hitDice"]{font-size:16px; padding-top:4px;} }
   #cantripsTile.over-limit input, #preparedTile.over-limit input{color:var(--danger);}
 
   table{width:100%; border-collapse:collapse; font-size:13px;}
@@ -168,8 +170,26 @@
   .fav-table .name-tip{display:flex; align-items:center; gap:3px;}
   .fav-table .name-tip input{min-width:0;}
   .fav-table .lvl-badge{width:18px; height:18px; font-size:9.5px; margin:0 auto;}
+  /* Handybreite: Spalten der Favoriten-Tabelle etwas anders verteilen und
+     kleiner setzen, damit Name/Reichweite/Zeit nicht abgeschnitten werden. */
+  @media (max-width:640px){
+    .fav-table, .fav-table td input{font-size:10.5px;}
+    .fav-table td input{padding:2px 1px;}
+    .fav-table th{font-size:8.5px; letter-spacing:0; padding:5px 1px;}
+    .fav-table col:nth-child(1){width:8% !important;}
+    .fav-table col:nth-child(2){width:30% !important;}
+    .fav-table col:nth-child(3){width:13% !important;}
+    .fav-table col:nth-child(4){width:12% !important;}
+    .fav-table col:nth-child(5){width:8% !important;}
+    .fav-table col:nth-child(6){width:29% !important;}
+    .fav-table .info-dot{width:14px; height:14px; line-height:14px; font-size:10px;}
+  }
 
   .checkline{display:flex; align-items:center; gap:6px;}
+  @media (max-width:640px){ .checkline{flex-wrap:wrap;} }
+  /* Todesrettungswürfe: darf umbrechen, aber Erfolge/Fehlschläge bleiben je als Gruppe zusammen */
+  .death-saves{flex-wrap:wrap; gap:6px 14px;}
+  .ds-group{display:inline-flex; align-items:center; gap:6px; white-space:nowrap;}
   input[type=checkbox]{width:16px; height:16px; accent-color:var(--accent);}
 
   .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
@@ -258,6 +278,9 @@
   .beast-pill:hover{background:var(--accent-2-soft); border-color:var(--accent-2);}
   .beast-pill .b-de{font-weight:600; color:var(--text-primary);}
   .beast-pill .b-en{font-size:10.5px; color:var(--text-muted);}
+  /* lange Namen (z. B. Riesentausendfüßler) dürfen in der Pille umbrechen statt herauszuragen */
+  .beast-pill{min-width:0;}
+  .beast-pill .b-de, .beast-pill .b-en{min-width:0; overflow-wrap:anywhere;}
 
   /* Beast stat-block modal: styled like a classic monster manual entry */
   #beastModalOverlay{
@@ -595,7 +618,7 @@
 </head>
 <body>
 <div class="toolbar no-print">
-  <div class="toolbar-note" id="toolbarNote">Alle Felder sind editierbar. <strong id="saveStatus">Noch nicht verbunden</strong> — lade zuerst deinen letzten Stand oder verbinde eine Datei zum automatischen Speichern.</div>
+  <div class="toolbar-note" id="toolbarNote">Alle Felder sind editierbar. <strong id="saveStatus">Noch nicht verbunden</strong><span id="toolbarHint"> — lade zuerst deinen letzten Stand oder verbinde eine Datei zum automatischen Speichern.</span></div>
   <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
     <button class="btn fantasy-toggle" id="fantasyModeBtn" title="Zur verspielten Fantasie-Ansicht wechseln (gleiche Daten &amp; Werte, nur ein anderes Kleid)">✨ Fantasie-Modus</button>
     <span style="width:1px; align-self:stretch; background:var(--border); margin:0 2px;"></span>
@@ -740,11 +763,12 @@
           <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
         </div>
         <div class="checkline" style="margin-top:4px;"><input type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
-        <div class="checkline" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
-          <strong>Death Saves <span class="label-de" style="text-transform:none;">(Todesrettungswürfe)</span></strong>&nbsp; Successes <span class="label-de" style="text-transform:none;">(Erfolge)</span>:
-          <input type="checkbox" data-field="death_succ_0"><input type="checkbox" data-field="death_succ_1"><input type="checkbox" data-field="death_succ_2">
-          &nbsp;Failures <span class="label-de" style="text-transform:none;">(Fehlschläge)</span>:
-          <input type="checkbox" data-field="death_fail_0"><input type="checkbox" data-field="death_fail_1"><input type="checkbox" data-field="death_fail_2">
+        <div class="checkline death-saves" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
+          <strong>Death Saves <span class="label-de" style="text-transform:none;">(Todesrettungswürfe)</span></strong>
+          <span class="ds-group">Successes <span class="label-de" style="text-transform:none;">(Erfolge)</span>:
+            <input type="checkbox" data-field="death_succ_0"><input type="checkbox" data-field="death_succ_1"><input type="checkbox" data-field="death_succ_2"></span>
+          <span class="ds-group">Failures <span class="label-de" style="text-transform:none;">(Fehlschläge)</span>:
+            <input type="checkbox" data-field="death_fail_0"><input type="checkbox" data-field="death_fail_1"><input type="checkbox" data-field="death_fail_2"></span>
         </div>
       </div>
 
@@ -814,9 +838,7 @@
         <div class="field">
           <textarea rows="9" data-field="featuresText">WOOD ELF: Dunkelsicht 18m; Scharfe Sinne (Übung Wahrnehmung); Feenabkunft (Vorteil ggü. Bezauberung, immun gg. magischen Schlaf); Trance (4h statt 8h Schlaf); Waffenübung der Elfen (Langschwert, Kurzschwert, Kurzbogen, Langbogen); Leichtfüßigkeit (Tempo 35ft); Maske der Wildnis (verstecken bei leichter Verdeckung).
 
-DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidischer Fokus); Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast, ab Stufe 2 – Details siehe Druidenzirkel); Druidenzirkel: Kreis des Mondes.
-
-FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil; Zauber 1. Grades Vertrauten finden (1×/lange Rast ohne Zauberplatz). Sage: Attributssteigerung +2/+1.</textarea>
+DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidischer Fokus); Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast, ab Stufe 2 – Details siehe Druidenzirkel); Druidenzirkel: Kreis des Mondes.</textarea>
         </div>
       </div>
 
@@ -882,8 +904,8 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
   </div>
 </div>
 
-<footer class="note">
-  Elara Granger · Wood Elf Druide · erstellt aus dem D&amp;D-Beyond-Export. Alle Werte sind frei editierbar – Änderungen werden im Browser-Tab gehalten (kein automatisches Cloud-Speichern), zum dauerhaften Sichern bitte drucken/als PDF exportieren oder mich bitten, eine neue Version zu erzeugen.
+<footer class="note" id="footerNote">
+  Elara Granger · Wood Elf Druide · erstellt aus dem D&amp;D-Beyond-Export. Alle Werte sind frei editierbar – Änderungen werden im Browser-Tab gehalten (kein automatisches Cloud-Speichern), zum dauerhaften Sichern bitte den Stand herunterladen oder drucken/als PDF exportieren.
 </footer>
 
 <script>
@@ -1721,11 +1743,18 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
   }
   function applyState(state){
     if(!state) return;
+    // Feld merken, in dem gerade getippt wird: kommt ein Stand von einem
+    // anderen Gerät herein, sollen Fokus und Cursor nicht verloren gehen.
+    const active = document.activeElement;
+    const activeKey = (active && active.dataset) ? active.dataset.field : null;
+    let selStart = null, selEnd = null;
+    try{ if(activeKey){ selStart = active.selectionStart; selEnd = active.selectionEnd; } }catch(e){}
     document.querySelectorAll('[data-field]').forEach(el=>{
       const key = el.dataset.field;
       if(!(key in state)) return;
-      if(el.type === 'checkbox') el.checked = !!state[key];
-      else el.value = state[key];
+      // Nur schreiben, wenn sich wirklich etwas ändert (sonst springt der Cursor).
+      if(el.type === 'checkbox'){ if(el.checked !== !!state[key]) el.checked = !!state[key]; }
+      else if(el.value !== String(state[key])) el.value = state[key];
     });
     // Fantasie-Modus-Häkchen ist jetzt aus dem geladenen Stand gesetzt --
     // die dazugehörige CSS-Klasse auf <body> passend nachziehen.
@@ -1742,6 +1771,15 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
       if(key in state) el.value = state[key];
     });
     autosizeTextareas();
+    // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
+    // wurde, den Fokus in dasselbe Feld zurücksetzen.
+    if(activeKey && document.activeElement !== active){
+      const again = Array.from(document.querySelectorAll('[data-field]')).find(el=>el.dataset.field === activeKey);
+      if(again){
+        again.focus({preventScroll:true});
+        try{ if(selStart !== null) again.setSelectionRange(selStart, selEnd); }catch(e){}
+      }
+    }
   }
   function stateToBlob(){
     return new Blob([JSON.stringify(collectState(), null, 2)], {type:'application/json'});
@@ -1765,7 +1803,10 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
       ? 'Zurück zur schlichten Standardansicht wechseln'
       : 'Zur verspielten Fantasie-Ansicht wechseln (gleiche Daten & Werte, nur ein anderes Kleid)';
   }
-  fantasyModeBtn.addEventListener('click', ()=> setFantasyMode(!document.body.classList.contains('fantasy-mode')));
+  fantasyModeBtn.addEventListener('click', ()=>{
+    setFantasyMode(!document.body.classList.contains('fantasy-mode'));
+    noteChange();
+  });
 
   /* ============ Kurze / Lange Rast ============
      Setzt die betroffenen Häkchen und Werte zurück. Fragt vorher kurz nach,
@@ -1777,6 +1818,7 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
     if(!confirm('Kurze Rast durchführen?\n\nStellt wieder her: Wilde-Gestalt-Nutzungen.\n\n(Zauberplätze, TP und Trefferwürfel ändern sich dadurch nicht -- Heilung durch Trefferwürfel-Ausgeben musst du selbst eintragen.)')) return;
     setChecked('[data-field^="wildshape_"]', true);
     setStatus('Kurze Rast durchgeführt ✓');
+    noteChange();
   });
   document.getElementById('longRestBtn').addEventListener('click', ()=>{
     if(!confirm('Lange Rast durchführen?\n\nStellt wieder her: TP auf Maximum, alle Zauberplätze, Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
@@ -1799,6 +1841,7 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
       }
     }
     setStatus('Lange Rast durchgeführt ✓');
+    noteChange();
   });
 
   // Manual download (works in every browser).
@@ -1820,6 +1863,7 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
     try{
       applyState(JSON.parse(await file.text()));
       setStatus('Stand geladen ✓');
+      noteChange();
     }catch(e){
       alert('Diese Datei konnte nicht gelesen werden (kein gültiger gespeicherter Stand).');
     }
@@ -1870,16 +1914,151 @@ FEATS: Magic Initiate (Zauberer) – Zaubertricks Magische Hand &amp; Feuerpfeil
     connectBtn.style.display = 'none';
   }
 
+  // Jede Änderung an einem Feld: Datei-Autospeichern (falls verbunden) und
+  // zentrales Speichern auf dem Server (falls die Seite von dort kommt).
+  function noteChange(){ scheduleAutoSave(); scheduleSync(); }
   document.addEventListener('input', (e)=>{
-    if(e.target.matches('[data-field]')) scheduleAutoSave();
+    if(e.target.matches('[data-field]')) noteChange();
   });
   document.addEventListener('change', (e)=>{
-    if(e.target.matches('[data-field]')) scheduleAutoSave();
+    if(e.target.matches('[data-field]')) noteChange();
   });
 
   setStatus(window.showSaveFilePicker
     ? 'Noch nicht verbunden — Stand laden oder Datei verbinden'
     : 'Stand laden, dann am Ende wieder herunterladen');
+
+  /* ============ Zentrale Speicherung auf dem Server (z. B. Raspberry Pi) ============
+     Wird die Seite über server.py ausgeliefert, liegt der Stand zentral auf
+     dem Server: beim Öffnen wird er geladen, jede Änderung wird automatisch
+     gespeichert, und Änderungen anderer Geräte werden alle paar Sekunden
+     übernommen. Ändern zwei Geräte gleichzeitig VERSCHIEDENE Felder, bleiben
+     beide Änderungen erhalten (Abgleich Feld für Feld); beim selben Feld
+     gewinnt die spätere Eingabe.
+     Wird die Datei direkt geöffnet (ohne Server), passiert hier nichts und
+     es gilt weiter Laden/Herunterladen per Datei. Auch hier: kein
+     localStorage/sessionStorage. */
+  const SYNC_URL = 'api/state';
+  const SYNC_INTERVAL_MS = 2000;
+  const sync = { on:false, version:0, base:null, busy:false, again:false, timer:null, offline:false };
+
+  function statesEqual(a, b){
+    const ka = Object.keys(a);
+    if(ka.length !== Object.keys(b).length) return false;
+    return ka.every(k => a[k] === b[k]);
+  }
+  function timeNow(){ return new Date().toLocaleTimeString('de-DE'); }
+
+  // Stand vom Server übernehmen, ohne eigene noch nicht gespeicherte
+  // Eingaben zu verlieren. Gibt true zurück, wenn eigene Eingaben übrig
+  // sind, die noch zum Server müssen.
+  function takeRemote(remote){
+    sync.version = remote.version;
+    if(!remote.state){
+      // Server hat (noch) keinen Stand -- der eigene wird als erster gespeichert.
+      sync.base = {};
+      return true;
+    }
+    const local = collectState();
+    const base = sync.base || {};
+    const merged = Object.assign({}, remote.state);
+    const mine = [];
+    Object.keys(local).forEach(k=>{
+      if(k in base && local[k] !== base[k]){ merged[k] = local[k]; mine.push(k); }
+    });
+    applyState(merged);
+    const newBase = collectState();
+    mine.forEach(k=>{ newBase[k] = (k in remote.state) ? remote.state[k] : base[k]; });
+    sync.base = newBase;
+    return mine.length > 0;
+  }
+
+  async function syncTick(opts){
+    const force = !!(opts && opts.force);
+    if(!sync.on) return;
+    if(sync.busy){ sync.again = true; return; }
+    if(document.hidden && !force) return;
+    sync.busy = true;
+    try{
+      const local = collectState();
+      if(!statesEqual(local, sync.base)){
+        const body = JSON.stringify({baseVersion: sync.version, state: local});
+        const res = await fetch(SYNC_URL, {
+          method:'PUT', headers:{'Content-Type':'application/json'}, body,
+          // Beim Schließen/Wegwischen der Seite soll die letzte Änderung noch rausgehen.
+          keepalive: force && body.length < 60000
+        });
+        if(res.status === 409){
+          takeRemote(await res.json());
+          sync.again = true;
+        }else if(res.ok){
+          const info = await res.json();
+          sync.version = info.version;
+          sync.base = local;
+          setStatus('Gespeichert ✓ (' + timeNow() + ')');
+        }else{
+          throw new Error('HTTP ' + res.status);
+        }
+      }else{
+        const res = await fetch(SYNC_URL + '?v=' + sync.version, {cache:'no-store'});
+        if(res.status === 200){
+          if(takeRemote(await res.json())) sync.again = true;
+          setStatus('Von einem anderen Gerät aktualisiert ✓ (' + timeNow() + ')');
+        }else if(res.status !== 204){
+          throw new Error('HTTP ' + res.status);
+        }else if(sync.offline){
+          setStatus('Wieder verbunden ✓');
+        }
+      }
+      sync.offline = false;
+    }catch(e){
+      sync.offline = true;
+      setStatus('Keine Verbindung zum Server — Änderungen werden nachgereicht');
+    }finally{
+      sync.busy = false;
+      if(sync.again){ sync.again = false; syncTick(opts); }
+    }
+  }
+  function scheduleSync(){
+    if(!sync.on) return;
+    clearTimeout(sync.timer);
+    sync.timer = setTimeout(syncTick, 600);
+  }
+
+  (async function initSync(){
+    if(!/^https?:$/.test(location.protocol)) return;
+    const defaults = collectState();
+    let remote;
+    try{
+      const res = await fetch(SYNC_URL, {cache:'no-store'});
+      if(!res.ok || !(res.headers.get('Content-Type') || '').includes('application/json')) return;
+      remote = await res.json();
+      if(!remote || typeof remote.version !== 'number') return;
+    }catch(e){ return; }   // kein Server dahinter -> Datei-Modus bleibt
+
+    sync.on = true;
+    sync.base = defaults;
+    const pending = takeRemote(remote);
+
+    // Bedienelemente auf den Server-Betrieb umstellen.
+    document.body.classList.add('server-mode');
+    connectBtn.style.display = 'none';
+    document.getElementById('loadBtn').textContent = '📂 Stand importieren';
+    document.getElementById('loadBtn').title = 'Einen früher heruntergeladenen Stand einspielen (ersetzt den Stand auf dem Server)';
+    document.getElementById('saveBtn').textContent = '💾 Sicherung herunterladen';
+    document.getElementById('saveBtn').title = 'Den aktuellen Stand zusätzlich als Datei sichern';
+    document.getElementById('toolbarHint').textContent = ' — Änderungen werden automatisch zentral gespeichert und mit allen Geräten im Netzwerk abgeglichen.';
+    document.getElementById('footerNote').textContent = 'Elara Granger · Wood Elf Druide · Alle Werte sind frei editierbar. Der Stand liegt zentral auf dem Server und wird automatisch gespeichert; über „Sicherung herunterladen" lässt er sich zusätzlich als Datei sichern.';
+    setStatus('Mit dem Server verbunden ✓');
+
+    if(pending) syncTick();
+    setInterval(syncTick, SYNC_INTERVAL_MS);
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden) syncTick({force:true});   // letzte Änderung noch sichern
+      else syncTick();                               // beim Zurückkommen sofort abgleichen
+    });
+    window.addEventListener('pagehide', ()=> syncTick({force:true}));
+  })();
 
   /* ============ Spell tooltips ============ */
   const tooltipEl = document.getElementById('tooltip');

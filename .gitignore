@@ -1,0 +1,7 @@
+# Gespeicherter Stand des Bogens (liegt nur auf dem Pi, nicht im Repository)
+data/
+
+# Python / macOS
+__pycache__/
+*.pyc
+.DS_Store
