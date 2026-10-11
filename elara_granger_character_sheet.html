@@ -223,6 +223,17 @@
      unterscheidet, ohne den Buchstaben lesen zu müssen. */
   .lvl-badge.lvl-c{background:var(--accent-soft); color:var(--accent-ink); border-color:var(--accent);}
   .lvl-badge.lvl-1{background:var(--accent-2-soft); color:var(--accent-2); border-color:var(--accent-2);}
+  .lvl-badge.lvl-2{background:#ecebf7; color:#4b4f96; border-color:#6b6fb5;}
+  /* Zauberliste nach Grad gruppiert */
+  .spell-group-title{grid-column:1 / -1; display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); margin:14px 0 4px; padding-bottom:4px;
+    border-bottom:1px solid var(--border);}
+  .spell-group-title:first-child{margin-top:2px;}
+  .spell-group-title .spell-group-count{font-weight:400; text-transform:none; letter-spacing:0; color:var(--text-muted);}
+  /* Zauberplätze je Grad + Live-Zähler */
+  .slot-line + .slot-line{margin-top:6px;}
+  .slot-lvl{font-size:11.5px; font-weight:600; color:var(--text-secondary); min-width:52px;}
+  .res-count{font-size:11.5px; color:var(--text-muted); margin-left:6px;}
   .spell-row .sname{flex:1;}
   .spell-row .ritual{font-size:9.5px; color:var(--accent-2); font-weight:700;}
 
@@ -580,6 +591,10 @@
   body.fantasy-mode .lvl-badge{border-radius:3px;}
   body.fantasy-mode .lvl-badge.lvl-c{background:#e6efdc; border-color:var(--f-leaf); color:#3d5626;}
   body.fantasy-mode .lvl-badge.lvl-1{background:#f2ead2; border-color:var(--f-gold); color:#6d5a20;}
+  body.fantasy-mode .lvl-badge.lvl-2{background:#ebe7f3; border-color:#7a6aa0; color:#4a3d6e;}
+  body.fantasy-mode .spell-group-title{font-family:Georgia,serif; font-weight:400; letter-spacing:.14em; color:var(--f-olive-dark);
+    border-bottom-color:rgba(109,122,60,.35);}
+  body.fantasy-mode .slot-lvl{font-family:Georgia,serif; color:var(--f-olive-dark);}
   body.fantasy-mode .spell-row{border-bottom-color:rgba(109,122,60,.16);}
   body.fantasy-mode .info-dot{background:rgba(109,122,60,.16); color:var(--f-olive-dark);}
 
@@ -632,6 +647,7 @@
   </div>
   <input type="file" id="fileInput" accept="application/json" style="display:none;">
   <input type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
+  <input type="hidden" id="sheetLevelField" data-field="sheetLevel" value="3">
 </div>
 <div id="tooltip"></div>
 
@@ -686,7 +702,7 @@
     <div class="banner-meta">
       <div><label>Rasse</label><input data-field="race" value="Wood Elf"></div>
       <div><label>Hintergrund</label><input data-field="background" value="Sage"></div>
-      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 2"></div>
+      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 3"></div>
       <div><label>Erfahrung</label><input data-field="xp" value="Milestone"></div>
       <div><label>Spieler:in</label><input data-field="player" value="wiebke961"></div>
     </div>
@@ -757,10 +773,10 @@
           <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input data-field="profBonus" value="+2"></div>
         </div>
         <div class="stat-row">
-          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="17"></div>
-          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="17"></div>
+          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="26"></div>
+          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="26"></div>
           <div class="stat-tile"><label>Temp. HP <span class="label-de">(Temp. TP)</span></label><input data-field="tempHp" value="--"></div>
-          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
+          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="3 / 3 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
         </div>
         <div class="checkline" style="margin-top:4px;"><input type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
         <div class="checkline death-saves" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
@@ -786,20 +802,27 @@
           <div class="stat-tile"><label>Angriffsbonus</label><input data-field="spellAtk" value="+5"></div>
           <div class="stat-tile"><label>Rettungswurf-SG</label><input data-field="spellDC" value="13"></div>
           <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input data-field="cantripsKnown" value="2 von 2" readonly></div>
-          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 5" readonly></div>
+          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 6" readonly></div>
         </div>
         <div class="field" style="margin-bottom:12px;">
-          <label>Zauberplätze 1. Grad (aktuell: Stufe 2)</label>
-          <div class="checkline">
-            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked>
-            <span style="font-size:11.5px; color:var(--text-muted); margin-left:6px;">3 von 3 verfügbar</span>
+          <label>Zauberplätze (Druide Stufe 3)</label>
+          <div class="checkline slot-line">
+            <span class="slot-lvl">1. Grad</span>
+            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked><input type="checkbox" data-field="slot1_3" checked>
+            <span class="res-count" data-count-prefix="slot1_">4 von 4 verfügbar</span>
+          </div>
+          <div class="checkline slot-line">
+            <span class="slot-lvl">2. Grad</span>
+            <input type="checkbox" data-field="slot2_0" checked><input type="checkbox" data-field="slot2_1" checked>
+            <span class="res-count" data-count-prefix="slot2_">2 von 2 verfügbar</span>
           </div>
         </div>
 
         <h2 style="margin-top:4px;">Lieblingszauber <span class="tag">alle vorbereiteten Zauber + Zaubertricks</span></h2>
         <div style="font-size:10.5px; color:var(--text-muted); margin:-6px 0 8px;">
           <span class="lvl-badge lvl-c" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">C</span> Zaubertrick &nbsp;·&nbsp;
-          <span class="lvl-badge lvl-1" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">1</span> Zauber 1. Grad
+          <span class="lvl-badge lvl-1" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">1</span> Zauber 1. Grad &nbsp;·&nbsp;
+          <span class="lvl-badge lvl-2" style="width:16px; height:16px; font-size:9px; display:inline-flex; vertical-align:middle;">2</span> Zauber 2. Grad
         </div>
         <table class="fav-table" style="table-layout:fixed;">
           <colgroup>
@@ -816,7 +839,7 @@
           <textarea rows="4" data-field="spellNotes" placeholder="…"></textarea>
         </div>
         <div class="field" style="margin-top:12px;">
-          <label>Bestienformen – Wilde Gestalt (Stufe 2, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
+          <label>Bestienformen – Wilde Gestalt (Stufe 3, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
           <div class="beast-grid" id="beastGrid"></div>
           <div style="font-size:10.5px; color:var(--text-muted); margin-top:6px;">Name kurz drüberhalten für die Kurzwerte, anklicken für den vollen Bestiarium-Eintrag. Empfehlung: Brown Bear (viele TP, starker Grapple) oder Dire Wolf (Rudeltaktik) für Kämpfe; Panther oder Wolf für Erkundung/Heimlichkeit.</div>
         </div>
@@ -849,7 +872,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
           <label>Wilde Gestalt (Nutzungen, laden bei kurzer/langer Rast auf)</label>
           <div class="checkline">
             <input type="checkbox" data-field="wildshape_0" checked><input type="checkbox" data-field="wildshape_1" checked>
-            <span style="font-size:11.5px; color:var(--text-muted); margin-left:6px;">2 von 2 verfügbar</span>
+            <span class="res-count" data-count-prefix="wildshape_">2 von 2 verfügbar</span>
           </div>
         </div>
 
@@ -870,7 +893,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
           <textarea rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-          Aktuell (Kreis des Mondes, Stufe 2): Wilde Gestalt in Bestien bis CR 1 – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
+          Aktuell (Kreis des Mondes, Stufe 3): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
           Referenz Grundgestalt ohne Zirkel (zum Vergleich): Stufe 2 → CR 1/4 (kein Fliegen/Schwimmen) · Stufe 4 → CR 1/2 (kein Fliegen) · Stufe 8 → CR 1 (keine Einschränkung).
         </div>
       </div>
@@ -982,7 +1005,36 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     "Beast Bond": "Aktion, Berührung, Konzentration 10 Min. Telepathische Verbindung zu einem vertrauten Tier – solange Sichtlinie besteht, habt ihr beide Vorteil bei Angriffen gegen Kreaturen in 5 ft des jeweils anderen.",
     "Earth Tremor": "Aktion, 10-ft-Radius um dich. Andere Kreaturen darin: <strong>DEX-Rettungswurf (SG 13)</strong> oder 1W6 Wuchtschaden + liegend.",
     "Protection from Evil and Good": "Aktion, Berührung, Konzentration 10 Min. Schutz vor bestimmten Kreaturentypen (u.a. Untote, Feen, Elementare, Teufel/Dämonen): keine Bezauberung/Angst/Besessenheit durch sie, ihre Angriffe gegen das Ziel haben Nachteil.",
-    "Snare": "Gießzeit 1 Min., Berührung, 8 Std. Legt eine fast unsichtbare Falle in einem 5-ft-Radius-Kreis (SG 13 Nachforschung zum Entdecken). Eine kleine bis große Kreatur, die den Bereich betritt: <strong>DEX-Rettungswurf (SG 13)</strong> oder wird kopfüber hochgezogen und hängt festgehalten in der Luft, bis sie sich befreit oder der Zauber endet."
+    "Snare": "Gießzeit 1 Min., Berührung, 8 Std. Legt eine fast unsichtbare Falle in einem 5-ft-Radius-Kreis (SG 13 Nachforschung zum Entdecken). Eine kleine bis große Kreatur, die den Bereich betritt: <strong>DEX-Rettungswurf (SG 13)</strong> oder wird kopfüber hochgezogen und hängt festgehalten in der Luft, bis sie sich befreit oder der Zauber endet.",
+    "Air Bubble": "Aktion, 60 ft., 24 Std. Eine Kugel frischer Luft um den Kopf einer bereitwilligen Kreatur – sie kann nicht ersticken, z. B. unter Wasser. <em>Quelle: Astral Adventurer's Guide (Spelljammer) – nur mit Zustimmung der Spielleitung.</em>",
+    "Animal Messenger": "Ritual · Aktion, 30 ft., 24 Std. Ein winziges Tier überbringt eine Nachricht (max. 25 Wörter) an einen Ort, an dem du schon warst, und an einen beschriebenen Empfänger – fliegend ca. 50 Meilen, sonst ca. 25 Meilen pro Tag.",
+    "Augury": "Ritual · Gießzeit 1 Min., Selbst. Omen zu einer Handlung in den nächsten 30 Minuten: Wohl, Weh, Wohl und Weh oder nichts. Ab dem zweiten Wirken vor einer langen Rast kumulativ 25 % Chance auf eine zufällige Antwort. Material: Orakelstäbchen o. Ä. im Wert von mind. 25 GM.",
+    "Barkskin": "Aktion, Berührung, Konzentration 1 Std. Die RK einer bereitwilligen Kreatur kann nicht unter 16 fallen, egal welche Rüstung sie trägt. <strong>Tipp: Die Konzentration bleibt beim Wechsel in die Wilde Gestalt bestehen.</strong>",
+    "Beast Sense": "Ritual · Aktion, Berührung, Konzentration 1 Std. Du siehst und hörst durch die Sinne eines bereitwilligen Tiers (Wechsel per Aktion) – solange bist du für deine eigene Umgebung blind und taub.",
+    "Continual Flame": "Aktion, Berührung, bis gebannt. Fackelhelle Flamme ohne Hitze an einem Objekt – lässt sich abdecken, aber nicht ersticken oder löschen. Material: Rubinstaub für 50 GM (wird verbraucht).",
+    "Darkvision": "Aktion, Berührung, 8 Std. Eine bereitwillige Kreatur erhält Dunkelsicht 60 ft. (Elara hat als Waldelfe schon Dunkelsicht – praktisch für Begleiter.)",
+    "Dust Devil": "Aktion, 60 ft., Konzentration 1 Min. Staubteufel in einem 5-ft-Würfel: Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>STR-Rettungswurf (SG 13)</strong> – 1W8 Wucht und 10 ft weggestoßen (Erfolg: halber Schaden, kein Stoß). Bonusaktion: 30 ft bewegen.",
+    "Earthbind": "Aktion, 300 ft., Konzentration 1 Min. Ziel: <strong>STR-Rettungswurf (SG 13)</strong> oder Flugbewegung 0 – fliegende Kreaturen sinken sicher mit 60 ft pro Runde zu Boden.",
+    "Enhance Ability": "Aktion, Berührung, Konzentration 1 Std. Vorteil auf Proben eines Attributs nach Wahl. Bär: zusätzlich 2W6 temp. TP · Stier: doppelte Traglast · Katze: kein Fallschaden bis 20 ft.",
+    "Enlarge/Reduce": "Aktion, 30 ft., Konzentration 1 Min. Kreatur oder Objekt wird eine Größenkategorie größer (Vorteil auf STR-Proben/-Rettungswürfe, Waffen +1W4 Schaden) oder kleiner (Nachteil, Waffen −1W4). Unwillige Ziele: <strong>CON-Rettungswurf (SG 13)</strong>.",
+    "Find Traps": "Aktion, 120 ft. Du spürst, ob in Sichtlinie absichtlich angelegte Fallen vorhanden sind, und erfährst grob, welche Gefahr von ihnen ausgeht – aber nicht, wo genau sie liegen.",
+    "Flame Blade": "Bonusaktion, Selbst, Konzentration 10 Min. Feurige Klinge in der freien Hand; als Aktion <strong>Nahkampf-Zauberangriff (+5)</strong>, Treffer 3W6 Feuerschaden. Licht 10 ft hell, 10 ft dämmrig.",
+    "Flaming Sphere": "Aktion, 60 ft., Konzentration 1 Min. Feuerkugel (5 ft Durchmesser): Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>DEX-Rettungswurf (SG 13)</strong> – 2W6 Feuer, halb bei Erfolg. Bonusaktion: 30 ft bewegen; rammt sie eine Kreatur, muss diese sofort retten.",
+    "Gust of Wind": "Aktion, Linie 60 × 10 ft ab dir, Konzentration 1 Min. Wer seinen Zug in der Linie beginnt: <strong>STR-Rettungswurf (SG 13)</strong> oder 15 ft weggestoßen. Bewegung auf dich zu kostet doppelt, offene Flammen erlöschen. Bonusaktion: Richtung ändern.",
+    "Healing Spirit": "Bonusaktion, 60 ft., Konzentration 1 Min. Naturgeist in einem 5-ft-Würfel: Wer ihn im Zug erstmals betritt oder dort den Zug beginnt, heilt 1W6 TP. <strong>Elara: 4 Heilungen</strong> (1 + WIS-Mod). Bonusaktion: 30 ft bewegen.",
+    "Heat Metal": "Aktion, 60 ft., Konzentration 1 Min. Ein Metallobjekt glüht: Wer es berührt, erleidet 2W8 Feuerschaden – in späteren Zügen erneut per Bonusaktion, ohne Angriffs- oder Rettungswurf. Wer es hält oder trägt: <strong>CON-Rettungswurf (SG 13)</strong> oder fallen lassen, sonst Nachteil auf Angriffe und Proben.",
+    "Hold Person": "Aktion, 60 ft., Konzentration 1 Min. Ein Humanoid: <strong>WIS-Rettungswurf (SG 13)</strong> oder gelähmt; neuer Rettungswurf am Ende jedes seiner Züge. Nahkampftreffer gegen Gelähmte sind kritisch.",
+    "Lesser Restoration": "Aktion, Berührung. Beendet eine Krankheit oder einen Zustand: blind, taub, gelähmt oder vergiftet.",
+    "Locate Animals or Plants": "Ritual · Aktion, Selbst. Nenne eine Tier- oder Pflanzenart: Du erfährst Richtung und Entfernung zum nächsten Exemplar im Umkreis von 5 Meilen.",
+    "Locate Object": "Aktion, Selbst, Konzentration 10 Min. Du spürst die Richtung zu einem bekannten Objekt (oder dem nächsten Objekt einer Art) im Umkreis von 1.000 ft. Blei blockiert den Zauber.",
+    "Moonbeam": "Aktion, 120 ft., Konzentration 1 Min. Mondstrahl (Zylinder, 5 ft Radius): Wer ihn im Zug erstmals betritt oder dort beginnt, macht einen <strong>CON-Rettungswurf (SG 13)</strong> – 2W10 gleißender Schaden, halb bei Erfolg. Gestaltwandler haben Nachteil. Aktion: 60 ft bewegen. <strong>Tipp: läuft in der Wilden Gestalt weiter.</strong>",
+    "Pass without Trace": "Aktion, Selbst, Konzentration 1 Std. Gewählte Kreaturen im Umkreis von 30 ft (inkl. dir): <strong>+10 auf GES (Heimlichkeit)</strong> und keine Spuren – nur magisch verfolgbar.",
+    "Protection from Poison": "Aktion, Berührung, 1 Std. Neutralisiert ein Gift; danach Vorteil auf Rettungswürfe gegen Vergiftung und Resistenz gegen Giftschaden.",
+    "Skywrite": "Ritual · Aktion, Sichtweite, Konzentration 1 Std. Bis zu zehn Wörter aus Wolken erscheinen am Himmel; starker Wind kann sie früher auflösen.",
+    "Spike Growth": "Aktion, 150 ft., Konzentration 10 Min. Boden im 20-ft-Radius wird schwieriges Gelände voller Dornen: <strong>2W4 Stichschaden je 5 ft Bewegung</strong> darin. Getarnt – wer es beim Wirken nicht sah, braucht eine Wahrnehmungsprobe gegen SG 13.",
+    "Summon Beast": "Aktion, 90 ft., Konzentration 1 Std. Ruft einen Tiergeist (Luft, Land oder Wasser), der direkt nach dir handelt und deinen Befehlen folgt. <strong>Auf Grad 2: RK 13, 20 TP (Luft) bzw. 30 TP (Land/Wasser), Zerfleischen +5, 1W8+6 Stich.</strong> Material: vergoldete Eichel für mind. 200 GM (wird nicht verbraucht).",
+    "Warding Wind": "Aktion, Selbst (10-ft-Radius), Konzentration 10 Min. Starker Wind um dich: alle darin (auch du) sind taub, kleine Flammen erlöschen, Gas und Nebel werden abgehalten, schwieriges Gelände für andere, Fernkampf-Waffenangriffe durch den Wind haben Nachteil.",
+    "Wither and Bloom": "Aktion, 60 ft. Kugel mit 10 ft Radius: gewählte Kreaturen machen einen <strong>CON-Rettungswurf (SG 13)</strong> – 2W6 nekrotischer Schaden, halb bei Erfolg. Eine Kreatur im Bereich darf einen Trefferwürfel ausgeben und heilt Wurf + 3. <em>Quelle: Strixhaven – nur mit Zustimmung der Spielleitung.</em>",
   };
 
   // Full click-to-view descriptions: complete translated 5etools text for the
@@ -1068,17 +1120,74 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     "Protection from Evil and Good": { meta:"1. Grad · Aktion · Berührung · V, S, M · Konzentration, bis zu 10 Minuten",
       text:"Bis der Zauber endet, ist eine willige Kreatur, die du berührst, vor bestimmten Kreaturenarten geschützt: Aberrationen, Himmlischen, Elementaren, Feen, Teuflischen Wesen und Untoten. Kreaturen dieser Arten haben Nachteil bei Angriffswürfen gegen das Ziel. Das Ziel kann außerdem nicht von ihnen bezaubert, verängstigt oder besessen werden. Ist das Ziel bereits bezaubert, verängstigt oder besessen von einer solchen Kreatur, hat es Vorteil bei jedem neuen Rettungswurf gegen den entsprechenden Effekt." },
     "Snare": { meta:"1. Grad · Gießzeit 1 Minute · Berührung · S, M · 8 Stunden",
-      text:"Während du diesen Zauber wirkst, formst du mit dem Seil einen Kreis mit 5 Fuß Radius auf dem Boden. Wenn du das Wirken beendest, verschwindet das Seil, und der Kreis wird zu einer magischen Falle. Die Falle ist nahezu unsichtbar; sie wird nur durch eine erfolgreiche Intelligenz(Nachforschung)-Probe gegen deinen Zauberrettungswurf-SG entdeckt. Die Falle löst aus, wenn eine kleine, mittelgroße oder große Kreatur den Boden im Wirkungsbereich betritt. Diese Kreatur muss einen erfolgreichen Geschicklichkeitsrettungswurf ablegen oder wird magisch kopfüber in die Luft gehoben und hängt dort 3 Fuß über dem Boden, festgehalten, bis der Zauber endet. Eine festgehaltene Kreatur kann am Ende jedes ihrer Züge einen Geschicklichkeitsrettungswurf ablegen; bei Erfolg endet der Effekt bei ihr. Alternativ kann sie selbst oder jemand anderes in Reichweite eine Aktion nutzen, um eine Intelligenz(Arkane Kunde)-Probe gegen deinen Zauberrettungswurf-SG abzulegen; bei Erfolg endet der Festgehalten-Effekt. Nachdem die Falle ausgelöst wurde, endet der Zauber, sobald keine Kreatur mehr durch sie festgehalten wird." }
+      text:"Während du diesen Zauber wirkst, formst du mit dem Seil einen Kreis mit 5 Fuß Radius auf dem Boden. Wenn du das Wirken beendest, verschwindet das Seil, und der Kreis wird zu einer magischen Falle. Die Falle ist nahezu unsichtbar; sie wird nur durch eine erfolgreiche Intelligenz(Nachforschung)-Probe gegen deinen Zauberrettungswurf-SG entdeckt. Die Falle löst aus, wenn eine kleine, mittelgroße oder große Kreatur den Boden im Wirkungsbereich betritt. Diese Kreatur muss einen erfolgreichen Geschicklichkeitsrettungswurf ablegen oder wird magisch kopfüber in die Luft gehoben und hängt dort 3 Fuß über dem Boden, festgehalten, bis der Zauber endet. Eine festgehaltene Kreatur kann am Ende jedes ihrer Züge einen Geschicklichkeitsrettungswurf ablegen; bei Erfolg endet der Effekt bei ihr. Alternativ kann sie selbst oder jemand anderes in Reichweite eine Aktion nutzen, um eine Intelligenz(Arkane Kunde)-Probe gegen deinen Zauberrettungswurf-SG abzulegen; bei Erfolg endet der Festgehalten-Effekt. Nachdem die Falle ausgelöst wurde, endet der Zauber, sobald keine Kreatur mehr durch sie festgehalten wird." },
+    "Air Bubble": { meta:"2. Grad · Aktion · 60 Fuß · S · 24 Stunden",
+      text:"Du erschaffst eine geisterhafte Kugel um den Kopf einer bereitwilligen Kreatur, die du in Reichweite sehen kannst. Die Kugel ist mit frischer Luft gefüllt, die bis zum Ende des Zaubers anhält. Hat die Kreatur mehr als einen Kopf, erscheint die Luftkugel nur um einen ihrer Köpfe (was alles ist, was die Kreatur braucht, um nicht zu ersticken, vorausgesetzt, alle ihre Köpfe teilen sich dasselbe Atmungssystem)." },
+    "Animal Messenger": { meta:"2. Grad (Ritual) · Aktion · 30 Fuß · V, S, M · 24 Stunden",
+      text:"Mithilfe dieses Zaubers lässt du ein Tier eine Nachricht überbringen. Wähle ein winziges Tier, das du in Reichweite sehen kannst, etwa ein Eichhörnchen, einen Blauhäher oder eine Fledermaus. Du bestimmst einen Ort, an dem du gewesen sein musst, und einen Empfänger, der einer allgemeinen Beschreibung entspricht, etwa „ein Mann oder eine Frau in der Uniform der Stadtwache“ oder „ein rothaariger Zwerg mit spitzem Hut“. Außerdem sprichst du eine Nachricht von bis zu fünfundzwanzig Wörtern. Das Tier reist für die Dauer des Zaubers zum angegebenen Ort und legt dabei etwa 50 Meilen pro 24 Stunden zurück, wenn es fliegt, oder 25 Meilen, wenn es ein anderes Tier ist. Erreicht der Bote sein Ziel, überbringt er deine Nachricht der beschriebenen Kreatur und gibt dabei den Klang deiner Stimme wieder. Der Bote spricht nur mit einer Kreatur, die deiner Beschreibung entspricht. Erreicht er sein Ziel nicht, bevor der Zauber endet, geht die Nachricht verloren, und das Tier kehrt zu dem Ort zurück, an dem du den Zauber gewirkt hast." },
+    "Augury": { meta:"2. Grad (Ritual) · Gießzeit 1 Minute · Selbst · V, S, M (mind. 25 GM) · Sofort",
+      text:"Indem du edelsteinbesetzte Stäbchen wirfst, Drachenknochen rollst, verzierte Karten auslegst oder ein anderes Wahrsagewerkzeug einsetzt, erhältst du von einem außerweltlichen Wesen ein Omen über die Folgen einer bestimmten Handlung, die du innerhalb der nächsten 30 Minuten vorhast. Die Spielleitung wählt aus den folgenden möglichen Omen: Wohl – für gute Folgen. Weh – für schlechte Folgen. Wohl und Weh – für gute und schlechte Folgen. Nichts – für Folgen, die weder besonders gut noch besonders schlecht sind. Der Zauber berücksichtigt keine Umstände, die das Ergebnis verändern könnten, etwa das Wirken weiterer Zauber oder den Verlust oder Gewinn eines Gefährten. Wirkst du den Zauber zwei- oder mehrmals vor deiner nächsten langen Rast, besteht für jedes Wirken nach dem ersten eine kumulative Chance von 25 %, dass du eine zufällige Antwort erhältst. Die Spielleitung würfelt dies verdeckt." },
+    "Barkskin": { meta:"2. Grad · Aktion · Berührung · V, S, M · Konzentration, bis zu 1 Stunde",
+      text:"Du berührst eine bereitwillige Kreatur. Bis der Zauber endet, hat die Haut des Ziels ein raues, rindenartiges Aussehen, und die Rüstungsklasse des Ziels kann nicht niedriger als 16 sein, unabhängig davon, welche Art von Rüstung es trägt." },
+    "Beast Sense": { meta:"2. Grad (Ritual) · Aktion · Berührung · S · Konzentration, bis zu 1 Stunde",
+      text:"Du berührst ein bereitwilliges Tier. Für die Dauer des Zaubers kannst du deine Aktion nutzen, um durch die Augen des Tiers zu sehen und zu hören, was es hört, und tust dies so lange, bis du deine Aktion nutzt, um zu deinen normalen Sinnen zurückzukehren. Während du durch die Sinne des Tiers wahrnimmst, profitierst du von allen besonderen Sinnen, die diese Kreatur besitzt, bist für deine eigene Umgebung jedoch blind und taub." },
+    "Continual Flame": { meta:"2. Grad · Aktion · Berührung · V, S, M (Rubinstaub 50 GM, wird verbraucht) · Bis gebannt",
+      text:"Eine Flamme, so hell wie eine Fackel, entspringt einem Objekt, das du berührst. Der Effekt sieht aus wie eine gewöhnliche Flamme, erzeugt aber keine Hitze und verbraucht keinen Sauerstoff. Eine immerwährende Flamme kann bedeckt oder verborgen, aber nicht erstickt oder gelöscht werden." },
+    "Darkvision": { meta:"2. Grad · Aktion · Berührung · V, S, M · 8 Stunden",
+      text:"Du berührst eine bereitwillige Kreatur und verleihst ihr die Fähigkeit, im Dunkeln zu sehen. Für die Dauer hat diese Kreatur Dunkelsicht mit einer Reichweite von 60 Fuß." },
+    "Dust Devil": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Wähle einen unbesetzten 5-Fuß-Würfel aus Luft, den du in Reichweite sehen kannst. Eine elementare Kraft, die einem Staubteufel ähnelt, erscheint in dem Würfel und bleibt für die Dauer des Zaubers bestehen. Jede Kreatur, die ihren Zug innerhalb von 5 Fuß um den Staubteufel beendet, muss einen Stärkerettungswurf ablegen. Bei einem Fehlschlag erleidet sie 1W8 Wuchtschaden und wird 10 Fuß vom Staubteufel weggestoßen. Bei einem Erfolg erleidet sie halb so viel Schaden und wird nicht weggestoßen. Als Bonusaktion kannst du den Staubteufel bis zu 30 Fuß in eine beliebige Richtung bewegen. Bewegt er sich über Sand, Staub, lockere Erde oder feinen Kies, saugt er das Material auf und bildet um sich eine Trümmerwolke mit 10 Fuß Radius, die bis zum Beginn deines nächsten Zugs bestehen bleibt. Die Wolke verschleiert ihren Bereich komplett." },
+    "Earthbind": { meta:"2. Grad · Aktion · 300 Fuß · V · Konzentration, bis zu 1 Minute",
+      text:"Wähle eine Kreatur, die du in Reichweite sehen kannst. Gelbe Bänder magischer Energie schlingen sich um die Kreatur. Das Ziel muss einen erfolgreichen Stärkerettungswurf ablegen, sonst wird seine Flugbewegungsrate (falls vorhanden) für die Dauer des Zaubers auf 0 Fuß reduziert. Eine fliegende Kreatur, die von diesem Zauber betroffen ist, sinkt sicher mit 60 Fuß pro Runde herab, bis sie den Boden erreicht oder der Zauber endet." },
+    "Enhance Ability": { meta:"2. Grad · Aktion · Berührung · V, S, M · Konzentration, bis zu 1 Stunde",
+      text:"Du berührst eine Kreatur und verleihst ihr eine magische Stärkung. Wähle einen der folgenden Effekte; das Ziel erhält ihn, bis der Zauber endet. Ausdauer des Bären: Das Ziel hat Vorteil bei Konstitutionsproben. Außerdem erhält es 2W6 temporäre Trefferpunkte, die verloren gehen, wenn der Zauber endet. Stärke des Stiers: Das Ziel hat Vorteil bei Stärkeproben, und seine Traglast verdoppelt sich. Anmut der Katze: Das Ziel hat Vorteil bei Geschicklichkeitsproben. Außerdem erleidet es keinen Schaden durch Stürze aus 20 Fuß oder weniger, sofern es nicht kampfunfähig ist. Glanz des Adlers: Das Ziel hat Vorteil bei Charismaproben. Gerissenheit des Fuchses: Das Ziel hat Vorteil bei Intelligenzproben. Weisheit der Eule: Das Ziel hat Vorteil bei Weisheitsproben." },
+    "Enlarge/Reduce": { meta:"2. Grad · Aktion · 30 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Du lässt eine Kreatur oder ein Objekt, das du in Reichweite sehen kannst, für die Dauer größer oder kleiner werden. Wähle entweder eine Kreatur oder ein Objekt, das weder getragen noch gehalten wird. Ist das Ziel unwillig, darf es einen Konstitutionsrettungswurf ablegen. Bei einem Erfolg hat der Zauber keine Wirkung. Ist das Ziel eine Kreatur, ändert alles, was sie trägt und bei sich hat, mit ihr die Größe. Jeder Gegenstand, den eine betroffene Kreatur fallen lässt, kehrt sofort zu seiner normalen Größe zurück. Vergrößern: Die Größe des Ziels verdoppelt sich in allen Dimensionen, und sein Gewicht verachtfacht sich. Dieses Wachstum erhöht seine Größe um eine Kategorie – zum Beispiel von mittelgroß zu groß. Ist nicht genug Platz, damit das Ziel seine Größe verdoppeln kann, erreicht die Kreatur oder das Objekt die größtmögliche Größe im verfügbaren Raum. Bis der Zauber endet, hat das Ziel außerdem Vorteil bei Stärkeproben und Stärkerettungswürfen. Auch die Waffen des Ziels wachsen auf die neue Größe mit. Solange diese Waffen vergrößert sind, verursachen die Angriffe des Ziels mit ihnen 1W4 zusätzlichen Schaden. Verkleinern: Die Größe des Ziels halbiert sich in allen Dimensionen, und sein Gewicht sinkt auf ein Achtel. Diese Verkleinerung verringert seine Größe um eine Kategorie – zum Beispiel von mittelgroß zu klein. Bis der Zauber endet, hat das Ziel außerdem Nachteil bei Stärkeproben und Stärkerettungswürfen. Auch die Waffen des Ziels schrumpfen auf die neue Größe. Solange diese Waffen verkleinert sind, verursachen die Angriffe des Ziels mit ihnen 1W4 weniger Schaden (der Schaden kann dadurch nicht unter 1 sinken)." },
+    "Find Traps": { meta:"2. Grad · Aktion · 120 Fuß · V, S · Sofort",
+      text:"Du spürst die Anwesenheit jeder Falle in Reichweite, die sich in deiner Sichtlinie befindet. Als Falle gilt für diesen Zauber alles, was einen plötzlichen oder unerwarteten Effekt auslösen würde, den du als schädlich oder unerwünscht betrachtest, und das von seinem Erschaffer ausdrücklich so beabsichtigt war. Der Zauber würde also einen Bereich spüren, der von einem Alarm-Zauber, einer Glyphe der Abwehr oder einer mechanischen Fallgrube betroffen ist, nicht aber eine natürliche Schwachstelle im Boden, eine instabile Decke oder ein verborgenes Erdloch. Der Zauber verrät nur, dass eine Falle vorhanden ist. Du erfährst nicht, wo sich die einzelnen Fallen befinden, aber du erfährst die allgemeine Art der Gefahr, die von einer gespürten Falle ausgeht." },
+    "Flame Blade": { meta:"2. Grad · Bonusaktion · Selbst · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Du beschwörst eine feurige Klinge in deiner freien Hand. Die Klinge entspricht in Größe und Form einem Krummsäbel und bleibt für die Dauer bestehen. Lässt du die Klinge los, verschwindet sie, aber du kannst sie als Bonusaktion erneut beschwören. Du kannst deine Aktion nutzen, um mit der feurigen Klinge einen Nahkampf-Zauberangriff auszuführen. Bei einem Treffer erleidet das Ziel 3W6 Feuerschaden. Die flammende Klinge verbreitet helles Licht in einem Radius von 10 Fuß und schwaches Licht für weitere 10 Fuß." },
+    "Flaming Sphere": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Eine Feuerkugel mit 5 Fuß Durchmesser erscheint in einem unbesetzten Bereich deiner Wahl in Reichweite und bleibt für die Dauer bestehen. Jede Kreatur, die ihren Zug innerhalb von 5 Fuß um die Kugel beendet, muss einen Geschicklichkeitsrettungswurf ablegen. Bei einem Fehlschlag erleidet sie 2W6 Feuerschaden, bei einem Erfolg die Hälfte. Als Bonusaktion kannst du die Kugel bis zu 30 Fuß weit bewegen. Rammst du sie in eine Kreatur, muss diese den Rettungswurf gegen den Schaden der Kugel ablegen, und die Kugel hört in diesem Zug auf, sich zu bewegen. Wenn du die Kugel bewegst, kannst du sie über Hindernisse von bis zu 5 Fuß Höhe lenken und über Gruben von bis zu 10 Fuß Breite springen lassen. Die Kugel entzündet brennbare Objekte, die nicht getragen oder gehalten werden, und verbreitet helles Licht in einem Radius von 20 Fuß und schwaches Licht für weitere 20 Fuß." },
+    "Gust of Wind": { meta:"2. Grad · Aktion · Selbst (Linie, 60 Fuß) · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Eine Linie aus starkem Wind, 60 Fuß lang und 10 Fuß breit, bläst für die Dauer des Zaubers von dir aus in eine Richtung deiner Wahl. Jede Kreatur, die ihren Zug in der Linie beginnt, muss einen erfolgreichen Stärkerettungswurf ablegen, sonst wird sie entlang der Linie 15 Fuß von dir weggestoßen. Jede Kreatur in der Linie muss für jeden Fuß, den sie sich auf dich zubewegt, 2 Fuß Bewegung aufwenden. Der Windstoß verweht Gase und Dämpfe und löscht Kerzen, Fackeln und ähnliche ungeschützte Flammen im Bereich. Geschützte Flammen, etwa die von Laternen, lässt er wild flackern, und mit einer Chance von 50 % erlöschen sie. Als Bonusaktion kannst du in jedem deiner Züge, bevor der Zauber endet, die Richtung ändern, in die die Linie von dir aus bläst." },
+    "Healing Spirit": { meta:"2. Grad · Bonusaktion · 60 Fuß · V, S · Konzentration, bis zu 1 Minute",
+      text:"Du rufst einen Naturgeist herbei, der die Verwundeten lindert. Der körperlose Geist erscheint in einem Bereich, der einen 5-Fuß-Würfel bildet und den du in Reichweite sehen kannst. Der Geist sieht aus wie ein durchscheinendes Tier oder Feenwesen (deine Wahl). Bis der Zauber endet, kannst du, wann immer du oder eine Kreatur, die du sehen kannst, in einem Zug zum ersten Mal den Bereich des Geistes betritt oder dort ihren Zug beginnt, den Geist dieser Kreatur 1W6 Trefferpunkte wiederherstellen lassen (keine Aktion erforderlich). Der Geist kann keine Konstrukte oder Untoten heilen. Er kann so oft heilen, wie 1 plus dein Zauberattributsmodifikator ergibt (mindestens zweimal). Danach verschwindet er. Als Bonusaktion in deinem Zug kannst du den Geist bis zu 30 Fuß weit in einen Bereich bewegen, den du sehen kannst." },
+    "Heat Metal": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Wähle ein hergestelltes Metallobjekt, etwa eine Metallwaffe oder eine schwere oder mittlere Metallrüstung, das du in Reichweite sehen kannst. Du lässt das Objekt rotglühend werden. Jede Kreatur, die in körperlichem Kontakt mit dem Objekt steht, erleidet 2W8 Feuerschaden, wenn du den Zauber wirkst. Bis der Zauber endet, kannst du in jedem deiner folgenden Züge eine Bonusaktion nutzen, um diesen Schaden erneut zu verursachen. Hält oder trägt eine Kreatur das Objekt und erleidet sie Schaden durch es, muss sie einen erfolgreichen Konstitutionsrettungswurf ablegen oder das Objekt fallen lassen, wenn sie kann. Lässt sie das Objekt nicht fallen, hat sie bis zum Beginn deines nächsten Zugs Nachteil bei Angriffswürfen und Attributsproben." },
+    "Hold Person": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Wähle einen Humanoiden, den du in Reichweite sehen kannst. Das Ziel muss einen erfolgreichen Weisheitsrettungswurf ablegen, sonst ist es für die Dauer gelähmt. Am Ende jedes seiner Züge kann das Ziel einen weiteren Weisheitsrettungswurf ablegen. Bei einem Erfolg endet der Zauber für das Ziel." },
+    "Lesser Restoration": { meta:"2. Grad · Aktion · Berührung · V, S · Sofort",
+      text:"Du berührst eine Kreatur und kannst entweder eine Krankheit oder einen Zustand beenden, der sie betrifft. Der Zustand kann blind, taub, gelähmt oder vergiftet sein." },
+    "Locate Animals or Plants": { meta:"2. Grad (Ritual) · Aktion · Selbst · V, S, M · Sofort",
+      text:"Beschreibe oder benenne eine bestimmte Art von Tier oder Pflanze. Indem du dich auf die Stimme der Natur in deiner Umgebung konzentrierst, erfährst du die Richtung und Entfernung zur nächsten Kreatur oder Pflanze dieser Art im Umkreis von 5 Meilen, falls dort eine vorhanden ist." },
+    "Locate Object": { meta:"2. Grad · Aktion · Selbst · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Beschreibe oder benenne ein Objekt, das dir vertraut ist. Du spürst die Richtung zum Standort des Objekts, solange es sich innerhalb von 1.000 Fuß um dich befindet. Bewegt sich das Objekt, kennst du die Richtung seiner Bewegung. Der Zauber kann ein bestimmtes, dir bekanntes Objekt finden, sofern du es mindestens einmal aus der Nähe – innerhalb von 30 Fuß – gesehen hast. Alternativ kann der Zauber das nächstgelegene Objekt einer bestimmten Art finden, etwa eine bestimmte Art von Kleidung, Schmuck, Möbelstück, Werkzeug oder Waffe. Der Zauber kann ein Objekt nicht finden, wenn Blei in beliebiger Dicke, selbst eine dünne Folie, den direkten Weg zwischen dir und dem Objekt blockiert." },
+    "Moonbeam": { meta:"2. Grad · Aktion · 120 Fuß · V, S, M · Konzentration, bis zu 1 Minute",
+      text:"Ein silbriger Strahl aus fahlem Licht scheint in einem Zylinder mit 5 Fuß Radius und 40 Fuß Höhe herab, der auf einen Punkt in Reichweite zentriert ist. Bis der Zauber endet, erfüllt schwaches Licht den Zylinder. Wenn eine Kreatur den Bereich des Zaubers in einem Zug zum ersten Mal betritt oder ihren Zug dort beginnt, wird sie von geisterhaften Flammen eingehüllt, die sengenden Schmerz verursachen, und muss einen Konstitutionsrettungswurf ablegen. Bei einem Fehlschlag erleidet sie 2W10 gleißenden Schaden, bei einem Erfolg die Hälfte. Ein Gestaltwandler legt seinen Rettungswurf mit Nachteil ab. Misslingt er, nimmt er außerdem sofort wieder seine ursprüngliche Gestalt an und kann keine andere Gestalt annehmen, bis er das Licht des Zaubers verlässt. In jedem deiner Züge nach dem Wirken kannst du eine Aktion nutzen, um den Strahl bis zu 60 Fuß in eine beliebige Richtung zu bewegen." },
+    "Pass without Trace": { meta:"2. Grad · Aktion · Selbst · V, S, M · Konzentration, bis zu 1 Stunde",
+      text:"Ein Schleier aus Schatten und Stille geht von dir aus und verbirgt dich und deine Gefährten vor Entdeckung. Für die Dauer erhält jede Kreatur deiner Wahl innerhalb von 30 Fuß um dich (dich eingeschlossen) einen Bonus von +10 auf Geschicklichkeits(Heimlichkeit)-Proben und kann nur mit magischen Mitteln verfolgt werden. Eine Kreatur, die diesen Bonus erhält, hinterlässt keine Spuren oder anderen Hinweise auf ihren Weg." },
+    "Protection from Poison": { meta:"2. Grad · Aktion · Berührung · V, S · 1 Stunde",
+      text:"Du berührst eine Kreatur. Ist sie vergiftet, neutralisierst du das Gift. Wirken mehrere Gifte auf das Ziel, neutralisierst du eines, von dem du weißt, dass es vorhanden ist, oder ein zufälliges. Für die Dauer hat das Ziel Vorteil bei Rettungswürfen gegen den Zustand vergiftet und Resistenz gegen Giftschaden." },
+    "Skywrite": { meta:"2. Grad (Ritual) · Aktion · Sichtweite · V, S · Konzentration, bis zu 1 Stunde",
+      text:"Du lässt bis zu zehn Wörter in einem Teil des Himmels erscheinen, den du sehen kannst. Die Wörter scheinen aus Wolken zu bestehen und bleiben für die Dauer des Zaubers an Ort und Stelle. Sie lösen sich auf, wenn der Zauber endet. Ein starker Wind kann die Wolken zerstreuen und den Zauber vorzeitig beenden." },
+    "Spike Growth": { meta:"2. Grad · Aktion · 150 Fuß · V, S, M · Konzentration, bis zu 10 Minuten",
+      text:"Der Boden in einem Radius von 20 Fuß um einen Punkt in Reichweite verdreht sich und lässt harte Stacheln und Dornen sprießen. Der Bereich wird für die Dauer zu schwierigem Gelände. Wenn sich eine Kreatur in den Bereich hinein oder darin bewegt, erleidet sie für je 5 Fuß zurückgelegter Strecke 2W4 Stichschaden. Die Veränderung des Bodens ist so getarnt, dass sie natürlich aussieht. Jede Kreatur, die den Bereich beim Wirken des Zaubers nicht sehen kann, muss eine Weisheits(Wahrnehmung)-Probe gegen deinen Zauberrettungswurf-SG ablegen, um das Gelände als gefährlich zu erkennen, bevor sie es betritt." },
+    "Summon Beast": { meta:"2. Grad · Aktion · 90 Fuß · V, S, M (vergoldete Eichel, mind. 200 GM) · Konzentration, bis zu 1 Stunde",
+      text:"Du rufst einen Tiergeist herbei. Er manifestiert sich in einem unbesetzten Bereich, den du in Reichweite sehen kannst. Diese körperliche Gestalt verwendet die Spielwerte „Tiergeist“ unten. Wähle beim Wirken des Zaubers eine Umgebung: Luft, Land oder Wasser. Die Kreatur ähnelt einem Tier deiner Wahl, das in der gewählten Umgebung heimisch ist; das bestimmt bestimmte Merkmale in ihren Spielwerten. Die Kreatur verschwindet, wenn sie auf 0 Trefferpunkte sinkt oder der Zauber endet. Die Kreatur ist dir und deinen Gefährten verbündet. Im Kampf teilt sie deine Initiative, handelt aber unmittelbar nach dir. Sie gehorcht deinen gesprochenen Befehlen (keine Aktion für dich erforderlich). Gibst du ihr keine, führt sie die Ausweichen-Aktion aus und nutzt ihre Bewegung, um Gefahren aus dem Weg zu gehen. — Tiergeist (Grad 2): kleines Tier. RK 13 (natürliche Rüstung). TP 20 (nur Luft) oder 30 (nur Land und Wasser). Bewegungsrate 30 Fuß; Klettern 30 Fuß (nur Land); Fliegen 60 Fuß (nur Luft); Schwimmen 30 Fuß (nur Wasser). STR 18 (+4), DEX 11 (+0), CON 16 (+3), INT 4 (−3), WIS 14 (+2), CHA 5 (−3). Sinne: Dunkelsicht 60 Fuß, passive Wahrnehmung 12. Sprachen: versteht die Sprachen, die du sprichst. Wasseratmung (nur Wasser): Das Tier kann nur unter Wasser atmen. Vorbeiflug (nur Luft): Das Tier provoziert keine Gelegenheitsangriffe, wenn es aus der Reichweite eines Gegners fliegt. Rudeltaktik (nur Land und Wasser): Das Tier hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Tiers innerhalb von 5 Fuß um die Kreatur ist und nicht kampfunfähig ist. Mehrfachangriff: Das Tier führt so viele Angriffe aus, wie die Hälfte des Zaubergrads ergibt (abgerundet) – auf Grad 2 also einen. Zerfleischen: Nahkampf-Waffenangriff, +5 zum Treffen (dein Zauberangriffsbonus), Reichweite 5 Fuß, ein Ziel. Treffer: 1W8 + 6 Stichschaden." },
+    "Warding Wind": { meta:"2. Grad · Aktion · Selbst (10-Fuß-Radius) · V · Konzentration, bis zu 10 Minuten",
+      text:"Ein starker Wind (20 Meilen pro Stunde) weht in einem Radius von 10 Fuß um dich herum, bewegt sich mit dir und bleibt auf dich zentriert. Der Wind hält für die Dauer des Zaubers an. Er hat folgende Effekte: Er macht dich und andere Kreaturen in seinem Bereich taub. Er löscht ungeschützte Flammen in seinem Bereich, die höchstens fackelgroß sind. Er hält Dampf, Gas und Nebel ab, die von starkem Wind zerstreut werden können. Der Bereich ist für andere Kreaturen als dich schwieriges Gelände. Angriffswürfe von Fernkampf-Waffenangriffen haben Nachteil, wenn die Angriffe in den Wind hinein oder aus ihm heraus führen." },
+    "Wither and Bloom": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Sofort",
+      text:"Du rufst sowohl Tod als auch Leben über eine Kugel mit 10 Fuß Radius herab, die auf einen Punkt in Reichweite zentriert ist. Jede Kreatur deiner Wahl in diesem Bereich muss einen Konstitutionsrettungswurf ablegen. Bei einem Fehlschlag erleidet sie 2W6 nekrotischen Schaden, bei einem Erfolg die Hälfte. Nichtmagische Pflanzen in dem Bereich verdorren. Außerdem kann eine Kreatur deiner Wahl in dem Bereich einen ihrer nicht verbrauchten Trefferwürfel ausgeben und würfeln; sie erhält Trefferpunkte in Höhe des Wurfs plus deines Zauberattributsmodifikators zurück." },
   };
 
-  // [Grad("C"=Zaubertrick/"1"=1.Grad), Name, Ritual?, aktuell bekannt/vorbereitet?]
-  // Zaubertricks: vollständige Druiden-Liste (PHB + XGE-Erweiterung), geprüft
-  // gegen die 5etools-Quelldaten. Elara kennt auf Stufe 2 zwei Zaubertricks
-  // (Shillelagh, Produce Flame) fest markiert; die übrigen stehen als
-  // Wahlmöglichkeit für einen Levelaufstieg/Change bereit.
-  // 1. Grad: vollständige Liste der vorbereitbaren Druidenzauber (PHB + XGE).
-  // Vorbereitbar sind WIS-Mod + Druidenstufe = 3 + 2 = 5 Zauber gleichzeitig;
-  // fünf davon sind unten als aktuell vorbereitet markiert.
+  // [Grad("C"=Zaubertrick/"1"=1. Grad/"2"=2. Grad), Name, Ritual?, aktuell bekannt/vorbereitet?]
+  // Vollständige Druiden-Liste laut 5etools-Quelldaten (PHB, XGE, TCE; im
+  // 2. Grad zusätzlich Air Bubble aus AAG und Wither and Bloom aus Strixhaven).
+  // Zaubertricks: Elara kennt auf Stufe 1-3 zwei davon (Shillelagh, Produce
+  // Flame). Vorbereitbar sind WIS-Mod + Druidenstufe = 3 + 3 = 6 Zauber aus
+  // 1. und 2. Grad zusammen. WICHTIG: Neue Zauber immer HINTEN anhängen --
+  // die Position bestimmt die Feldnummer im gespeicherten Stand.
   const spells = [
     ["C","Shillelagh",false,true], ["C","Create Bonfire",false,false], ["C","Produce Flame",false,true],
     ["C","Thorn Whip",false,false], ["C","Poison Spray",false,false], ["C","Primal Savagery",false,false],
@@ -1093,20 +1202,59 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     ["1","Goodberry",false,true], ["1","Jump",false,false], ["1","Longstrider",false,false],
     ["1","Purify Food and Drink",true,false], ["1","Speak with Animals",true,false], ["1","Thunderwave",false,false],
     ["1","Absorb Elements",false,true], ["1","Beast Bond",false,false], ["1","Earth Tremor",false,false],
-    ["1","Protection from Evil and Good",false,false], ["1","Snare",false,false]
+    ["1","Protection from Evil and Good",false,false], ["1","Snare",false,false],
+    ["2","Air Bubble",false,false],
+    ["2","Animal Messenger",true,false],
+    ["2","Augury",true,false],
+    ["2","Barkskin",false,false],
+    ["2","Beast Sense",true,false],
+    ["2","Continual Flame",false,false],
+    ["2","Darkvision",false,false],
+    ["2","Dust Devil",false,false],
+    ["2","Earthbind",false,false],
+    ["2","Enhance Ability",false,false],
+    ["2","Enlarge/Reduce",false,false],
+    ["2","Find Traps",false,false],
+    ["2","Flame Blade",false,false],
+    ["2","Flaming Sphere",false,false],
+    ["2","Gust of Wind",false,false],
+    ["2","Healing Spirit",false,false],
+    ["2","Heat Metal",false,false],
+    ["2","Hold Person",false,false],
+    ["2","Lesser Restoration",false,false],
+    ["2","Locate Animals or Plants",true,false],
+    ["2","Locate Object",false,false],
+    ["2","Moonbeam",false,false],
+    ["2","Pass without Trace",false,false],
+    ["2","Protection from Poison",false,false],
+    ["2","Skywrite",true,false],
+    ["2","Spike Growth",false,false],
+    ["2","Summon Beast",false,false],
+    ["2","Warding Wind",false,false],
+    ["2","Wither and Bloom",false,false]
   ];
   const spellGrid = document.getElementById('spellGrid');
-  const mid = Math.ceil(spells.length/2);
-  const spellCols = [spells.map((s,i)=>[s,i]).slice(0,mid), spells.map((s,i)=>[s,i]).slice(mid)];
-  spellCols.forEach(col=>{
-    const div = document.createElement('div');
-    col.forEach(([[lvl,name,ritual,known],i])=>{
-      const row = document.createElement('div');
-      row.className='spell-row';
-      row.innerHTML = `<span class="lvl-badge ${lvl==='C'?'lvl-c':'lvl-1'}">${lvl}</span><input type="checkbox" data-field="spell_${i}_prepared"${known?' checked':''}><span class="sname has-tip" data-tip-key="${name}">${name}</span>${ritual?'<span class="ritual">R</span>':''}`;
-      div.appendChild(row);
+  const lvlClass = lvl => 'lvl-' + (lvl === 'C' ? 'c' : lvl);
+  const lvlTitle = lvl => lvl === 'C' ? 'Zaubertrick' : lvl + '. Grad';
+  const SPELL_GROUPS = [['C','Zaubertricks'], ['1','Zauber 1. Grad'], ['2','Zauber 2. Grad']];
+  SPELL_GROUPS.forEach(([groupLvl, title])=>{
+    const items = spells.map((s,i)=>[s,i]).filter(([s])=>s[0] === groupLvl);
+    if(!items.length) return;
+    const head = document.createElement('div');
+    head.className = 'spell-group-title';
+    head.innerHTML = `<span class="lvl-badge ${lvlClass(groupLvl)}">${groupLvl}</span>${title} <span class="spell-group-count">(${items.length})</span>`;
+    spellGrid.appendChild(head);
+    const mid = Math.ceil(items.length/2);
+    [items.slice(0,mid), items.slice(mid)].forEach(col=>{
+      const div = document.createElement('div');
+      col.forEach(([[lvl,name,ritual,known],i])=>{
+        const row = document.createElement('div');
+        row.className='spell-row';
+        row.innerHTML = `<span class="lvl-badge ${lvlClass(lvl)}">${lvl}</span><input type="checkbox" data-field="spell_${i}_prepared"${known?' checked':''}><span class="sname has-tip" data-tip-key="${name}">${name}</span>${ritual?'<span class="ritual">R</span>':''}`;
+        div.appendChild(row);
+      });
+      spellGrid.appendChild(div);
     });
-    spellGrid.appendChild(div);
   });
 
   // Lieblingszauber-Tabelle: wird bei jeder Änderung an den "vorbereitet"-
@@ -1126,7 +1274,69 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     "Healing Word": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W4+3)" },
     "Faerie Fire": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"-- (Vorteil)" },
     "Goodberry": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1)" },
-    "Absorb Elements": { range:"Selbst", time:"Reakt.", save:"--", dmg:"-- (Resistenz +1W6)" }
+    "Absorb Elements": { range:"Selbst", time:"Reakt.", save:"--", dmg:"-- (Resistenz +1W6)" },
+    "Create Bonfire": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"1W8 Feuer" },
+    "Thorn Whip": { range:"30 ft.", time:"Akt.", save:"--", dmg:"1W6 Stich (+5)" },
+    "Poison Spray": { range:"10 ft.", time:"Akt.", save:"CON", dmg:"1W12 Gift" },
+    "Primal Savagery": { range:"Selbst", time:"Akt.", save:"--", dmg:"1W10 Säure (+5)" },
+    "Frostbite": { range:"60 ft.", time:"Akt.", save:"CON", dmg:"1W6 Kälte" },
+    "Control Flames": { range:"60 ft.", time:"Akt.", save:"--", dmg:"-- (Feuer formen)" },
+    "Druidcraft": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Natureffekt)" },
+    "Guidance": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (+1W4 Probe)" },
+    "Gust": { range:"30 ft.", time:"Akt.", save:"STR", dmg:"-- (5 ft Stoß)" },
+    "Infestation": { range:"30 ft.", time:"Akt.", save:"CON", dmg:"1W6 Gift" },
+    "Magic Stone": { range:"Berühr.", time:"Bonus", save:"--", dmg:"1W6+3 Wucht (+5)" },
+    "Mending": { range:"Berühr.", time:"1 Min.", save:"--", dmg:"-- (reparieren)" },
+    "Mold Earth": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Erde formen)" },
+    "Resistance": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (+1W4 Rettung)" },
+    "Shape Water": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Wasser formen)" },
+    "Thunderclap": { range:"5 ft.", time:"Akt.", save:"CON", dmg:"1W6 Donner" },
+    "Detect Magic": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Magie spüren)" },
+    "Ice Knife": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"1W10 Stich + 2W6 Kälte" },
+    "Animal Friendship": { range:"30 ft.", time:"Akt.", save:"WIS", dmg:"-- (bezaubert)" },
+    "Charm Person": { range:"30 ft.", time:"Akt.", save:"WIS", dmg:"-- (bezaubert)" },
+    "Create or Destroy Water": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Wasser)" },
+    "Cure Wounds": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1W8+3)" },
+    "Detect Poison and Disease": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Gift spüren)" },
+    "Fog Cloud": { range:"120 ft.", time:"Akt.", save:"--", dmg:"-- (Nebel 20 ft)" },
+    "Jump": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Sprung ×3)" },
+    "Longstrider": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (+10 ft Tempo)" },
+    "Purify Food and Drink": { range:"10 ft.", time:"Akt.", save:"--", dmg:"-- (reinigen)" },
+    "Speak with Animals": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Tiersprache)" },
+    "Thunderwave": { range:"Selbst", time:"Akt.", save:"CON", dmg:"2W8 Donner" },
+    "Beast Bond": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Telepathie)" },
+    "Earth Tremor": { range:"Selbst", time:"Akt.", save:"DEX", dmg:"1W6 Wucht + liegend" },
+    "Protection from Evil and Good": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Schutz)" },
+    "Snare": { range:"Berühr.", time:"1 Min.", save:"DEX", dmg:"-- (kopfüber)" },
+    "Air Bubble": { range:"60 ft.", time:"Akt.", save:"--", dmg:"-- (Atemluft)" },
+    "Animal Messenger": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Nachricht)" },
+    "Augury": { range:"Selbst", time:"1 Min.", save:"--", dmg:"-- (Omen)" },
+    "Barkskin": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (RK mind. 16)" },
+    "Beast Sense": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Tiersinne)" },
+    "Continual Flame": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Licht)" },
+    "Darkvision": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Dunkelsicht)" },
+    "Dust Devil": { range:"60 ft.", time:"Akt.", save:"STR", dmg:"1W8 Wucht" },
+    "Earthbind": { range:"300 ft.", time:"Akt.", save:"STR", dmg:"-- (Flug 0)" },
+    "Enhance Ability": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Vorteil Proben)" },
+    "Enlarge/Reduce": { range:"30 ft.", time:"Akt.", save:"CON", dmg:"± 1W4 Waffe" },
+    "Find Traps": { range:"120 ft.", time:"Akt.", save:"--", dmg:"-- (Fallen spüren)" },
+    "Flame Blade": { range:"Selbst", time:"Bonus", save:"--", dmg:"3W6 Feuer (+5)" },
+    "Flaming Sphere": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"2W6 Feuer" },
+    "Gust of Wind": { range:"Linie 60", time:"Akt.", save:"STR", dmg:"-- (15 ft Stoß)" },
+    "Healing Spirit": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W6, 4×)" },
+    "Heat Metal": { range:"60 ft.", time:"Akt.", save:"CON", dmg:"2W8 Feuer" },
+    "Hold Person": { range:"60 ft.", time:"Akt.", save:"WIS", dmg:"-- (gelähmt)" },
+    "Lesser Restoration": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Zustand heilen)" },
+    "Locate Animals or Plants": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (5 Meilen)" },
+    "Locate Object": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (1.000 ft)" },
+    "Moonbeam": { range:"120 ft.", time:"Akt.", save:"CON", dmg:"2W10 Gleißend" },
+    "Pass without Trace": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (+10 Heimlichk.)" },
+    "Protection from Poison": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Giftresistenz)" },
+    "Skywrite": { range:"Sicht", time:"Akt.", save:"--", dmg:"-- (Himmelsschrift)" },
+    "Spike Growth": { range:"150 ft.", time:"Akt.", save:"--", dmg:"2W4 Stich je 5 ft" },
+    "Summon Beast": { range:"90 ft.", time:"Akt.", save:"--", dmg:"1W8+6 Stich (+5)" },
+    "Warding Wind": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Nachteil Fernk.)" },
+    "Wither and Bloom": { range:"60 ft.", time:"Akt.", save:"CON", dmg:"2W6 Nekrotisch" },
   };
   const favSpellTable = document.getElementById('favSpellTable');
   function renderFavTable(){
@@ -1137,18 +1347,18 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     });
     checkedEntries.forEach(([lvl,name],i)=>{
       const fd = FAV_DATA[name] || {range:"", time:"", save:"--", dmg:"--"};
-      const badgeClass = lvl==='C' ? 'lvl-c' : 'lvl-1';
+      const badgeClass = lvlClass(lvl);
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvl==='C'?'Zaubertrick':'1. Grad'}">${lvl}</span></td><td><span class="name-tip"><input data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input data-field="fav_${i}_range" value="${fd.range}"></td><td><input data-field="fav_${i}_time" value="${fd.time}"></td><td><input data-field="fav_${i}_save" value="${fd.save}"></td><td><input data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
+      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvlTitle(lvl)}">${lvl}</span></td><td><span class="name-tip"><input data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input data-field="fav_${i}_range" value="${fd.range}"></td><td><input data-field="fav_${i}_time" value="${fd.time}"></td><td><input data-field="fav_${i}_save" value="${fd.save}"></td><td><input data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
       favSpellTable.appendChild(tr);
     });
   }
   // Kapazitäten fürs Zauberwirken-Kärtchen: Zaubertricks bekannt ist eine
-  // feste Zahl aus der Druidentabelle (2 auf Stufe 1-3); vorbereitbare
-  // 1.-Grad-Zauber = WIS-Mod (+3) + Druidenstufe (2) = 5. Bei Levelaufstieg
-  // hier anpassen.
+  // feste Zahl aus der Druidentabelle (2 auf Stufe 1-3, 3 ab Stufe 4);
+  // vorbereitbare Zauber (1. und 2. Grad zusammen) = WIS-Mod (+3) +
+  // Druidenstufe (3) = 6. Bei Levelaufstieg hier anpassen.
   const CANTRIP_MAX = 2;
-  const PREPARED_MAX = 5;
+  const PREPARED_MAX = 6;
   const cantripsTile = document.getElementById('cantripsTile');
   const preparedTile = document.getElementById('preparedTile');
   const cantripsKnownEl = document.querySelector('[data-field="cantripsKnown"]');
@@ -1771,6 +1981,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       if(key in state) el.value = state[key];
     });
     autosizeTextareas();
+    if(typeof updateResourceCounts === 'function') updateResourceCounts();
     // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
     // wurde, den Fokus in dasselbe Feld zurücksetzen.
     if(activeKey && document.activeElement !== active){
@@ -1780,6 +1991,38 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
         try{ if(selStart !== null) again.setSelectionRange(selStart, selEnd); }catch(e){}
       }
     }
+  }
+  /* ============ Gespeicherte Stände auf die aktuelle Stufe anheben ============
+     Ein Stand von Stufe 2 (vom Server, aus einer Datei oder einer verbundenen
+     Datei) wird beim Laden einmalig auf Stufe 3 gebracht: Klasse & Stufe,
+     +9 Trefferpunkte (gewürfelt 7 + 2 KON) und ein dritter Trefferwürfel.
+     Neue Felder (weitere Zauberplätze, Zauber 2. Grades) bekommen ohnehin
+     ihre Vorgabewerte. Die Kennung "sheetLevel" verhindert, dass das doppelt
+     passiert; zusätzlich wird nur angehoben, wenn im Stand wirklich noch
+     Stufe 2 steht (falls jemand schon von Hand umgestellt hat). */
+  const SHEET_LEVEL = 3;
+  const LEVEL3_HP_GAIN = 9;
+  let lastMigrationNote = '';
+  function migrateState(state){
+    lastMigrationNote = '';
+    if(!state || typeof state !== 'object') return state;
+    const from = parseInt(state.sheetLevel, 10) || 2;   // Stände ohne Kennung stammen von Stufe 2
+    if(from >= SHEET_LEVEL) return state;
+    const s = Object.assign({}, state);
+    const cl = String(s.classLevel || '');
+    if(/(^|\D)2\s*$/.test(cl)){
+      s.classLevel = cl.replace(/2(\s*)$/, '3$1');
+      const maxHp = parseInt(s.maxHp, 10), curHp = parseInt(s.curHp, 10);
+      if(!isNaN(maxHp)){
+        s.maxHp = String(maxHp + LEVEL3_HP_GAIN);
+        if(!isNaN(curHp)) s.curHp = String(Math.min(maxHp + LEVEL3_HP_GAIN, curHp + LEVEL3_HP_GAIN));
+      }
+      const m = String(s.hitDice || '').match(/^\s*(\d+)\s*\/\s*(\d+)(.*)$/);
+      if(m && parseInt(m[2], 10) === 2) s.hitDice = `${parseInt(m[1], 10) + 1} / 3${m[3]}`;
+      lastMigrationNote = 'Stand auf Stufe 3 angehoben (+' + LEVEL3_HP_GAIN + ' TP, 3. Trefferwürfel) ✓';
+    }
+    s.sheetLevel = String(SHEET_LEVEL);
+    return s;
   }
   function stateToBlob(){
     return new Blob([JSON.stringify(collectState(), null, 2)], {type:'application/json'});
@@ -1821,11 +2064,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     noteChange();
   });
   document.getElementById('longRestBtn').addEventListener('click', ()=>{
-    if(!confirm('Lange Rast durchführen?\n\nStellt wieder her: TP auf Maximum, alle Zauberplätze, Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
+    if(!confirm('Lange Rast durchführen?\n\nStellt wieder her: TP auf Maximum, alle Zauberplätze (1. und 2. Grad), Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
     const maxHpEl = document.querySelector('[data-field="maxHp"]');
     const curHpEl = document.querySelector('[data-field="curHp"]');
     if(maxHpEl && curHpEl && maxHpEl.value) curHpEl.value = maxHpEl.value;
-    setChecked('[data-field^="slot1_"]', true);
+    setChecked('[data-field^="slot1_"], [data-field^="slot2_"]', true);
     setChecked('[data-field^="wildshape_"]', true);
     setChecked('[data-field^="death_succ_"], [data-field^="death_fail_"]', false);
     // Format: "verfügbar / gesamt (dX)" -- eine lange Rast erstattet die Hälfte
@@ -1861,8 +2104,8 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     const file = fileInput.files[0];
     if(!file) return;
     try{
-      applyState(JSON.parse(await file.text()));
-      setStatus('Stand geladen ✓');
+      applyState(migrateState(JSON.parse(await file.text())));
+      setStatus(lastMigrationNote || 'Stand geladen ✓');
       noteChange();
     }catch(e){
       alert('Diese Datei konnte nicht gelesen werden (kein gültiger gespeicherter Stand).');
@@ -1902,7 +2145,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
         try{
           const existing = await (await fileHandle.getFile()).text();
           if(existing.trim()){
-            applyState(JSON.parse(existing));
+            applyState(migrateState(JSON.parse(existing)));
           }
         }catch(e){}
         await writeToHandle();
@@ -1916,7 +2159,16 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
   // Jede Änderung an einem Feld: Datei-Autospeichern (falls verbunden) und
   // zentrales Speichern auf dem Server (falls die Seite von dort kommt).
-  function noteChange(){ scheduleAutoSave(); scheduleSync(); }
+  function noteChange(){ updateResourceCounts(); scheduleAutoSave(); scheduleSync(); }
+  // "X von Y verfügbar" neben Zauberplätzen und Wilder Gestalt live zählen.
+  function updateResourceCounts(){
+    document.querySelectorAll('[data-count-prefix]').forEach(el=>{
+      const boxes = Array.from(document.querySelectorAll('input[type=checkbox][data-field]'))
+        .filter(cb => cb.dataset.field.startsWith(el.dataset.countPrefix));
+      el.textContent = `${boxes.filter(cb=>cb.checked).length} von ${boxes.length} verfügbar`;
+    });
+  }
+  updateResourceCounts();
   document.addEventListener('input', (e)=>{
     if(e.target.matches('[data-field]')) noteChange();
   });
@@ -1961,7 +2213,12 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     }
     const local = collectState();
     const base = sync.base || {};
-    const merged = Object.assign({}, remote.state);
+    // Ein Stufe-2-Stand vom Server wird hier angehoben; die angehobenen Felder
+    // werden anschließend wie eigene Änderungen zum Server zurückgeschickt.
+    const lifted = migrateState(remote.state);
+    const liftedKeys = Object.keys(lifted).filter(k => lifted[k] !== remote.state[k]);
+    if(lastMigrationNote) sync.note = lastMigrationNote;
+    const merged = Object.assign({}, lifted);
     const mine = [];
     Object.keys(local).forEach(k=>{
       if(k in base && local[k] !== base[k]){ merged[k] = local[k]; mine.push(k); }
@@ -1969,8 +2226,9 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     applyState(merged);
     const newBase = collectState();
     mine.forEach(k=>{ newBase[k] = (k in remote.state) ? remote.state[k] : base[k]; });
+    liftedKeys.forEach(k=>{ if(k in remote.state) newBase[k] = remote.state[k]; else delete newBase[k]; });
     sync.base = newBase;
-    return mine.length > 0;
+    return mine.length > 0 || liftedKeys.length > 0;
   }
 
   async function syncTick(opts){
@@ -2049,7 +2307,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     document.getElementById('saveBtn').title = 'Den aktuellen Stand zusätzlich als Datei sichern';
     document.getElementById('toolbarHint').textContent = ' — Änderungen werden automatisch zentral gespeichert und mit allen Geräten im Netzwerk abgeglichen.';
     document.getElementById('footerNote').textContent = 'Elara Granger · Wood Elf Druide · Alle Werte sind frei editierbar. Der Stand liegt zentral auf dem Server und wird automatisch gespeichert; über „Sicherung herunterladen" lässt er sich zusätzlich als Datei sichern.';
-    setStatus('Mit dem Server verbunden ✓');
+    setStatus(sync.note || 'Mit dem Server verbunden ✓');
 
     if(pending) syncTick();
     setInterval(syncTick, SYNC_INTERVAL_MS);

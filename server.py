@@ -15,6 +15,7 @@ Der Server hat bewusst KEINE Anmeldung -- er ist fuer das private Heimnetz
 gedacht und sollte nicht per Portfreigabe ins Internet gestellt werden.
 """
 import argparse
+import errno
 import json
 import os
 import shutil
@@ -282,8 +283,17 @@ def main():
     if not os.path.exists(SHEET_FILE):
         sys.exit("Bogen-Datei nicht gefunden: %s" % SHEET_FILE)
 
-    Handler.store = StateStore(os.path.abspath(args.data_dir))
-    httpd = ThreadingHTTPServer((args.host, args.port), Handler)
+    try:
+        Handler.store = StateStore(os.path.abspath(args.data_dir))
+    except OSError as exc:
+        sys.exit("Daten-Ordner %s ist nicht benutzbar: %s" % (args.data_dir, exc))
+    try:
+        httpd = ThreadingHTTPServer((args.host, args.port), Handler)
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            sys.exit("Port %d ist bereits von einem anderen Programm belegt. "
+                     "Anderen Port waehlen, z. B.: --port %d" % (args.port, args.port + 10))
+        sys.exit("Server konnte nicht auf %s:%d starten: %s" % (args.host, args.port, exc))
     httpd.daemon_threads = True
 
     print("Elaras Charakterbogen laeuft.")
