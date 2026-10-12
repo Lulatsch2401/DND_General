@@ -341,7 +341,30 @@
   .wt-name{font-size:22px; font-weight:700; color:#7a200f; letter-spacing:.01em;}
   .wt-sub{font-size:12.5px; font-style:italic; color:#5c4632; margin-top:2px;}
   .wt-head-actions{display:flex; gap:8px; flex-wrap:wrap;}
-  .wild-tracker .btn{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  /* Eigene Knopf-Farben im Tracker (per #id, damit sie auch im Fantasie-Modus
+     gelten, dessen helle Knöpfe für die dunkle Kopfleiste gedacht sind). */
+  #wildTracker .btn{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    text-transform:none; letter-spacing:.01em; font-size:13.5px; font-weight:600;
+    border:1px solid; border-radius:8px; box-shadow:none; transform:none; filter:none;
+  }
+  #wildTracker .btn.secondary, #wildTracker .btn.rest{background:#fffaf0; color:#7a200f; border-color:#b88a52;}
+  #wildTracker .btn.secondary:hover:not(:disabled), #wildTracker .btn.rest:hover:not(:disabled){background:#f3dfb8; color:#5a160a; border-color:#7a200f;}
+  #wildTracker .btn.wt-dmg{background:#a13a2f; color:#fff; border-color:#a13a2f;}
+  #wildTracker .btn.wt-dmg:hover:not(:disabled){background:#86291f; border-color:#86291f;}
+  #wildTracker .btn.wt-heal{background:#2f6f4f; color:#fff; border-color:#2f6f4f;}
+  #wildTracker .btn.wt-heal:hover:not(:disabled){background:#245a3f; border-color:#245a3f;}
+  #wildTracker .btn.wt-primary{background:#7a200f; color:#fff; border-color:#7a200f;}
+  #wildTracker .btn.wt-primary:hover{background:#5a160a; border-color:#5a160a;}
+  /* Gesperrt (z. B. Heilen bei vollen TP): ruhig, aber gut lesbar statt blass */
+  #wildTracker .btn:disabled, #wildTracker .btn.secondary:disabled, #wildTracker .btn.rest:disabled,
+  #wildTracker .btn.wt-heal:disabled, #wildTracker .btn.wt-dmg:disabled{
+    opacity:1; background:#efe3c8; color:#7d6650; border-color:#d3bd96; border-style:dashed; cursor:not-allowed;
+  }
+  #wildTracker .btn[hidden]{display:none;}
+  .wt-idle-actions{margin-top:12px;}
+  .wt-picker-wrap[hidden]{display:none;}
+  .wt-idle .wt-msg{margin-top:10px;}
   .wt-hp{margin-top:12px;}
   .wt-hp-top{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
   .wt-hp-label{font-size:12px; font-weight:700; letter-spacing:.08em; color:#7a200f;}
@@ -355,10 +378,6 @@
   .wt-hp-fill.low{background:linear-gradient(90deg,#a13a2f,#c75a3f);}
   .wt-hp-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
   .wt-hp-controls input{width:76px; font-size:17px; font-weight:700; text-align:center; padding:7px 6px; border:1px solid #c9a35c; border-radius:7px; background:#fffaf0; color:#2a1a10;}
-  .wild-tracker .btn.wt-dmg{background:#a13a2f; border-color:#a13a2f;}
-  .wild-tracker .btn.wt-dmg:hover{background:#86291f;}
-  .wild-tracker .btn.wt-heal{background:#2f6f4f; border-color:#2f6f4f;}
-  .wild-tracker .btn:disabled{opacity:.45; cursor:not-allowed;}
   .wt-msg{min-height:18px; margin-top:8px; font-size:13px; color:#7a200f;}
   .wt-msg.ok{color:#2f6f4f;}
   .wt-detail h3{font-size:14px; color:#7a200f; border-bottom:1px solid #7a200f; margin:14px 0 6px; padding-bottom:2px;}
@@ -400,7 +419,7 @@
   body.server-mode:not(.beast-window) .wild-tracker .wt-quick{margin-left:0;}
   body.server-mode:not(.beast-window) .wild-tracker .wt-hp-bar{flex:1 1 140px; margin:0;}
   body.server-mode:not(.beast-window) .wild-tracker .wt-msg{flex-basis:100%; margin-top:0;}
-  body.server-mode:not(.beast-window) .wild-tracker .btn{padding:6px 11px; font-size:12.5px;}
+  body.server-mode:not(.beast-window) #wildTracker .btn{padding:6px 11px; font-size:12.5px;}
   body.server-mode:not(.beast-window) .wild-tracker .wt-hp-controls input{width:62px; font-size:15px; padding:5px;}
   .wt-msg:empty{display:none;}
   .sb-transform{margin-top:14px; text-align:center;}
@@ -811,13 +830,22 @@
     <div class="wt-idle">
       <div class="wt-head">
         <div>
-          <div class="wt-name">🐾 Tierfenster</div>
-          <div class="wt-sub">Elara ist gerade nicht verwandelt.</div>
+          <div class="wt-name" id="wtIdleTitle">🐾 Tierfenster</div>
+          <div class="wt-sub" id="wtIdleSub">Elara ist gerade nicht verwandelt.</div>
         </div>
-        <div class="wt-uses" id="wtIdleUses"></div>
+        <div class="wt-head-actions">
+          <button type="button" class="btn secondary" id="wtClose" hidden>✕ Fenster schließen</button>
+        </div>
       </div>
-      <p class="wt-idle-text">Tiergestalt wählen – verbraucht eine Nutzung der Wilden Gestalt (Kreis des Mondes: als Bonusaktion).</p>
-      <div class="beast-grid" id="wtPicker"></div>
+      <div class="wt-msg" id="wtIdleMsg"></div>
+      <div class="wt-elara" id="wtIdleElara"></div>
+      <div class="wt-idle-actions">
+        <button type="button" class="btn wt-primary" id="wtShowPicker">🐾 Neue Tiergestalt wählen</button>
+      </div>
+      <div class="wt-picker-wrap" id="wtPickerWrap">
+        <p class="wt-idle-text">Tiergestalt wählen – verbraucht eine Nutzung der Wilden Gestalt (Kreis des Mondes: als Bonusaktion).</p>
+        <div class="beast-grid" id="wtPicker"></div>
+      </div>
     </div>
     <div class="wt-active">
       <div class="wt-head">
@@ -2615,8 +2643,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   function wtMessage(text, ok){
     const m = document.getElementById('wtMsg');
     if(!m) return;
-    m.textContent = text || '';
-    m.classList.toggle('ok', !!ok);
+    ['wtMsg', 'wtIdleMsg'].forEach(id=>{
+      const el = document.getElementById(id);
+      el.textContent = text || '';
+      el.classList.toggle('ok', !!ok);
+    });
     wtMsgForm = wsEl('ws_form').value;   // Meldung verschwindet, sobald sich die Gestalt woanders ändert
   }
   function druidLevel(){
@@ -2701,7 +2732,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     const name = BEAST_DATA[s.form] ? BEAST_DATA[s.form].de : 'Tiergestalt';
     if(!confirm(`Zurück in Elaras Gestalt? Die restlichen ${s.hp} TP der Tiergestalt (${name}) verfallen.`)) return;
     endWildShape();
-    wtMessage('Zurückverwandelt.', true);
+    wtMessage('');
     noteChange();
   }
 
@@ -2723,6 +2754,16 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       .replace(/(SG \d+)/g, '<strong>$1</strong>');
   }
   var renderedForm = null;
+  var wtWasActive = null;      // war bei der letzten Anzeige eine Tiergestalt aktiv?
+  var wtPickerOpen = true;     // frisch geöffnetes Fenster: gleich die Auswahl zeigen
+  var wtJustReverted = false;  // nach dem Zurückverwandeln: Zusammenfassung statt Liste
+  function elaraLine(){
+    const wsFree = freeCount('wildshape_'), wsTotal = boxesFor('wildshape_').length;
+    const slot1 = freeCount('slot1_'), slot1t = boxesFor('slot1_').length;
+    const slot2 = freeCount('slot2_'), slot2t = boxesFor('slot2_').length;
+    return `<strong>Elara:</strong> TP ${wsEl('curHp').value} / ${wsEl('maxHp').value} · ` +
+      `Zauberplätze 1. Grad ${slot1}/${slot1t}, 2. Grad ${slot2}/${slot2t} · Wilde Gestalt ${wsFree}/${wsTotal} frei`;
+  }
   function renderWildShape(){
     const tracker = document.getElementById('wildTracker');
     if(!tracker) return;
@@ -2732,11 +2773,24 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     tracker.classList.toggle('is-active', active);
     if(wtMsgForm !== null && wtMsgForm !== s.form){ wtMessage(''); wtMsgForm = null; }
     const wsFree = freeCount('wildshape_'), wsTotal = boxesFor('wildshape_').length;
-    document.getElementById('wtIdleUses').textContent = `Wilde Gestalt: ${wsFree} von ${wsTotal} frei`;
+    if(wtWasActive === true && !active){ wtJustReverted = true; wtPickerOpen = false; }
+    if(active) wtJustReverted = false;
+    wtWasActive = active;
     if(document.body.classList.contains('beast-window')){
       document.title = active ? `🐾 ${b.de} ${s.hp}/${s.max} TP – Elara` : '🐾 Tierfenster – Elara Granger';
     }
-    if(!active){ renderedForm = null; return; }
+    if(!active){
+      renderedForm = null;
+      document.getElementById('wtIdleTitle').textContent = wtJustReverted ? '↩️ Zurückverwandelt' : '🐾 Tierfenster';
+      document.getElementById('wtIdleSub').textContent = wtJustReverted
+        ? 'Elara ist wieder in ihrer eigenen Gestalt.'
+        : 'Elara ist gerade nicht verwandelt.';
+      document.getElementById('wtIdleElara').innerHTML = elaraLine() +
+        (wsFree === 0 ? '<br><em>Keine Nutzung der Wilden Gestalt mehr frei – neue gibt es nach einer kurzen oder langen Rast.</em>' : '');
+      document.getElementById('wtPickerWrap').hidden = !wtPickerOpen;
+      document.getElementById('wtShowPicker').hidden = wtPickerOpen;
+      return;
+    }
 
     // TP-Leiste und Schnellwerte
     const pct = s.max > 0 ? Math.max(0, Math.min(100, Math.round(100 * s.hp / s.max))) : 0;
@@ -2754,13 +2808,14 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       btn.disabled = free === 0 || s.hp >= s.max;
     });
     document.getElementById('wtHeal').disabled = s.hp >= s.max;
+    document.getElementById('wtHeal').title = s.hp >= s.max ? 'Die TP der Tiergestalt sind voll.' : '';
+    [1, 2].forEach(l=>{
+      const btn = document.getElementById('wtSlot' + l);
+      btn.title = s.hp >= s.max ? 'Die TP der Tiergestalt sind voll.' : (freeCount(`slot${l}_`) === 0 ? `Kein Zauberplatz ${l}. Grades mehr frei.` : 'Erst den Würfelwurf eintragen, dann klicken.');
+    });
 
     // Elaras eigene Werte (ändern sich auch während der Verwandlung)
-    const slot1 = freeCount('slot1_'), slot1t = boxesFor('slot1_').length;
-    const slot2 = freeCount('slot2_'), slot2t = boxesFor('slot2_').length;
-    document.getElementById('wtElara').innerHTML =
-      `<strong>Elara:</strong> TP ${wsEl('curHp').value} / ${wsEl('maxHp').value} · ` +
-      `Zauberplätze 1. Grad ${slot1}/${slot1t}, 2. Grad ${slot2}/${slot2t} · Wilde Gestalt ${wsFree}/${wsTotal} frei`;
+    document.getElementById('wtElara').innerHTML = elaraLine();
 
     // Werte, die sich nur mit dem Tier oder Elaras Bogen ändern
     const prof = parseInt(wsEl('profBonus').value, 10) || 0;
@@ -2842,6 +2897,16 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   document.getElementById('wtSlot1').addEventListener('click', ()=> beastHeal(1));
   document.getElementById('wtSlot2').addEventListener('click', ()=> beastHeal(2));
   document.getElementById('wtRevert').addEventListener('click', revertWildShape);
+  document.getElementById('wtShowPicker').addEventListener('click', ()=>{
+    wtPickerOpen = true; wtMessage(''); renderWildShape();
+    document.getElementById('wtPickerWrap').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  // "Fenster schließen" nur, wenn das Fenster vom Bogen aus geöffnet wurde
+  if(document.body.classList.contains('beast-window') && window.opener){
+    const closeBtn = document.getElementById('wtClose');
+    closeBtn.hidden = false;
+    closeBtn.addEventListener('click', ()=> window.close());
+  }
   document.addEventListener('click', (e)=>{ if(e.target.closest('.wt-open-window')) openBeastWindow(); });
   var currentBeast = null;
   document.getElementById('sbTransform').addEventListener('click', ()=>{
