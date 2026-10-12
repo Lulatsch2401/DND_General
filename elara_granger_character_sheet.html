@@ -328,7 +328,93 @@
 
   footer.note{max-width:1180px; margin:20px auto 0; font-size:11.5px; color:var(--text-muted); line-height:1.6; padding:0 4px;}
 
+  /* ============ Wilde Gestalt: Tier-Tracker ============ */
+  .wild-tracker{
+    display:none; margin:0 0 18px; padding:16px 20px 14px; border-radius:var(--radius);
+    background:#fdf1dc; color:#2a1a10; border:1px solid #c9a35c; box-shadow:var(--shadow);
+    font-family:Georgia,"Times New Roman",serif;
+  }
+  .wild-tracker.is-active{display:block;}
+  .wild-tracker .wt-idle, .wild-tracker .wt-file-note{display:none;}
+  .wild-tracker:not(.is-active) .wt-active{display:none;}
+  .wt-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .wt-name{font-size:22px; font-weight:700; color:#7a200f; letter-spacing:.01em;}
+  .wt-sub{font-size:12.5px; font-style:italic; color:#5c4632; margin-top:2px;}
+  .wt-head-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .wild-tracker .btn{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  .wt-hp{margin-top:12px;}
+  .wt-hp-top{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .wt-hp-label{font-size:12px; font-weight:700; letter-spacing:.08em; color:#7a200f;}
+  .wt-hp-cur{font-size:34px; font-weight:700; line-height:1; color:#2a1a10;}
+  .wt-hp-max{font-size:18px; color:#5c4632;}
+  .wt-quick{margin-left:auto; font-size:13px; color:#5c4632;}
+  .wt-quick strong{color:#2a1a10;}
+  .wt-hp-bar{height:12px; margin:8px 0 10px; border-radius:7px; background:#ead8b4; overflow:hidden; border:1px solid #c9a35c;}
+  .wt-hp-fill{height:100%; width:100%; background:linear-gradient(90deg,#3f8a63,#5fae7f); transition:width .25s ease, background .25s ease;}
+  .wt-hp-fill.mid{background:linear-gradient(90deg,#b8892f,#d6aa4a);}
+  .wt-hp-fill.low{background:linear-gradient(90deg,#a13a2f,#c75a3f);}
+  .wt-hp-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .wt-hp-controls input{width:76px; font-size:17px; font-weight:700; text-align:center; padding:7px 6px; border:1px solid #c9a35c; border-radius:7px; background:#fffaf0; color:#2a1a10;}
+  .wild-tracker .btn.wt-dmg{background:#a13a2f; border-color:#a13a2f;}
+  .wild-tracker .btn.wt-dmg:hover{background:#86291f;}
+  .wild-tracker .btn.wt-heal{background:#2f6f4f; border-color:#2f6f4f;}
+  .wild-tracker .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .wt-msg{min-height:18px; margin-top:8px; font-size:13px; color:#7a200f;}
+  .wt-msg.ok{color:#2f6f4f;}
+  .wt-detail h3{font-size:14px; color:#7a200f; border-bottom:1px solid #7a200f; margin:14px 0 6px; padding-bottom:2px;}
+  .wt-stats{display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:12px; padding:8px 0; border-top:3px solid #7a200f; border-bottom:3px solid #7a200f; font-size:14px;}
+  .wt-stats strong{color:#7a200f;}
+  .wt-cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px;}
+  @media (max-width:560px){ .wt-cols{grid-template-columns:minmax(0,1fr);} }
+  .wt-abilities{width:100%; border-collapse:collapse; font-size:13px;}
+  .wt-abilities th, .wt-abilities td{border-bottom:1px solid #e3cfa6; padding:3px 4px; text-align:center; text-transform:none; letter-spacing:0; color:#2a1a10; font-size:13px;}
+  .wt-abilities th{font-size:11px; color:#7a200f;}
+  .wt-abilities td:first-child{text-align:left; font-weight:700; color:#7a200f;}
+  .wt-abilities .wt-own{font-size:10px; color:#8a7458; font-style:italic;}
+  .wt-abilities tr:hover td{background:transparent;}
+  .wt-skills{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:1px 10px; font-size:13px;}
+  .wt-skills .prof::before{content:"● "; color:#7a200f; font-size:9px;}
+  .wt-skills .beastval{color:#2f6f4f; font-weight:700;}
+  .wt-skills span:nth-child(2n){text-align:right; font-weight:700;}
+  .wt-entry{font-size:13.5px; line-height:1.5; margin:4px 0;}
+  .wt-entry .wt-entry-name{font-weight:700; font-style:italic;}
+  .wt-elara{margin-top:12px; padding:8px 10px; background:#f6e5c3; border-radius:6px; font-size:13px;}
+  .wt-rules{margin-top:10px; font-size:11.5px; line-height:1.55; color:#5c4632;}
+  .wt-status{margin-top:8px; font-size:11px; color:#8a7458; text-align:right;}
+  .wt-uses{font-size:13px; color:#5c4632;}
+  .wt-idle-text{font-size:13px; color:#5c4632; margin:10px 0;}
+  .wild-tracker .beast-pill{flex-direction:column; align-items:flex-start; gap:1px; cursor:pointer; font:inherit; font-size:12px; text-align:left; width:100%; color:inherit;}
+  .wild-tracker .beast-pill .b-stats{font-size:10.5px; color:#7a5a3a;}
+  .wt-open-small{padding:5px 12px; font-size:12px; margin-top:8px; white-space:nowrap;}
+  .wt-open-window{display:none;}
+  body.server-mode:not(.beast-window) .wt-open-window{display:inline-block;}
+  /* Hauptfenster im Server-Betrieb: nur die kompakte Leiste, alles Weitere im Tierfenster */
+  body.server-mode:not(.beast-window) .wild-tracker .wt-detail,
+  body.server-mode:not(.beast-window) .wild-tracker .wt-status{display:none;}
+  body.server-mode:not(.beast-window) .wild-tracker{position:sticky; top:8px; z-index:50; padding:8px 14px 8px;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-name{font-size:17px;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-sub{display:none;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-head{align-items:center;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-hp{display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin-top:6px;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-hp-cur{font-size:24px;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-quick{margin-left:0;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-hp-bar{flex:1 1 140px; margin:0;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-msg{flex-basis:100%; margin-top:0;}
+  body.server-mode:not(.beast-window) .wild-tracker .btn{padding:6px 11px; font-size:12.5px;}
+  body.server-mode:not(.beast-window) .wild-tracker .wt-hp-controls input{width:62px; font-size:15px; padding:5px;}
+  .wt-msg:empty{display:none;}
+  .sb-transform{margin-top:14px; text-align:center;}
+  /* Eigenes Tierfenster (?ansicht=tier): nur der Tracker */
+  body.beast-window{padding:12px 12px 30px;}
+  body.beast-window .toolbar, body.beast-window .banner, body.beast-window .cols, body.beast-window footer.note{display:none !important;}
+  body.beast-window .wrap{max-width:760px;}
+  body.beast-window .wild-tracker{display:block; margin:0;}
+  body.beast-window .wild-tracker:not(.is-active) .wt-idle{display:block;}
+  body.beast-window:not(.server-mode) .wild-tracker .wt-file-note{display:block; margin:0 0 10px; padding:6px 10px; background:#f6d9cf; border-radius:6px; font-size:12px; color:#7a200f;}
+  body.fantasy-mode .wild-tracker{box-shadow:0 8px 22px rgba(0,0,0,.42), 0 0 0 2px rgba(176,145,63,.45);}
+
   @media print{
+    .wild-tracker{display:none !important;}
     body{background:#fff; padding:0;}
     .toolbar{display:none;}
     .card{box-shadow:none; break-inside:avoid;}
@@ -648,6 +734,10 @@
   <input type="file" id="fileInput" accept="application/json" style="display:none;">
   <input type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
   <input type="hidden" id="sheetLevelField" data-field="sheetLevel" value="3">
+  <!-- Aktive Wilde Gestalt: Tier (englischer Schlüssel aus BEAST_DATA, leer = nicht verwandelt) und dessen TP -->
+  <input type="hidden" data-field="ws_form" value="">
+  <input type="hidden" data-field="ws_hp" value="">
+  <input type="hidden" data-field="ws_hpmax" value="">
 </div>
 <div id="tooltip"></div>
 
@@ -689,9 +779,17 @@
     <div id="sbTraits"></div>
     <div class="sb-section-title" id="sbActionsTitle">Aktionen</div>
     <div id="sbActions"></div>
+    <div class="sb-transform"><button type="button" class="btn" id="sbTransform">🐾 In diese Gestalt verwandeln</button></div>
   </div>
 </div>
 
+<script>
+  // Eigenes Tierfenster: dieselbe Seite mit ?ansicht=tier, zeigt nur die Tiergestalt.
+  if(new URLSearchParams(location.search).get('ansicht') === 'tier'){
+    document.body.classList.add('beast-window');
+    document.title = '🐾 Tierfenster – Elara Granger';
+  }
+</script>
 <div class="wrap">
 
   <div class="banner">
@@ -707,6 +805,74 @@
       <div><label>Spieler:in</label><input data-field="player" value="wiebke961"></div>
     </div>
   </div>
+
+  <section id="wildTracker" class="wild-tracker" aria-label="Wilde Gestalt">
+    <div class="wt-file-note">Dieses Fenster gleicht sich nur ab, wenn der Bogen über den Server (Pi) geöffnet ist – hier gerade nicht.</div>
+    <div class="wt-idle">
+      <div class="wt-head">
+        <div>
+          <div class="wt-name">🐾 Tierfenster</div>
+          <div class="wt-sub">Elara ist gerade nicht verwandelt.</div>
+        </div>
+        <div class="wt-uses" id="wtIdleUses"></div>
+      </div>
+      <p class="wt-idle-text">Tiergestalt wählen – verbraucht eine Nutzung der Wilden Gestalt (Kreis des Mondes: als Bonusaktion).</p>
+      <div class="beast-grid" id="wtPicker"></div>
+    </div>
+    <div class="wt-active">
+      <div class="wt-head">
+        <div>
+          <div class="wt-name" id="wtName"></div>
+          <div class="wt-sub" id="wtSub"></div>
+        </div>
+        <div class="wt-head-actions">
+          <button type="button" class="btn secondary wt-open-window">🪟 Tierfenster öffnen</button>
+          <button type="button" class="btn rest" id="wtRevert">↩️ Zurückverwandeln</button>
+        </div>
+      </div>
+      <div class="wt-hp">
+        <div class="wt-hp-top">
+          <span class="wt-hp-label">TP</span>
+          <span class="wt-hp-cur" id="wtHpCur"></span><span class="wt-hp-max">/ <span id="wtHpMax"></span></span>
+          <span class="wt-quick" id="wtQuick"></span>
+        </div>
+        <div class="wt-hp-bar"><div class="wt-hp-fill" id="wtHpFill"></div></div>
+        <div class="wt-hp-controls">
+          <input type="number" id="wtAmount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung">
+          <button type="button" class="btn wt-dmg" id="wtDamage">− Schaden</button>
+          <button type="button" class="btn wt-heal" id="wtHeal">+ Heilung</button>
+          <button type="button" class="btn secondary wt-slot" id="wtSlot1" data-slot="1"></button>
+          <button type="button" class="btn secondary wt-slot" id="wtSlot2" data-slot="2"></button>
+        </div>
+        <div class="wt-msg" id="wtMsg"></div>
+      </div>
+      <div class="wt-detail">
+        <div class="wt-stats" id="wtStats"></div>
+        <div class="wt-cols">
+          <div>
+            <h3>Attribute &amp; Rettungswürfe</h3>
+            <table class="wt-abilities" id="wtAbilities"></table>
+          </div>
+          <div>
+            <h3>Fertigkeiten</h3>
+            <div class="wt-skills" id="wtSkills"></div>
+          </div>
+        </div>
+        <h3>Aktionen</h3>
+        <div id="wtActions"></div>
+        <h3>Merkmale</h3>
+        <div id="wtTraits"></div>
+        <div class="wt-elara" id="wtElara"></div>
+        <div class="wt-rules">
+          <strong>In Tiergestalt:</strong> keine Zauber wirken – laufende Konzentration bleibt bestehen ·
+          Bonusaktion: Zauberplatz ausgeben und 1W8 TP je Grad heilen (Kampf-Wildgestalt) ·
+          bei 0 TP zurück in Elaras Gestalt, übriger Schaden trifft Elara ·
+          Zurückverwandeln jederzeit als Bonusaktion · INT, WIS, CHA, Übungen und Elaras Merkmale (z. B. Dunkelsicht) bleiben.
+        </div>
+      </div>
+      <div class="wt-status" id="wtStatus"></div>
+    </div>
+  </section>
 
   <div class="cols">
     <!-- ============ LEFT COLUMN: Abilities & Skills ============ -->
@@ -874,6 +1040,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
             <input type="checkbox" data-field="wildshape_0" checked><input type="checkbox" data-field="wildshape_1" checked>
             <span class="res-count" data-count-prefix="wildshape_">2 von 2 verfügbar</span>
           </div>
+          <div><button type="button" class="btn secondary wt-open-window wt-open-small">🐾 Tierfenster öffnen</button></div>
         </div>
 
         <div class="active-block">
@@ -1982,6 +2149,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     });
     autosizeTextareas();
     if(typeof updateResourceCounts === 'function') updateResourceCounts();
+    if(typeof renderWildShape === 'function') renderWildShape();
     // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
     // wurde, den Fokus in dasselbe Feld zurücksetzen.
     if(activeKey && document.activeElement !== active){
@@ -2029,7 +2197,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   }
 
   const saveStatusEl = document.getElementById('saveStatus');
-  function setStatus(text){ saveStatusEl.textContent = text; }
+  function setStatus(text){
+    saveStatusEl.textContent = text;
+    const ws = document.getElementById('wtStatus');
+    if(ws) ws.textContent = text;
+  }
 
   /* ============ Fantasie-Modus ============
      Reine Optik-Umschaltung per Klasse auf <body> -- alle Felder, Werte und
@@ -2064,13 +2236,14 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     noteChange();
   });
   document.getElementById('longRestBtn').addEventListener('click', ()=>{
-    if(!confirm('Lange Rast durchführen?\n\nStellt wieder her: TP auf Maximum, alle Zauberplätze (1. und 2. Grad), Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
+    if(!confirm('Lange Rast durchführen?\n\nBeendet eine aktive Tiergestalt und stellt wieder her: TP auf Maximum, alle Zauberplätze (1. und 2. Grad), Wilde-Gestalt-Nutzungen und Todesrettungswürfe. Außerdem werden Trefferwürfel zurückerlangt (die Hälfte der Gesamtzahl, aufgerundet ab 1).')) return;
     const maxHpEl = document.querySelector('[data-field="maxHp"]');
     const curHpEl = document.querySelector('[data-field="curHp"]');
     if(maxHpEl && curHpEl && maxHpEl.value) curHpEl.value = maxHpEl.value;
     setChecked('[data-field^="slot1_"], [data-field^="slot2_"]', true);
     setChecked('[data-field^="wildshape_"]', true);
     setChecked('[data-field^="death_succ_"], [data-field^="death_fail_"]', false);
+    endWildShape();
     // Format: "verfügbar / gesamt (dX)" -- eine lange Rast erstattet die Hälfte
     // der Gesamtzahl an Trefferwürfeln zurück (aufgerundet ab 1), gedeckelt auf
     // die Gesamtzahl.
@@ -2159,7 +2332,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
   // Jede Änderung an einem Feld: Datei-Autospeichern (falls verbunden) und
   // zentrales Speichern auf dem Server (falls die Seite von dort kommt).
-  function noteChange(){ updateResourceCounts(); scheduleAutoSave(); scheduleSync(); }
+  function noteChange(){ updateResourceCounts(); renderWildShape(); scheduleAutoSave(); scheduleSync(); }
   // "X von Y verfügbar" neben Zauberplätzen und Wilder Gestalt live zählen.
   function updateResourceCounts(){
     document.querySelectorAll('[data-count-prefix]').forEach(el=>{
@@ -2193,6 +2366,18 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   const SYNC_URL = 'api/state';
   const SYNC_INTERVAL_MS = 2000;
   const sync = { on:false, version:0, base:null, busy:false, again:false, timer:null, offline:false };
+  // Hauptfenster und Tierfenster laufen im selben Browser: über diesen Kanal
+  // meldet ein Fenster "habe gespeichert", das andere holt sich den Stand sofort
+  // (statt bis zur nächsten Abfrage zu warten).
+  let syncChannel = null;
+  try{
+    if('BroadcastChannel' in window){
+      syncChannel = new BroadcastChannel('elara-sheet-sync');
+      syncChannel.onmessage = (e)=>{
+        if(sync.on && e.data && e.data.version > sync.version) syncTick({force:true});
+      };
+    }
+  }catch(e){ syncChannel = null; }
 
   function statesEqual(a, b){
     const ka = Object.keys(a);
@@ -2253,6 +2438,8 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
           const info = await res.json();
           sync.version = info.version;
           sync.base = local;
+          // Anderes offenes Fenster (z. B. das Tierfenster) sofort Bescheid geben
+          if(syncChannel) try{ syncChannel.postMessage({version: sync.version}); }catch(e){}
           setStatus('Gespeichert ✓ (' + timeNow() + ')');
         }else{
           throw new Error('HTTP ' + res.status);
@@ -2399,9 +2586,277 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
   function abilityMod(score){ const m = Math.floor((score-10)/2); return (m>=0?'+':'')+m; }
 
+  /* ============ Wilde Gestalt: verwandeln, TP der Tiergestalt, Tierfenster ============
+     Regeln (2014, Kreis des Mondes): Verwandeln/Zurückverwandeln als Bonusaktion,
+     die Tiergestalt hat eigene TP; fällt sie auf 0, ist Elara zurückverwandelt
+     und übriger Schaden geht auf ihre eigenen TP. Als Bonusaktion kann sie in
+     Tiergestalt einen Zauberplatz ausgeben und 1W8 TP je Grad heilen. Gewürfelt
+     wird am Tisch -- der Bogen rechnet nur. */
+  // Als Funktionsdeklarationen, damit sie schon vor dieser Stelle (z. B. aus
+  // applyState) aufrufbar sind.
+  function wsEl(k){ return document.querySelector(`[data-field="${k}"]`); }
+  function fmtBonus(n){ return (n >= 0 ? '+' : '') + n; }
+  function modOf(score){ return Math.floor((parseInt(score,10) - 10) / 2); }
+  function intOf(k, d){ const el = wsEl(k); const v = parseInt(el && el.value, 10); return isNaN(v) ? d : v; }
+  function wsState(){
+    return { form: wsEl('ws_form').value, hp: intOf('ws_hp', 0), max: intOf('ws_hpmax', 0) };
+  }
+  function boxesFor(prefix){
+    return Array.from(document.querySelectorAll('input[type=checkbox][data-field]')).filter(cb => cb.dataset.field.startsWith(prefix));
+  }
+  function freeCount(prefix){ return boxesFor(prefix).filter(cb => cb.checked).length; }
+  function spendOne(prefix){
+    const free = boxesFor(prefix).filter(cb => cb.checked);
+    if(!free.length) return false;
+    free[free.length - 1].checked = false;
+    return true;
+  }
+  var wtMsgForm = null;
+  function wtMessage(text, ok){
+    const m = document.getElementById('wtMsg');
+    if(!m) return;
+    m.textContent = text || '';
+    m.classList.toggle('ok', !!ok);
+    wtMsgForm = wsEl('ws_form').value;   // Meldung verschwindet, sobald sich die Gestalt woanders ändert
+  }
+  function druidLevel(){
+    const m = String(wsEl('classLevel').value || '').match(/(\d+)\s*$/);
+    return m ? parseInt(m[1], 10) : 3;
+  }
+
+  function transformInto(en){
+    const b = BEAST_DATA[en];
+    if(!b) return false;
+    const cur = wsState().form;
+    const free = freeCount('wildshape_'), total = boxesFor('wildshape_').length;
+    const target = b.de === en ? b.de : `${b.de} (${en})`;
+    const msg = free > 0
+      ? `${cur && BEAST_DATA[cur] ? 'Von ' + BEAST_DATA[cur].de + ' in ' + target + ' wechseln' : 'In ' + target + ' verwandeln'}?\n\nVerbraucht eine Nutzung der Wilden Gestalt (${free} von ${total} frei).`
+      : `Keine Nutzung der Wilden Gestalt mehr frei.\n\nTrotzdem in ${target} verwandeln (z. B. weil die Spielleitung es erlaubt)?`;
+    if(!confirm(msg)) return false;
+    if(free > 0) spendOne('wildshape_');
+    const hp = parseInt(b.hp, 10) || 1;
+    wsEl('ws_form').value = en;
+    wsEl('ws_hp').value = String(hp);
+    wsEl('ws_hpmax').value = String(hp);
+    wtMessage(`Verwandelt in ${b.de} – ${hp} TP.`, true);
+    noteChange();
+    return true;
+  }
+  function endWildShape(){
+    wsEl('ws_form').value = '';
+    wsEl('ws_hp').value = '';
+    wsEl('ws_hpmax').value = '';
+  }
+  function readAmount(){
+    const input = document.getElementById('wtAmount');
+    const n = parseInt(input.value, 10);
+    if(isNaN(n) || n <= 0){ wtMessage('Erst einen Wert eintragen (ganze Zahl größer als 0).'); input.focus(); return null; }
+    return n;
+  }
+  function clearAmount(){ document.getElementById('wtAmount').value = ''; }
+
+  function beastDamage(){
+    const n = readAmount(); if(n === null) return;
+    const s = wsState(); if(!s.form) return;
+    const name = BEAST_DATA[s.form] ? BEAST_DATA[s.form].de : 'Tiergestalt';
+    if(n >= s.hp){
+      const over = n - s.hp;
+      endWildShape();
+      let text = `${name} fällt auf 0 TP – Elara ist zurückverwandelt.`;
+      const curEl = wsEl('curHp');
+      const cur = parseInt(curEl.value, 10);
+      if(over > 0 && !isNaN(cur)){
+        const left = Math.max(0, cur - over);
+        curEl.value = String(left);
+        text += over === 1 ? ` Der übrige Schadenspunkt trifft Elara: noch ${left} TP.` : ` Die übrigen ${over} Schadenspunkte treffen Elara: noch ${left} TP.`;
+        if(left === 0) text += ' Elara ist bewusstlos – Todesrettungswürfe!';
+      }
+      wtMessage(text);
+    }else{
+      wsEl('ws_hp').value = String(s.hp - n);
+      wtMessage(`−${n} TP.`);
+    }
+    clearAmount();
+    noteChange();
+  }
+  function beastHeal(slotLevel){
+    const n = readAmount(); if(n === null) return;
+    const s = wsState(); if(!s.form) return;
+    if(slotLevel){
+      const maxRoll = 8 * slotLevel;
+      if(n < slotLevel || n > maxRoll){ wtMessage(`Mit einem Platz ${slotLevel}. Grades würfelst du ${slotLevel}W8 – das ergibt ${slotLevel} bis ${maxRoll}.`); return; }
+      if(!spendOne(`slot${slotLevel}_`)){ wtMessage(`Kein Zauberplatz ${slotLevel}. Grades mehr frei.`); return; }
+    }
+    const healed = Math.min(s.max, s.hp + n) - s.hp;
+    wsEl('ws_hp').value = String(s.hp + healed);
+    wtMessage(slotLevel
+      ? `Platz ${slotLevel}. Grades ausgegeben: +${healed} TP${healed < n ? ' (Maximum erreicht)' : ''}.`
+      : `+${healed} TP${healed < n ? ' (Maximum erreicht)' : ''}.`, true);
+    clearAmount();
+    noteChange();
+  }
+  function revertWildShape(){
+    const s = wsState(); if(!s.form) return;
+    const name = BEAST_DATA[s.form] ? BEAST_DATA[s.form].de : 'Tiergestalt';
+    if(!confirm(`Zurück in Elaras Gestalt? Die restlichen ${s.hp} TP der Tiergestalt (${name}) verfallen.`)) return;
+    endWildShape();
+    wtMessage('Zurückverwandelt.', true);
+    noteChange();
+  }
+
+  const BEAST_WINDOW_NAME = 'elara-tierfenster';
+  function openBeastWindow(){
+    const url = location.pathname + '?ansicht=tier';
+    const w = window.open('', BEAST_WINDOW_NAME, 'popup=yes,width=620,height=940');
+    if(!w){ wtMessage('Das Tierfenster wurde vom Browser blockiert – bitte Pop-ups für diese Seite erlauben.'); return; }
+    let blank = true;
+    try{ blank = !w.location.href || w.location.href === 'about:blank'; }catch(e){ blank = true; }
+    if(blank) w.location.href = url;
+    try{ w.focus(); }catch(e){}
+  }
+
+  function boldNumbers(text){
+    return text
+      .replace(/([+−-]\d+ zum Treffen)/g, '<strong>$1</strong>')
+      .replace(/(\d+ \(\d+W\d+(?:\s*[+−-]\s*\d+)?\))/g, '<strong>$1</strong>')
+      .replace(/(SG \d+)/g, '<strong>$1</strong>');
+  }
+  var renderedForm = null;
+  function renderWildShape(){
+    const tracker = document.getElementById('wildTracker');
+    if(!tracker) return;
+    const s = wsState();
+    const b = BEAST_DATA[s.form];
+    const active = !!(s.form && b);
+    tracker.classList.toggle('is-active', active);
+    if(wtMsgForm !== null && wtMsgForm !== s.form){ wtMessage(''); wtMsgForm = null; }
+    const wsFree = freeCount('wildshape_'), wsTotal = boxesFor('wildshape_').length;
+    document.getElementById('wtIdleUses').textContent = `Wilde Gestalt: ${wsFree} von ${wsTotal} frei`;
+    if(document.body.classList.contains('beast-window')){
+      document.title = active ? `🐾 ${b.de} ${s.hp}/${s.max} TP – Elara` : '🐾 Tierfenster – Elara Granger';
+    }
+    if(!active){ renderedForm = null; return; }
+
+    // TP-Leiste und Schnellwerte
+    const pct = s.max > 0 ? Math.max(0, Math.min(100, Math.round(100 * s.hp / s.max))) : 0;
+    document.getElementById('wtHpCur').textContent = s.hp;
+    document.getElementById('wtHpMax').textContent = s.max;
+    const fill = document.getElementById('wtHpFill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('mid', pct <= 50 && pct > 25);
+    fill.classList.toggle('low', pct <= 25);
+    document.getElementById('wtQuick').innerHTML = `RK <strong>${String(b.ac).split(' ')[0]}</strong> · Tempo <strong>${b.speed}</strong>`;
+    [1, 2].forEach(l=>{
+      const btn = document.getElementById('wtSlot' + l);
+      const free = freeCount(`slot${l}_`);
+      btn.textContent = `Platz ${l}. Grad → ${l}W8 heilen (${free} frei)`;
+      btn.disabled = free === 0 || s.hp >= s.max;
+    });
+    document.getElementById('wtHeal').disabled = s.hp >= s.max;
+
+    // Elaras eigene Werte (ändern sich auch während der Verwandlung)
+    const slot1 = freeCount('slot1_'), slot1t = boxesFor('slot1_').length;
+    const slot2 = freeCount('slot2_'), slot2t = boxesFor('slot2_').length;
+    document.getElementById('wtElara').innerHTML =
+      `<strong>Elara:</strong> TP ${wsEl('curHp').value} / ${wsEl('maxHp').value} · ` +
+      `Zauberplätze 1. Grad ${slot1}/${slot1t}, 2. Grad ${slot2}/${slot2t} · Wilde Gestalt ${wsFree}/${wsTotal} frei`;
+
+    // Werte, die sich nur mit dem Tier oder Elaras Bogen ändern
+    const prof = parseInt(wsEl('profBonus').value, 10) || 0;
+    const abil = {
+      str: { score: b.str, own: false }, dex: { score: b.dex, own: false }, con: { score: b.con, own: false },
+      int: { score: intOf('int_score', 10), own: true }, wis: { score: intOf('wis_score', 10), own: true }, cha: { score: intOf('cha_score', 10), own: true }
+    };
+    const NAMES = { str:'STR', dex:'DEX', con:'CON', int:'INT', wis:'WIS', cha:'CHA' };
+    const saveOf = k => {
+      if(abil[k].own){ const v = parseInt(wsEl(`${k}_save_bonus`).value, 10); return isNaN(v) ? modOf(abil[k].score) : v; }
+      return modOf(abil[k].score) + (wsEl(`${k}_save_prof`).checked ? prof : 0);
+    };
+    document.getElementById('wtAbilities').innerHTML =
+      '<tr><th></th><th>Wert</th><th>Mod</th><th>Rettung</th></tr>' +
+      Object.keys(abil).map(k => `<tr><td>${NAMES[k]}${abil[k].own ? ' <span class="wt-own">Elara</span>' : ''}</td><td>${abil[k].score}</td><td>${fmtBonus(modOf(abil[k].score))}</td><td>${fmtBonus(saveOf(k))}</td></tr>`).join('');
+
+    // Fertigkeiten: geistige über Elaras Bogen, körperliche über das Tier
+    // (+ Elaras Übung); hat das Tier denselben Wert höher, gilt der Tierwert.
+    const beastSkills = {};
+    String(b.skills || '').split(',').forEach(part=>{
+      const m = part.trim().match(/^(.+?)\s*([+−-]\d+)$/);
+      if(m) beastSkills[m[1].trim()] = parseInt(m[2].replace('−','-'), 10);
+    });
+    let percep = 0;
+    document.getElementById('wtSkills').innerHTML = skills.map(([nameEn, nameDe, ab, , ], i)=>{
+      const isProf = wsEl(`skill_${i}_prof`).checked;
+      let val;
+      if(ab === 'STR' || ab === 'DEX') val = modOf(abil[ab.toLowerCase()].score) + (isProf ? prof : 0);
+      else { const v = parseInt(wsEl(`skill_${i}_bonus`).value, 10); val = isNaN(v) ? 0 : v; }
+      const label = nameDe || nameEn;
+      let beastBetter = false;
+      if(label in beastSkills && beastSkills[label] > val){ val = beastSkills[label]; beastBetter = true; }
+      if(nameEn === 'Perception') percep = val;
+      return `<span class="${isProf ? 'prof' : ''}">${label}</span><span class="${beastBetter ? 'beastval' : ''}" title="${beastBetter ? 'Wert des Tiers ist höher' : ''}">${fmtBonus(val)}</span>`;
+    }).join('');
+
+    document.getElementById('wtStats').innerHTML =
+      `<span><strong>RK</strong> ${b.ac}</span><span><strong>Tempo</strong> ${b.speed}</span>` +
+      `<span><strong>Passive Wahrnehmung</strong> ${10 + percep}</span>` +
+      `<span><strong>Sinne</strong> ${[b.senses.replace(/,?\s*Passive Wahrnehmung \d+/, '').trim(), /Dunkelsicht/.test(b.senses) ? '' : 'Dunkelsicht 60 ft. (Elara)'].filter(Boolean).join(', ')}</span>`;
+
+    if(renderedForm !== s.form){
+      renderedForm = s.form;
+      const hours = Math.max(1, Math.floor(druidLevel() / 2));
+      document.getElementById('wtName').textContent = b.de === s.form ? `🐾 ${b.de}` : `🐾 ${b.de} (${s.form})`;
+      document.getElementById('wtSub').textContent = `${b.size} Bestie · CR ${b.cr} · Dauer bis zu ${hours} Std. Spielzeit`;
+      document.getElementById('wtActions').innerHTML = b.actions.map(a => `<div class="wt-entry"><span class="wt-entry-name">${a.name}.</span> ${boldNumbers(a.text)}</div>`).join('');
+      document.getElementById('wtTraits').innerHTML = b.traits.length
+        ? b.traits.map(t => `<div class="wt-entry"><span class="wt-entry-name">${t.name}.</span> ${t.text}</div>`).join('')
+        : '<div class="wt-entry">—</div>';
+    }
+  }
+
+  // Auswahl im Tierfenster (wenn nicht verwandelt)
+  (function buildPicker(){
+    const picker = document.getElementById('wtPicker');
+    BEAST_ORDER.forEach(cr=>{
+      const header = document.createElement('div');
+      header.className = 'beast-cr-group';
+      header.textContent = CR_LABEL[cr];
+      picker.appendChild(header);
+      BEAST_BY_CR[cr].forEach(en=>{
+        const b = BEAST_DATA[en];
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'beast-pill';
+        pill.dataset.transform = en;
+        pill.innerHTML = `<span class="b-de">${b.de} <span class="b-en">(${en})</span></span><span class="b-stats">RK ${String(b.ac).split(' ')[0]} · ${parseInt(b.hp,10)} TP · ${b.speed}</span>`;
+        picker.appendChild(pill);
+      });
+    });
+    picker.addEventListener('click', (e)=>{
+      const pill = e.target.closest('[data-transform]');
+      if(pill) transformInto(pill.dataset.transform);
+    });
+  })();
+  document.getElementById('wtDamage').addEventListener('click', beastDamage);
+  document.getElementById('wtHeal').addEventListener('click', ()=> beastHeal(0));
+  document.getElementById('wtSlot1').addEventListener('click', ()=> beastHeal(1));
+  document.getElementById('wtSlot2').addEventListener('click', ()=> beastHeal(2));
+  document.getElementById('wtRevert').addEventListener('click', revertWildShape);
+  document.addEventListener('click', (e)=>{ if(e.target.closest('.wt-open-window')) openBeastWindow(); });
+  var currentBeast = null;
+  document.getElementById('sbTransform').addEventListener('click', ()=>{
+    if(!currentBeast) return;
+    if(!transformInto(currentBeast)) return;
+    closeBeastModal();
+    if(document.body.classList.contains('server-mode')) openBeastWindow();
+    else document.getElementById('wildTracker').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  renderWildShape();
+
   function openBeastModal(en){
     const b = BEAST_DATA[en];
     if(!b) return;
+    currentBeast = en;
     hideTip();
     sbName.textContent = `${b.de} (${en})`;
     sbSubtitle.textContent = `${b.size} Bestie, ohne Ausrichtung`;
