@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Fassungsnummer des Bogens: bei JEDER Änderung an dieser Datei erhöhen.
+     Der Server nimmt nur Änderungen von Fenstern mit der aktuellen Fassung an;
+     ältere offene Fenster laden sich dann selbst neu. -->
+<meta name="sheet-build" content="2026101203">
 <title>Elara Granger – Druide Charakterbogen</title>
 <style>
   :root{
@@ -78,6 +82,15 @@
     color:#fff; font-size:14px; padding:5px 8px; width:150px; font-family:inherit;
   }
   .banner-meta input::placeholder{color:rgba(255,255,255,.65);}
+  .banner-meta select{
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4); border-radius:6px;
+    color:#fff; font-size:14px; font-weight:700; padding:5px 8px; width:110px; font-family:inherit; cursor:pointer;
+  }
+  .banner-meta select option{color:#1f2a24; font-weight:400;}
+  [data-min-level][hidden]{display:none !important;}
+  .spell-group-title.locked{opacity:.75;}
+  .spell-group-title .spell-group-lock{font-weight:400; text-transform:none; letter-spacing:0; color:var(--danger); margin-left:4px;}
+  .spell-row input[type=checkbox]:disabled + .sname{opacity:.55;}
 
   /* Layout */
   .cols{display:grid; grid-template-columns:280px 1fr 300px; gap:16px; align-items:start;}
@@ -137,6 +150,13 @@
     font-family:inherit; color:var(--text-primary); background:var(--surface-1);
   }
   .field.big input{font-size:22px; font-weight:700; text-align:center; color:var(--accent-ink);}
+  /* Sinne: je Zeile Wert links, Bezeichnung rechts -- so stehen die Werte
+     sauber untereinander, egal wie lang die (übersetzten) Bezeichnungen sind. */
+  [data-card="senses"] .field-grid{grid-template-columns:minmax(0,1fr); gap:8px;}
+  [data-card="senses"] .field.big{display:grid; grid-template-columns:68px minmax(0,1fr); align-items:center; column-gap:12px;}
+  [data-card="senses"] .field.big input{order:-1; width:100%; font-size:20px; padding:6px 4px;}
+  [data-card="senses"] .field.big label{margin:0; line-height:1.35;}
+  [data-card="senses"] .field.big label .label-de{display:block;}
   textarea{resize:vertical; line-height:1.45;}
 
   /* Stat tiles row (AC / HP / etc.) */
@@ -329,6 +349,12 @@
   footer.note{max-width:1180px; margin:20px auto 0; font-size:11.5px; color:var(--text-muted); line-height:1.6; padding:0 4px;}
 
   /* ============ Wilde Gestalt: Tier-Tracker ============ */
+  .outdated-banner{
+    position:sticky; top:0; z-index:200; margin:-28px -16px 16px; padding:10px 16px;
+    background:#a13a2f; color:#fff; font-size:14px; font-weight:600; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+  }
+  body.beast-window .outdated-banner{margin:-12px -12px 12px;}
+  .outdated-banner .btn{background:#fff; color:#a13a2f; border-color:#fff;}
   .wild-tracker{
     display:none; margin:0 0 18px; padding:16px 20px 14px; border-radius:var(--radius);
     background:#fdf1dc; color:#2a1a10; border:1px solid #c9a35c; box-shadow:var(--shadow);
@@ -422,7 +448,24 @@
   body.server-mode:not(.beast-window) #wildTracker .btn{padding:6px 11px; font-size:12.5px;}
   body.server-mode:not(.beast-window) .wild-tracker .wt-hp-controls input{width:62px; font-size:15px; padding:5px;}
   .wt-msg:empty{display:none;}
-  .sb-transform{margin-top:14px; text-align:center;}
+  /* Knöpfe auf hellem Pergament (Bestiarium-Fenster, Druidenzirkel, Hinweisleiste):
+     eigene Farben per #id bzw. doppelter Klasse, damit die hellen Knöpfe des
+     Fantasie-Modus (gedacht für die dunkle Kopfleiste) hier nicht greifen. */
+  .sb-transform{margin-top:16px; padding-top:14px; border-top:1px solid #e3cfa6; text-align:center;}
+  #sbTransform{
+    font-family:Georgia,"Times New Roman",serif; font-size:15px; font-weight:700; letter-spacing:.02em; text-transform:none;
+    background:#7a200f; color:#fdf1dc; border:1px solid #5a160a; border-radius:8px; padding:10px 22px;
+    box-shadow:0 2px 6px rgba(122,32,15,.25); transform:none; filter:none; cursor:pointer;
+  }
+  #sbTransform:hover{background:#5a160a; color:#fff; box-shadow:0 3px 10px rgba(122,32,15,.35);}
+  #sbTransform:active{transform:translateY(1px);}
+  .card .btn.wt-open-small, body.fantasy-mode .card .btn.wt-open-small{
+    background:#fffaf0; color:#7a200f; border:1px solid #b88a52; border-radius:8px;
+    text-transform:none; letter-spacing:.01em; font-weight:600; box-shadow:none; transform:none; filter:none;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  .card .btn.wt-open-small:hover, body.fantasy-mode .card .btn.wt-open-small:hover{background:#f3dfb8; border-color:#7a200f;}
+  #outdatedBanner .btn{background:#fff; color:#a13a2f; border:1px solid #fff; text-transform:none; letter-spacing:0; box-shadow:none;}
   /* Eigenes Tierfenster (?ansicht=tier): nur der Tracker */
   body.beast-window{padding:12px 12px 30px;}
   body.beast-window .toolbar, body.beast-window .banner, body.beast-window .cols, body.beast-window footer.note{display:none !important;}
@@ -514,6 +557,9 @@
   body.fantasy-mode .banner-meta label{color:#a9b394; letter-spacing:.14em;}
   body.fantasy-mode .banner-meta input{
     background:rgba(255,255,255,.07); border-color:rgba(176,145,63,.4); border-radius:3px; color:#f0f1e6;
+  }
+  body.fantasy-mode .banner-meta select{
+    background:rgba(255,255,255,.07); border-color:rgba(176,145,63,.6); border-radius:3px; color:#f4d78a;
   }
 
   /* ---------- Karten: Pergament mit olivem Doppelrahmen + Zierecken ---------- */
@@ -752,7 +798,9 @@
   </div>
   <input type="file" id="fileInput" accept="application/json" style="display:none;">
   <input type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
-  <input type="hidden" id="sheetLevelField" data-field="sheetLevel" value="3">
+  <!-- Aktive Spielstufe und die gespeicherten Werte aller Stufen (JSON: {"2":{...},"3":{...}}) -->
+  <input type="hidden" data-field="charLevel" value="2">
+  <input type="hidden" data-field="levelProfiles" value="">
   <!-- Aktive Wilde Gestalt: Tier (englischer Schlüssel aus BEAST_DATA, leer = nicht verwandelt) und dessen TP -->
   <input type="hidden" data-field="ws_form" value="">
   <input type="hidden" data-field="ws_hp" value="">
@@ -819,7 +867,13 @@
     <div class="banner-meta">
       <div><label>Rasse</label><input data-field="race" value="Wood Elf"></div>
       <div><label>Hintergrund</label><input data-field="background" value="Sage"></div>
-      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 3"></div>
+      <div class="level-pick"><label for="levelSelect">Stufe</label>
+        <select id="levelSelect" title="Jede Stufe behält ihre eigenen Werte (TP, Trefferwürfel, vorbereitete Zauber). So lässt sich Stufe 3 schon vorbereiten, während weiter auf Stufe 2 gespielt wird.">
+          <option value="2">Stufe 2</option>
+          <option value="3">Stufe 3</option>
+        </select>
+      </div>
+      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 2"></div>
       <div><label>Erfahrung</label><input data-field="xp" value="Milestone"></div>
       <div><label>Spieler:in</label><input data-field="player" value="wiebke961"></div>
     </div>
@@ -967,10 +1021,10 @@
           <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input data-field="profBonus" value="+2"></div>
         </div>
         <div class="stat-row">
-          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="26"></div>
-          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="26"></div>
+          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="17"></div>
+          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="17"></div>
           <div class="stat-tile"><label>Temp. HP <span class="label-de">(Temp. TP)</span></label><input data-field="tempHp" value="--"></div>
-          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="3 / 3 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
+          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
         </div>
         <div class="checkline" style="margin-top:4px;"><input type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
         <div class="checkline death-saves" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
@@ -996,16 +1050,16 @@
           <div class="stat-tile"><label>Angriffsbonus</label><input data-field="spellAtk" value="+5"></div>
           <div class="stat-tile"><label>Rettungswurf-SG</label><input data-field="spellDC" value="13"></div>
           <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input data-field="cantripsKnown" value="2 von 2" readonly></div>
-          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 6" readonly></div>
+          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 5" readonly></div>
         </div>
         <div class="field" style="margin-bottom:12px;">
-          <label>Zauberplätze (Druide Stufe 3)</label>
+          <label>Zauberplätze (Druide Stufe <span class="lvl-num">2</span>)</label>
           <div class="checkline slot-line">
             <span class="slot-lvl">1. Grad</span>
-            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked><input type="checkbox" data-field="slot1_3" checked>
-            <span class="res-count" data-count-prefix="slot1_">4 von 4 verfügbar</span>
+            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked><input type="checkbox" data-field="slot1_3" data-min-level="3" checked>
+            <span class="res-count" data-count-prefix="slot1_">3 von 3 verfügbar</span>
           </div>
-          <div class="checkline slot-line">
+          <div class="checkline slot-line" data-min-level="3">
             <span class="slot-lvl">2. Grad</span>
             <input type="checkbox" data-field="slot2_0" checked><input type="checkbox" data-field="slot2_1" checked>
             <span class="res-count" data-count-prefix="slot2_">2 von 2 verfügbar</span>
@@ -1033,7 +1087,7 @@
           <textarea rows="4" data-field="spellNotes" placeholder="…"></textarea>
         </div>
         <div class="field" style="margin-top:12px;">
-          <label>Bestienformen – Wilde Gestalt (Stufe 3, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
+          <label>Bestienformen – Wilde Gestalt (Stufe <span class="lvl-num">2</span>, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
           <div class="beast-grid" id="beastGrid"></div>
           <div style="font-size:10.5px; color:var(--text-muted); margin-top:6px;">Name kurz drüberhalten für die Kurzwerte, anklicken für den vollen Bestiarium-Eintrag. Empfehlung: Brown Bear (viele TP, starker Grapple) oder Dire Wolf (Rudeltaktik) für Kämpfe; Panther oder Wolf für Erkundung/Heimlichkeit.</div>
         </div>
@@ -1088,7 +1142,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
           <textarea rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-          Aktuell (Kreis des Mondes, Stufe 3): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
+          Aktuell (Kreis des Mondes, Stufe <span class="lvl-num">2</span>): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
           Referenz Grundgestalt ohne Zirkel (zum Vergleich): Stufe 2 → CR 1/4 (kein Fliegen/Schwimmen) · Stufe 4 → CR 1/2 (kein Fliegen) · Stufe 8 → CR 1 (keine Einschränkung).
         </div>
       </div>
@@ -1437,7 +1491,8 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     if(!items.length) return;
     const head = document.createElement('div');
     head.className = 'spell-group-title';
-    head.innerHTML = `<span class="lvl-badge ${lvlClass(groupLvl)}">${groupLvl}</span>${title} <span class="spell-group-count">(${items.length})</span>`;
+    head.dataset.group = groupLvl;
+    head.innerHTML = `<span class="lvl-badge ${lvlClass(groupLvl)}">${groupLvl}</span>${title} <span class="spell-group-count">(${items.length})</span><span class="spell-group-lock"></span>`;
     spellGrid.appendChild(head);
     const mid = Math.ceil(items.length/2);
     [items.slice(0,mid), items.slice(mid)].forEach(col=>{
@@ -1548,12 +1603,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       favSpellTable.appendChild(tr);
     });
   }
-  // Kapazitäten fürs Zauberwirken-Kärtchen: Zaubertricks bekannt ist eine
-  // feste Zahl aus der Druidentabelle (2 auf Stufe 1-3, 3 ab Stufe 4);
-  // vorbereitbare Zauber (1. und 2. Grad zusammen) = WIS-Mod (+3) +
-  // Druidenstufe (3) = 6. Bei Levelaufstieg hier anpassen.
-  const CANTRIP_MAX = 2;
-  const PREPARED_MAX = 6;
+  // Kapazitäten fürs Zauberwirken-Kärtchen, abhängig von der gewählten Stufe:
+  // Zaubertricks laut Druidentabelle (2 auf Stufe 1-3, 3 ab 4, 4 ab 10);
+  // vorbereitbare Zauber (alle Grade zusammen) = WIS-Mod + Druidenstufe.
+  function cantripMax(){ const l = currentLevel(); return l >= 10 ? 4 : (l >= 4 ? 3 : 2); }
+  function preparedMax(){ const w = parseInt(wsEl('wis_score').value, 10); return (isNaN(w) ? 3 : modOf(w)) + currentLevel(); }
   const cantripsTile = document.getElementById('cantripsTile');
   const preparedTile = document.getElementById('preparedTile');
   const cantripsKnownEl = document.querySelector('[data-field="cantripsKnown"]');
@@ -1566,10 +1620,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       if(!checked) return;
       if(s[0] === 'C') cantripCount++; else spellCount++;
     });
-    cantripsKnownEl.value = `${cantripCount} von ${CANTRIP_MAX}`;
-    spellsPreparedEl.value = `${spellCount} von ${PREPARED_MAX}`;
-    cantripsTile.classList.toggle('over-limit', cantripCount > CANTRIP_MAX);
-    preparedTile.classList.toggle('over-limit', spellCount > PREPARED_MAX);
+    const cMax = cantripMax(), pMax = preparedMax();
+    cantripsKnownEl.value = `${cantripCount} von ${cMax}`;
+    spellsPreparedEl.value = `${spellCount} von ${pMax}`;
+    cantripsTile.classList.toggle('over-limit', cantripCount > cMax);
+    preparedTile.classList.toggle('over-limit', spellCount > pMax);
   }
 
   renderFavTable();
@@ -2176,6 +2231,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       if(key in state) el.value = state[key];
     });
     autosizeTextareas();
+    if(typeof applyLevelUI === 'function') applyLevelUI();
     if(typeof updateResourceCounts === 'function') updateResourceCounts();
     if(typeof renderWildShape === 'function') renderWildShape();
     // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
@@ -2188,37 +2244,152 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       }
     }
   }
-  /* ============ Gespeicherte Stände auf die aktuelle Stufe anheben ============
-     Ein Stand von Stufe 2 (vom Server, aus einer Datei oder einer verbundenen
-     Datei) wird beim Laden einmalig auf Stufe 3 gebracht: Klasse & Stufe,
-     +9 Trefferpunkte (gewürfelt 7 + 2 KON) und ein dritter Trefferwürfel.
-     Neue Felder (weitere Zauberplätze, Zauber 2. Grades) bekommen ohnehin
-     ihre Vorgabewerte. Die Kennung "sheetLevel" verhindert, dass das doppelt
-     passiert; zusätzlich wird nur angehoben, wenn im Stand wirklich noch
-     Stufe 2 steht (falls jemand schon von Hand umgestellt hat). */
-  const SHEET_LEVEL = 3;
-  const LEVEL3_HP_GAIN = 9;
+  /* ============ Stufen: getrennte Werte je Stufe ============
+     Die Stufen werden erst am Ende einer Kampagne vergeben. Damit die nächste
+     Stufe schon vorbereitet werden kann, hat jede Stufe ihre eigenen Werte:
+     Klasse & Stufe, Max./aktuelle TP, Trefferwürfel, vorbereitete Zauber und
+     die Texte der Lieblingszauber. Alles andere (Attribute, Ausrüstung,
+     Notizen, verbrauchte Plätze, Wilde Gestalt …) gilt für alle Stufen.
+     Die Felder oben im Bogen zeigen immer die aktive Stufe; die Werte aller
+     Stufen liegen zusätzlich im versteckten Feld "levelProfiles". */
+  // Als Funktion, damit sie schon vor dieser Stelle (beim ersten Zählen der Zauber) nutzbar ist
+  function levelOptions(){ return [2, 3]; }
+  const LEVEL_DEFAULTS = {
+    2: { classLevel:'Druide 2', maxHp:'17', curHp:'17', hitDice:'2 / 2 (d8)' },
+    3: { classLevel:'Druide 3', maxHp:'26', curHp:'26', hitDice:'3 / 3 (d8)' }
+  };
+  const LEVEL_HP_GAIN = { 3: 9 };   // Stufe 3: gewürfelt 7 + 2 KON
+  const LEVEL_FIXED_KEYS = ['classLevel', 'maxHp', 'curHp', 'hitDice'];
+  function currentLevel(){
+    const el = document.querySelector('[data-field="charLevel"]');
+    const v = parseInt(el && el.value, 10);
+    return levelOptions().includes(v) ? v : 2;
+  }
+  function isPerLevelKey(k){
+    return LEVEL_FIXED_KEYS.includes(k) || /^spell_\d+_prepared$/.test(k) || /^fav_\d+_/.test(k);
+  }
+  function pickPerLevel(state){
+    const p = {};
+    Object.keys(state).forEach(k=>{ if(isPerLevelKey(k)) p[k] = state[k]; });
+    return p;
+  }
+  function spellAllowed(i, lvl){ return spells[i][0] !== '2' || lvl >= 3; }
+  // Fehlende Werte einer Stufe mit den Vorgaben auffüllen; Zauber eines Grades,
+  // den es auf der Stufe noch nicht gibt, sind nie vorbereitet.
+  function completeProfile(p, lvl){
+    const out = Object.assign({}, LEVEL_DEFAULTS[lvl] || LEVEL_DEFAULTS[2], p || {});
+    spells.forEach((sp, i)=>{
+      const k = `spell_${i}_prepared`;
+      if(!(k in out)) out[k] = !!sp[3] && spellAllowed(i, lvl);
+      if(!spellAllowed(i, lvl)) out[k] = false;
+    });
+    return out;
+  }
+  function readProfiles(){
+    try{ const p = JSON.parse(wsEl('levelProfiles').value || '{}'); return (p && typeof p === 'object') ? p : {}; }
+    catch(e){ return {}; }
+  }
+  function withNumberAtEnd(text, n, fallback){
+    const t = String(text || '');
+    return /\d+\s*$/.test(t) ? t.replace(/\d+(\s*)$/, n + '$1') : fallback;
+  }
+  // Werte einer Stufe aus der nächstniedrigeren ableiten (für alte Stände)
+  function levelUp(p, to){
+    const out = Object.assign({}, p);
+    const gain = LEVEL_HP_GAIN[to] || 0;
+    out.classLevel = withNumberAtEnd(p.classLevel, to, LEVEL_DEFAULTS[to].classLevel);
+    const max = parseInt(p.maxHp, 10), cur = parseInt(p.curHp, 10);
+    if(!isNaN(max)){
+      out.maxHp = String(max + gain);
+      if(!isNaN(cur)) out.curHp = String(Math.min(max + gain, cur + gain));
+    }
+    const hd = String(p.hitDice || '').match(/^\s*(\d+)\s*\/\s*(\d+)(.*)$/);
+    if(hd) out.hitDice = `${parseInt(hd[1], 10) + 1} / ${parseInt(hd[2], 10) + 1}${hd[3]}`;
+    return completeProfile(out, to);
+  }
+  // … und umgekehrt: Stufe 2 aus einem schon angehobenen Stufe-3-Stand
+  function levelDown(p, to){
+    const from = to + 1, gain = LEVEL_HP_GAIN[from] || 0;
+    const out = Object.assign({}, p);
+    Object.keys(out).forEach(k=>{ if(/^fav_\d+_/.test(k)) delete out[k]; });
+    out.classLevel = withNumberAtEnd(p.classLevel, to, LEVEL_DEFAULTS[to].classLevel);
+    const max = parseInt(p.maxHp, 10), cur = parseInt(p.curHp, 10);
+    if(!isNaN(max) && max - gain > 0){
+      const newMax = max - gain;
+      out.maxHp = String(newMax);
+      if(!isNaN(cur)) out.curHp = String(cur >= max ? newMax : Math.max(1, Math.min(newMax, cur - gain)));
+    }
+    const hd = String(p.hitDice || '').match(/^\s*(\d+)\s*\/\s*(\d+)(.*)$/);
+    if(hd && parseInt(hd[2], 10) > 1){
+      const total = parseInt(hd[2], 10) - 1;
+      out.hitDice = `${Math.min(total, Math.max(0, parseInt(hd[1], 10) - 1))} / ${total}${hd[3]}`;
+    }
+    return completeProfile(out, to);
+  }
+
+  // Ältere Stände (ohne Stufen-Trennung) aufteilen. Aktiv ist danach Stufe 2,
+  // weil die neue Stufe erst am Ende der Kampagne vergeben wird.
   let lastMigrationNote = '';
   function migrateState(state){
     lastMigrationNote = '';
     if(!state || typeof state !== 'object') return state;
-    const from = parseInt(state.sheetLevel, 10) || 2;   // Stände ohne Kennung stammen von Stufe 2
-    if(from >= SHEET_LEVEL) return state;
+    if('charLevel' in state) return state;
     const s = Object.assign({}, state);
-    const cl = String(s.classLevel || '');
-    if(/(^|\D)2\s*$/.test(cl)){
-      s.classLevel = cl.replace(/2(\s*)$/, '3$1');
-      const maxHp = parseInt(s.maxHp, 10), curHp = parseInt(s.curHp, 10);
-      if(!isNaN(maxHp)){
-        s.maxHp = String(maxHp + LEVEL3_HP_GAIN);
-        if(!isNaN(curHp)) s.curHp = String(Math.min(maxHp + LEVEL3_HP_GAIN, curHp + LEVEL3_HP_GAIN));
-      }
-      const m = String(s.hitDice || '').match(/^\s*(\d+)\s*\/\s*(\d+)(.*)$/);
-      if(m && parseInt(m[2], 10) === 2) s.hitDice = `${parseInt(m[1], 10) + 1} / 3${m[3]}`;
-      lastMigrationNote = 'Stand auf Stufe 3 angehoben (+' + LEVEL3_HP_GAIN + ' TP, 3. Trefferwürfel) ✓';
-    }
-    s.sheetLevel = String(SHEET_LEVEL);
+    delete s.sheetLevel;
+    const m = String(s.classLevel || '').match(/(\d+)\s*$/);
+    const lvl = m ? parseInt(m[1], 10) : 2;
+    const own = pickPerLevel(s);
+    const profiles = {};
+    if(lvl >= 3){ profiles[3] = completeProfile(own, 3); profiles[2] = levelDown(own, 2); }
+    else { profiles[2] = completeProfile(own, 2); profiles[3] = levelUp(own, 3); }
+    Object.keys(s).forEach(k=>{ if(/^fav_\d+_/.test(k)) delete s[k]; });
+    Object.assign(s, profiles[2]);
+    s.charLevel = '2';
+    s.levelProfiles = JSON.stringify(profiles);
+    lastMigrationNote = 'Stufen getrennt: Stufe 2 ist aktiv, Stufe 3 ist vorbereitet ✓';
     return s;
+  }
+
+  function switchLevel(to){
+    const from = currentLevel();
+    if(to === from || !levelOptions().includes(to)) return;
+    const profiles = readProfiles();
+    profiles[from] = pickPerLevel(collectState());
+    const target = completeProfile(profiles[to], to);
+    profiles[to] = target;
+    wsEl('levelProfiles').value = JSON.stringify(profiles);
+    wsEl('charLevel').value = String(to);
+    applyState(target);
+    setStatus(`Stufe ${to} aktiv – die Werte von Stufe ${from} bleiben gespeichert ✓`);
+    noteChange();
+  }
+
+  // Alles, was sich nach der gewählten Stufe richtet, neu anzeigen
+  function applyLevelUI(){
+    const lvl = currentLevel();
+    const sel = document.getElementById('levelSelect');
+    if(sel) sel.value = String(lvl);
+    document.querySelectorAll('.lvl-num').forEach(el=>{ el.textContent = lvl; });
+    document.querySelectorAll('[data-min-level]').forEach(el=>{
+      el.hidden = lvl < parseInt(el.dataset.minLevel, 10);
+    });
+    spells.forEach((sp, i)=>{
+      const cb = document.querySelector(`[data-field="spell_${i}_prepared"]`);
+      if(!cb) return;
+      const ok = spellAllowed(i, lvl);
+      cb.disabled = !ok;
+      cb.title = ok ? '' : 'Zauber 2. Grades gibt es erst ab Stufe 3.';
+    });
+    document.querySelectorAll('.spell-group-title').forEach(h=>{
+      const locked = h.dataset.group === '2' && lvl < 3;
+      h.classList.toggle('locked', locked);
+      const note = h.querySelector('.spell-group-lock');
+      if(note) note.textContent = locked ? '– erst ab Stufe 3' : '';
+    });
+    document.getElementById('cantripsTile').title = `Feste Anzahl laut Druidentabelle (${cantripMax()} auf Stufe ${lvl}), zählt nicht zu den vorbereitbaren Zaubern`;
+    document.getElementById('preparedTile').title = `WIS-Mod + Druidenstufe = ${preparedMax()}, neu wählbar nach jeder langen Rast`;
+    updateSpellCounts();
+    updateResourceCounts();
   }
   function stateToBlob(){
     return new Blob([JSON.stringify(collectState(), null, 2)], {type:'application/json'});
@@ -2364,8 +2535,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   // "X von Y verfügbar" neben Zauberplätzen und Wilder Gestalt live zählen.
   function updateResourceCounts(){
     document.querySelectorAll('[data-count-prefix]').forEach(el=>{
-      const boxes = Array.from(document.querySelectorAll('input[type=checkbox][data-field]'))
-        .filter(cb => cb.dataset.field.startsWith(el.dataset.countPrefix));
+      const boxes = boxesFor(el.dataset.countPrefix);
       el.textContent = `${boxes.filter(cb=>cb.checked).length} von ${boxes.length} verfügbar`;
     });
   }
@@ -2392,6 +2562,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
      es gilt weiter Laden/Herunterladen per Datei. Auch hier: kein
      localStorage/sessionStorage. */
   const SYNC_URL = 'api/state';
+  const SHEET_BUILD = parseInt((document.querySelector('meta[name="sheet-build"]') || {}).content, 10) || 0;
   const SYNC_INTERVAL_MS = 2000;
   const sync = { on:false, version:0, base:null, busy:false, again:false, timer:null, offline:false };
   // Hauptfenster und Tierfenster laufen im selben Browser: über diesen Kanal
@@ -2446,19 +2617,20 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
   async function syncTick(opts){
     const force = !!(opts && opts.force);
-    if(!sync.on) return;
+    if(!sync.on || sync.outdated) return;
     if(sync.busy){ sync.again = true; return; }
     if(document.hidden && !force) return;
     sync.busy = true;
     try{
       const local = collectState();
       if(!statesEqual(local, sync.base)){
-        const body = JSON.stringify({baseVersion: sync.version, state: local});
+        const body = JSON.stringify({baseVersion: sync.version, state: local, build: SHEET_BUILD});
         const res = await fetch(SYNC_URL, {
           method:'PUT', headers:{'Content-Type':'application/json'}, body,
           // Beim Schließen/Wegwischen der Seite soll die letzte Änderung noch rausgehen.
           keepalive: force && body.length < 60000
         });
+        if(checkOutdated(res)) return;
         if(res.status === 409){
           takeRemote(await res.json());
           sync.again = true;
@@ -2474,6 +2646,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
         }
       }else{
         const res = await fetch(SYNC_URL + '?v=' + sync.version, {cache:'no-store'});
+        if(checkOutdated(res)) return;
         if(res.status === 200){
           if(takeRemote(await res.json())) sync.again = true;
           setStatus('Von einem anderen Gerät aktualisiert ✓ (' + timeNow() + ')');
@@ -2491,6 +2664,37 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       sync.busy = false;
       if(sync.again){ sync.again = false; syncTick(opts); }
     }
+  }
+  // Läuft auf dem Server inzwischen eine neuere Fassung des Bogens, darf dieses
+  // Fenster nichts mehr speichern (es kennt die neuen Felder nicht und würde sie
+  // überschreiben). Ohne ungespeicherte Eingaben lädt es sich selbst neu,
+  // sonst erscheint ein Hinweis mit Knopf.
+  function checkOutdated(res){
+    const serverBuild = parseInt(res.headers.get('X-Sheet-Build'), 10) || 0;
+    if(res.status !== 426 && !(serverBuild > SHEET_BUILD)) return false;
+    if(sync.outdated) return true;
+    sync.outdated = true;
+    sync.on = false;
+    const params = new URLSearchParams(location.search);
+    const clean = sync.base && statesEqual(collectState(), sync.base);
+    if(clean && params.get('neu') !== String(serverBuild)){
+      params.set('neu', String(serverBuild));
+      setStatus('Neue Fassung des Bogens – lade neu …');
+      setTimeout(()=> location.replace(location.pathname + '?' + params.toString()), 300);
+    }else{
+      showOutdatedBanner();
+    }
+    return true;
+  }
+  function showOutdatedBanner(){
+    setStatus('Neue Fassung des Bogens – dieses Fenster speichert nicht mehr');
+    if(document.getElementById('outdatedBanner')) return;
+    const bar = document.createElement('div');
+    bar.id = 'outdatedBanner';
+    bar.className = 'outdated-banner';
+    bar.innerHTML = 'Auf dem Server liegt eine neuere Fassung des Bogens. Dieses Fenster speichert nichts mehr – bitte neu laden. <button type="button" class="btn">Jetzt neu laden</button>';
+    bar.querySelector('button').addEventListener('click', ()=> location.reload());
+    document.body.prepend(bar);
   }
   function scheduleSync(){
     if(!sync.on) return;
@@ -2629,8 +2833,15 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
   function wsState(){
     return { form: wsEl('ws_form').value, hp: intOf('ws_hp', 0), max: intOf('ws_hpmax', 0) };
   }
+  // Häkchen einer Ressource -- nur die, die es auf der gewählten Stufe gibt
+  // (z. B. auf Stufe 2 drei Plätze 1. Grades und keine 2. Grades).
   function boxesFor(prefix){
-    return Array.from(document.querySelectorAll('input[type=checkbox][data-field]')).filter(cb => cb.dataset.field.startsWith(prefix));
+    const lvl = currentLevel();
+    return Array.from(document.querySelectorAll('input[type=checkbox][data-field]')).filter(cb => {
+      if(!cb.dataset.field.startsWith(prefix)) return false;
+      const gate = cb.closest('[data-min-level]');
+      return !gate || lvl >= parseInt(gate.dataset.minLevel, 10);
+    });
   }
   function freeCount(prefix){ return boxesFor(prefix).filter(cb => cb.checked).length; }
   function spendOne(prefix){
@@ -2650,10 +2861,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     });
     wtMsgForm = wsEl('ws_form').value;   // Meldung verschwindet, sobald sich die Gestalt woanders ändert
   }
-  function druidLevel(){
-    const m = String(wsEl('classLevel').value || '').match(/(\d+)\s*$/);
-    return m ? parseInt(m[1], 10) : 3;
-  }
+  function druidLevel(){ return currentLevel(); }
 
   function transformInto(en){
     const b = BEAST_DATA[en];
@@ -2762,7 +2970,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     const slot1 = freeCount('slot1_'), slot1t = boxesFor('slot1_').length;
     const slot2 = freeCount('slot2_'), slot2t = boxesFor('slot2_').length;
     return `<strong>Elara:</strong> TP ${wsEl('curHp').value} / ${wsEl('maxHp').value} · ` +
-      `Zauberplätze 1. Grad ${slot1}/${slot1t}, 2. Grad ${slot2}/${slot2t} · Wilde Gestalt ${wsFree}/${wsTotal} frei`;
+      `Zauberplätze 1. Grad ${slot1}/${slot1t}${slot2t ? `, 2. Grad ${slot2}/${slot2t}` : ''} · Wilde Gestalt ${wsFree}/${wsTotal} frei`;
   }
   function renderWildShape(){
     const tracker = document.getElementById('wildTracker');
@@ -2805,6 +3013,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       const btn = document.getElementById('wtSlot' + l);
       const free = freeCount(`slot${l}_`);
       btn.textContent = `Platz ${l}. Grad → ${l}W8 heilen (${free} frei)`;
+      btn.hidden = boxesFor(`slot${l}_`).length === 0;   // Grad gibt es auf dieser Stufe noch nicht
       btn.disabled = free === 0 || s.hp >= s.max;
     });
     document.getElementById('wtHeal').disabled = s.hp >= s.max;
@@ -2917,6 +3126,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
     else document.getElementById('wildTracker').scrollIntoView({behavior:'smooth', block:'start'});
   });
   renderWildShape();
+
+  document.getElementById('levelSelect').addEventListener('change', (e)=>{
+    switchLevel(parseInt(e.target.value, 10));
+  });
+  applyLevelUI();
 
   function openBeastModal(en){
     const b = BEAST_DATA[en];

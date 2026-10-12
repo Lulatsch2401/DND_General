@@ -18,6 +18,7 @@ import argparse
 import errno
 import json
 import os
+import re
 import shutil
 import socket
 import sys
@@ -34,6 +35,35 @@ MAX_BODY_BYTES = 2 * 1024 * 1024      # 2 MB reichen fuer den Bogen bei Weitem
 MAX_FIELDS = 5000                      # Obergrenze fuer Felder im Stand
 MAX_VALUE_CHARS = 200000               # Obergrenze je Textfeld
 BACKUPS_TO_KEEP = 14                   # Tages-Sicherungen, die aufbewahrt werden
+
+
+_BUILD_RE = re.compile(rb'<meta\s+name="sheet-build"\s+content="(\d+)"')
+_build_cache = {"key": None, "build": 0}
+
+
+def sheet_build():
+    """Fassungsnummer der Bogen-Datei (meta sheet-build), 0 wenn keine angegeben ist.
+
+    Damit erkennt der Server Fenster, die noch eine aeltere Fassung des Bogens
+    geladen haben, und nimmt von ihnen keine Aenderungen mehr an -- sonst
+    koennen sich alte und neue Fassung gegenseitig endlos ueberschreiben.
+    """
+    try:
+        st = os.stat(SHEET_FILE)
+    except OSError:
+        return 0
+    key = (st.st_mtime_ns, st.st_size)
+    if _build_cache["key"] != key:
+        build = 0
+        try:
+            with open(SHEET_FILE, "rb") as fh:
+                m = _BUILD_RE.search(fh.read(4096))
+            if m:
+                build = int(m.group(1))
+        except OSError:
+            pass
+        _build_cache.update(key=key, build=build)
+    return _build_cache["build"]
 
 
 class StateStore(object):
@@ -162,8 +192,8 @@ class Handler(BaseHTTPRequestHandler):
         if body and self.command != "HEAD":
             self.wfile.write(body)
 
-    def _json(self, status, obj):
-        self._send(status, json.dumps(obj, ensure_ascii=False).encode("utf-8"))
+    def _json(self, status, obj, extra=None):
+        self._send(status, json.dumps(obj, ensure_ascii=False).encode("utf-8"), extra=extra)
 
     def _reject(self, status, message):
         """Ablehnen, bevor der Anfragetext gelesen wurde -- Verbindung danach schliessen."""
@@ -182,7 +212,7 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         # Die Abfragen "hat sich etwas geaendert?" kommen alle paar Sekunden --
         # die sollen das Protokoll nicht fluten.
-        if len(args) >= 2 and str(args[1]) in ("204", "304"):
+        if len(args) >= 2 and str(args[1]) in ("204", "304", "426"):
             return
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
@@ -198,9 +228,10 @@ class Handler(BaseHTTPRequestHandler):
                 known = int(query.get("v", ["-1"])[0])
             except ValueError:
                 known = -1
+            build_header = {"X-Sheet-Build": str(sheet_build())}
             if known == self.store.current_version():
-                return self._send(204)
-            return self._json(200, self.store.snapshot())
+                return self._send(204, extra=build_header)
+            return self._json(200, self.store.snapshot(), extra=build_header)
         if path == "/api/health":
             return self._json(200, {"ok": True, "version": self.store.current_version()})
         if path == "/favicon.ico":
@@ -234,6 +265,15 @@ class Handler(BaseHTTPRequestHandler):
         problem = validate_state(doc.get("state"))
         if problem:
             return self._json(400, {"error": problem})
+        current_build = sheet_build()
+        client_build = doc.get("build")
+        if current_build and (isinstance(client_build, bool) or not isinstance(client_build, int)
+                              or client_build < current_build):
+            # Fenster mit einer aelteren Fassung des Bogens: nicht speichern,
+            # damit es keine Felder der neuen Fassung ueberschreibt.
+            return self._json(426, {"error": "veraltete Fassung des Bogens - bitte Seite neu laden",
+                                    "build": current_build},
+                              extra={"X-Sheet-Build": str(current_build)})
         try:
             ok, result = self.store.save(base_version, doc["state"])
         except OSError as exc:
