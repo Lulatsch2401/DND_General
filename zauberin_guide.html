@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zauberin erstellen – Guide (Drakonische Blutlinie)</title>
+<style>
+:root{
+  --bg:#f4f1ec;--s1:#fff;--s2:#faf8f4;--bd:#ddd6c9;--bd2:#b9ad98;
+  --tx:#231f1a;--tx2:#5c554a;--tx3:#8c8475;
+  --ac:#8a4b1f;--ac-ink:#5e3214;--ac-soft:#f5e9df;
+  --pu:#6b4fa0;--pu-soft:#eee9f6;--ok:#2f6f4f;--ok-soft:#e5f1ea;--bad:#a13a2f;
+  --r:10px;--sh:0 1px 2px rgba(30,28,20,.06),0 1px 8px rgba(30,28,20,.05);color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:20px 16px 80px}
+input,select,textarea,button{font-family:inherit}
+.wrap{max-width:1100px;margin:0 auto}
+header.top{background:linear-gradient(135deg,#8a4b1f,#b0652a 55%,#6b4fa0);color:#fff;border-radius:var(--r);padding:18px 22px;margin-bottom:14px;box-shadow:var(--sh)}
+header.top h1{margin:0 0 4px;font-size:24px}
+header.top p{margin:0;font-size:13.5px;opacity:.92;line-height:1.5}
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.steps button{border:1px solid var(--bd);background:var(--s1);color:var(--tx2);border-radius:20px;padding:6px 12px;font-size:12.5px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.steps button .n{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--s2);border:1px solid var(--bd2);align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.steps button.done .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.steps button.active{border-color:var(--ac);color:var(--ac-ink);font-weight:700;background:var(--ac-soft)}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px;margin-bottom:14px}
+.card h2{margin:0 0 6px;font-size:19px;color:var(--ac-ink)}
+.lead{margin:0 0 14px;color:var(--tx2);font-size:14px;line-height:1.55}
+.tip{background:var(--pu-soft);border:1px solid #d8cfec;border-radius:8px;padding:9px 12px;font-size:13px;line-height:1.5;margin:0 0 14px;color:#3d2f5c}
+.tip b{color:#2d2147}
+.status{font-size:13px;font-weight:700;margin:0 0 10px}
+.status.ok{color:var(--ok)}.status.no{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.opt{border:1.5px solid var(--bd);border-radius:var(--r);padding:11px 12px;background:var(--s2);cursor:pointer;position:relative;transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--bd2)}
+.opt.sel{border-color:var(--ac);background:var(--ac-soft)}
+.opt.dis{opacity:.45;cursor:not-allowed}
+.opt .t{font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.opt .t small{display:block;font-weight:400;color:var(--tx3);font-size:11px}
+.opt .t{flex-direction:column;align-items:flex-start;gap:0}
+.opt .m{font-size:11px;color:var(--pu);font-weight:700;margin:2px 0 4px}
+.opt .d{font-size:12.5px;color:var(--tx2);line-height:1.5}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--ok-soft);color:var(--ok);margin-left:4px;vertical-align:middle}
+.badge.warn{background:#fbeaea;color:var(--bad)}
+.opt .check{position:absolute;top:8px;right:9px;width:18px;height:18px;border-radius:50%;border:2px solid var(--bd2);background:#fff}
+.opt.sel .check{background:var(--ac);border-color:var(--ac)}
+.opt.sel .check::after{content:"✓";color:#fff;font-size:11px;position:absolute;left:3px;top:-1px;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.btn{appearance:none;border:1px solid var(--ac);background:var(--ac);color:#fff;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer}
+.btn:hover{background:var(--ac-ink)}
+.btn.sec{background:var(--s1);color:var(--ac-ink)}
+.btn.sec:hover{background:var(--ac-soft)}
+.btn.pu{border-color:var(--pu);background:var(--s1);color:var(--pu)}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx2)}
+.field input,.field select,.field textarea{border:1px solid var(--bd2);border-radius:7px;padding:7px 9px;font-size:14px;background:#fff}
+.field textarea{min-height:80px;line-height:1.45}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+table.ab{width:100%;border-collapse:collapse;font-size:13.5px}
+table.ab th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx2);border-bottom:1px solid var(--bd);padding:6px}
+table.ab td{border-bottom:1px solid var(--bd);padding:6px;vertical-align:middle}
+table.ab select{border:1px solid var(--bd2);border-radius:6px;padding:5px;font-size:14px}
+.big{font-size:20px;font-weight:700}
+.mod{display:inline-block;min-width:38px;text-align:center;background:var(--ac-soft);color:var(--ac-ink);border-radius:6px;padding:2px 6px;font-weight:700}
+
+/* ---------- Ergebnis-Bogen ---------- */
+.sheet .banner{background:linear-gradient(135deg,#8a4b1f,#b0652a 55%,#6b4fa0);color:#fff;border-radius:var(--r);padding:16px 20px;margin-bottom:12px}
+.sheet .banner h1{margin:0;font-size:26px}
+.sheet .banner .meta{font-size:13px;opacity:.92;margin-top:4px}
+.scols{display:grid;grid-template-columns:250px 1fr 290px;gap:12px;align-items:start}
+@media(max-width:980px){.scols{grid-template-columns:1fr}}
+.scols>div{min-width:0}
+.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:12px}
+.sc h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ac-ink);margin:0 0 8px;padding-left:8px;border-left:3px solid var(--ac)}
+.abl{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;margin-bottom:6px;background:var(--s2)}
+.abl .h{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.05em}
+.abl .h .sv{font-size:18px;color:var(--tx)}
+.ln{display:flex;gap:6px;font-size:12px;padding:1px 0;align-items:center}
+.ln .v{width:26px;text-align:right;font-weight:700}
+.ln .p{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--bd2);flex:none}
+.ln .p.on{background:var(--ac);border-color:var(--ac)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px}
+.st{border:1px solid var(--bd);border-radius:8px;text-align:center;padding:6px 3px;background:var(--s2)}
+.st .b{font-size:20px;font-weight:700}
+.st .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx2)}
+.st input{width:70%;font-size:18px;font-weight:700;text-align:center;border:1px solid var(--bd2);border-radius:6px}
+.dots{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+input.dot{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:2px solid var(--bd2);border-radius:50%;margin:0;background:#fff;cursor:pointer}
+input.dot:checked{background:var(--ac);border-color:var(--ac)}
+input.dot.fail:checked{background:var(--bad);border-color:var(--bad)}
+.sp{border:1px solid var(--bd);border-radius:7px;padding:6px 8px;margin-bottom:5px;background:var(--s2);break-inside:avoid}
+.sp .t{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700}
+.sp .t small{font-weight:700;color:var(--pu);font-size:10px;white-space:nowrap}
+.sp p{margin:2px 0 0;font-size:11.5px;color:var(--tx2);line-height:1.4}
+.sheet table{width:100%;border-collapse:collapse;font-size:12px}
+.sheet th{text-align:left;font-size:10px;text-transform:uppercase;color:var(--tx2);border-bottom:1px solid var(--bd);padding:3px}
+.sheet td{border-bottom:1px solid var(--bd);padding:4px 3px;vertical-align:top}
+.ft{margin-bottom:6px;font-size:12px;line-height:1.4;break-inside:avoid}
+.ft b{font-size:12.5px}
+.ft p{margin:1px 0 0;color:var(--tx2)}
+.vol{border:1px solid var(--bd2);border-radius:6px;padding:4px 6px;font-size:13px;width:100%;background:#fff}
+.sheet-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ptext{display:none}
+
+@page{size:A4;margin:9mm}
+#print{display:none}
+@media print{
+  html,body{background:#fff !important;padding:0 !important;margin:0}
+  body>*:not(#print){display:none !important}
+  #print{display:block;color:#1d1a16;font-size:8.6pt;line-height:1.3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#print .pg{height:278mm;display:flex;flex-direction:column;overflow:hidden;break-after:page;page-break-after:always}
+#print .pg.flow{height:auto;display:block;overflow:visible}
+#print .pg:last-child{break-after:auto;page-break-after:auto}
+#print .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #8a4b1f;padding-bottom:2mm;margin-bottom:2.5mm}
+#print .hd h1{margin:0;font-size:19pt;line-height:1;color:#5e3214}
+#print .hd .nm{min-width:70mm;border-bottom:1px solid #8c8475;font-size:19pt;font-weight:700;color:#5e3214;line-height:1.1}
+#print .hd .mt{font-size:8pt;color:#5c554a;text-align:right;line-height:1.45}
+#print .hd .mt b{color:#1d1a16}
+#print .g3{display:grid;grid-template-columns:57mm 63mm 1fr;gap:3mm;flex:1;min-height:0}
+#print .g2{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+#print .col{display:flex;flex-direction:column;gap:2.5mm;min-height:0}
+#print .bx{border:1px solid #b9ad98;border-radius:2mm;padding:1.8mm 2.2mm;break-inside:avoid}
+#print .bx.grow{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#print h3{margin:0 0 1.3mm;font-size:7.4pt;text-transform:uppercase;letter-spacing:.07em;color:#8a4b1f;display:flex;justify-content:space-between}
+#print h3 span{color:#8c8475;font-weight:400;letter-spacing:0;text-transform:none}
+#print .ab{display:grid;grid-template-columns:12mm 1fr;gap:1.6mm;padding:1.1mm 0;border-bottom:1px dotted #cfc6b6}
+#print .ab:last-child{border-bottom:0}
+#print .sc{border:1.3px solid #8a4b1f;border-radius:2mm;text-align:center;padding:.6mm 0;height:fit-content}
+#print .sc .m{font-size:13pt;font-weight:700;line-height:1.05}
+#print .sc .v{font-size:7pt;color:#5c554a;border-top:1px solid #ddd6c9}
+#print .sc .k{font-size:6.3pt;font-weight:700;color:#8a4b1f;letter-spacing:.05em}
+#print .r{display:flex;gap:1.3mm;align-items:center;font-size:7.8pt;line-height:1.38}
+#print .r .n{width:5.5mm;text-align:right;font-weight:700}
+#print .pd{width:2.3mm;height:2.3mm;border-radius:50%;border:1px solid #8c8475;flex:none}
+#print .pd.on{background:#8a4b1f;border-color:#8a4b1f}
+#print .r.sv{font-weight:700;color:#5e3214}
+#print .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6mm}
+#print .tl{border:1px solid #b9ad98;border-radius:1.5mm;text-align:center;padding:1mm 0 .6mm}
+#print .tl .b{font-size:13pt;font-weight:700;line-height:1.1}
+#print .tl .l{font-size:6.2pt;text-transform:uppercase;letter-spacing:.05em;color:#5c554a}
+#print .hpbox{border:1.5px solid #8a4b1f;border-radius:2mm;height:19mm;position:relative;margin-top:1.8mm}
+#print .hpbox .lbl{position:absolute;left:2mm;top:1mm;font-size:6.5pt;font-weight:700;color:#8a4b1f;text-transform:uppercase;letter-spacing:.05em}
+#print .hpbox .mx{position:absolute;right:2mm;top:1mm;font-size:7pt;color:#5c554a}
+#print .hpbox .val{position:absolute;left:0;right:0;top:5mm;text-align:center;font-size:20pt;font-weight:700}
+#print .sm2{display:grid;grid-template-columns:1fr 1fr;gap:1.6mm;margin-top:1.6mm}
+#print .smb{border:1px solid #b9ad98;border-radius:1.5mm;height:11mm;position:relative}
+#print .smb .lbl{position:absolute;left:1.6mm;top:.6mm;font-size:6.2pt;font-weight:700;color:#5c554a;text-transform:uppercase}
+#print .smb .val{position:absolute;left:0;right:0;bottom:.8mm;text-align:center;font-size:12pt;font-weight:700}
+#print .ci{display:inline-block;width:3.6mm;height:3.6mm;border:1.2px solid #5c554a;border-radius:50%;margin-right:1mm;vertical-align:middle}
+#print .ci.big{width:4.6mm;height:4.6mm}
+#print .sq{flex:none;display:inline-block;width:3mm;height:3mm;border:1.2px solid #5c554a;margin-right:.4mm;vertical-align:middle}
+#print .ds{display:flex;justify-content:space-between;font-size:7pt;margin-top:1.6mm;color:#5c554a}
+#print table{width:100%;border-collapse:collapse;font-size:7.6pt}
+#print th{text-align:left;font-size:6.2pt;text-transform:uppercase;color:#5c554a;border-bottom:1px solid #b9ad98;padding:.4mm .6mm}
+#print td{border-bottom:1px dotted #cfc6b6;padding:.8mm .6mm;vertical-align:top}
+#print .ln{border-bottom:1px solid #cfc6b6;height:6.2mm;flex:none}
+#print .lines{flex:1;overflow:hidden;min-height:0}
+#print .wl{display:flex;gap:1.5mm;align-items:flex-end;font-size:7.5pt;margin-top:1.4mm}
+#print .wl b{white-space:nowrap}
+#print .wl i{flex:1;border-bottom:1px solid #8c8475;height:4mm;font-style:normal;font-size:8pt}
+#print .sl{display:flex;align-items:center;gap:1.5mm;margin:.9mm 0;font-size:7.6pt}
+#print .sl b{width:12mm;color:#5e3214}
+#print .spl{padding:1mm 0;border-bottom:1px dotted #cfc6b6;break-inside:avoid}
+#print .spl:last-child{border-bottom:0}
+#print .spl .t{display:flex;justify-content:space-between;gap:1mm;font-weight:700;font-size:8pt}
+#print .spl .t small{font-weight:600;color:#6b4fa0;font-size:6.6pt;white-space:nowrap}
+#print .spl p{margin:.3mm 0 0;font-size:7.1pt;color:#3f3a33;line-height:1.3}
+#print .ft{margin-bottom:1.6mm;font-size:7.6pt;line-height:1.33;break-inside:avoid}
+#print .ft b{font-size:8pt;color:#1d1a16}
+#print .ft p{margin:.2mm 0 0;color:#3f3a33}
+#print .turn{background:#eee9f6;border-color:#cbbfe3}
+#print .coins{display:grid;grid-template-columns:repeat(5,1fr);gap:1.4mm}
+#print .coins div{border:1px solid #b9ad98;border-radius:1.5mm;height:10mm;position:relative;text-align:center}
+#print .coins span{position:absolute;left:0;right:0;top:.4mm;font-size:6.2pt;font-weight:700;color:#5c554a}
+#print .coins i{position:absolute;left:0;right:0;bottom:.6mm;font-style:normal;font-size:10pt;font-weight:700}
+#print .chk{display:grid;grid-template-columns:1fr 1fr;gap:.6mm 2mm;font-size:7.3pt}
+#print .ap{column-count:2;column-gap:5mm}
+#print .ac{break-inside:avoid;page-break-inside:avoid;display:inline-block;width:100%;box-sizing:border-box;border:1px solid #b9ad98;border-radius:2mm;padding:2mm 2.4mm;margin:0 0 2.6mm}
+#print .ac h4{margin:0;font-size:10pt;color:#5e3214;display:flex;justify-content:space-between;align-items:baseline;gap:2mm}
+#print .ac h4 small{font-size:7pt;color:#8c8475;font-weight:400}
+#print .ac .gr{font-size:7pt;color:#6b4fa0;font-weight:700;margin:.3mm 0 1.2mm}
+#print .ac dl{display:grid;grid-template-columns:auto 1fr;gap:.2mm 2mm;margin:0 0 1.4mm;font-size:7.4pt}
+#print .ac dt{font-weight:700;color:#5c554a}
+#print .ac dd{margin:0}
+#print .ac p{margin:0 0 1mm;font-size:8pt;line-height:1.38}
+#print .ac .hi{font-size:7.6pt;background:#f5e9df;border-radius:1.2mm;padding:.8mm 1.4mm;margin-top:1mm}
+#print .ac .tp{font-size:7.4pt;color:#2f6f4f;margin-top:1mm}
+#print h2.sec{font-size:11pt;color:#5e3214;margin:0 0 2mm;border-bottom:1.5px solid #8a4b1f;padding-bottom:1mm;display:inline-block;width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top noprint">
+    <h1>Deine Zauberin erstellen</h1>
+    <p>Schritt für Schritt zur Zauberin mit <b>Drakonischer Blutlinie</b> (D&amp;D 5e, Regeln von 2014). Du triffst jede Wahl selbst, die Erklärungen und <span style="background:#e5f1ea;color:#2f6f4f;border-radius:20px;padding:0 6px;font-weight:700;font-size:11px">Einsteigertipps</span> helfen dir dabei. Dein Stand wird in diesem Browser gespeichert.</p>
+  </header>
+  <div class="steps noprint" id="steps"></div>
+  <div class="wizard" id="wizard"></div>
+  <div id="sheetHost"></div>
+</div>
+
+<script>
+/* ================= DATEN ================= */
+const AB=[["str","Stärke","STR"],["dex","Geschicklichkeit","GES"],["con","Konstitution","KON"],["int","Intelligenz","INT"],["wis","Weisheit","WEI"],["cha","Charisma","CHA"]];
+const ABN=Object.fromEntries(AB.map(a=>[a[0],a[2]]));
+const SKILLS=[["Akrobatik","dex"],["Arkane Kunde","int"],["Athletik","str"],["Auftreten","cha"],["Einschüchtern","cha"],["Fingerfertigkeit","dex"],["Geschichte","int"],["Heilkunde","wis"],["Heimlichkeit","dex"],["Mit Tieren umgehen","wis"],["Motiv erkennen","wis"],["Nachforschungen","int"],["Naturkunde","int"],["Religion","int"],["Täuschen","cha"],["Überlebenskunst","wis"],["Überzeugen","cha"],["Wahrnehmung","wis"]];
+const CLASS_SKILLS=["Arkane Kunde","Täuschen","Motiv erkennen","Einschüchtern","Überzeugen","Religion"];
+const SKILL_INFO={"Arkane Kunde":"Wissen über Magie, Zauber und magische Wesen","Täuschen":"Lügen, verkleiden, bluffen","Motiv erkennen":"Merken, ob jemand lügt oder was er will","Einschüchtern":"Drohen und Druck machen","Überzeugen":"Freundlich überreden, verhandeln","Religion":"Wissen über Götter, Kulte und Rituale"};
+
+const RACES={
+ mensch:{n:"Mensch",lang:["+1 Sprache nach Wahl"],speed:30,b:{str:1,dex:1,con:1,int:1,wis:1,cha:1},tip:true,d:"+1 auf alle Attribute. Einfach und solide.",traits:["Vielseitig: +1 auf alle sechs Attribute.","Eine zusätzliche Sprache nach Wahl."]},
+ halbelf:{n:"Halbelf",lang:["Elfisch","+1 Sprache nach Wahl"],speed:30,b:{cha:2},choose:2,extraSkills:2,tip:true,d:"+2 CHA und +1 auf zwei weitere Attribute, zwei Bonus-Fertigkeiten. Sehr gut für Zauberinnen.",traits:["Dunkelsicht 60 ft.","Feenblut: Vorteil gegen Bezauberung, kann nicht magisch eingeschläfert werden.","Vielseitigkeit: zwei zusätzliche Fertigkeiten nach Wahl."]},
+ tiefling:{n:"Tiefling",lang:["Infernalisch"],speed:30,b:{cha:2,int:1},d:"+2 CHA, +1 INT. Feuerresistenz und eigene kleine Zauber.",traits:["Dunkelsicht 60 ft.","Resistenz gegen Feuerschaden.","Höllisches Erbe: Zaubertrick Thaumaturgie; ab Stufe 3 einmal pro langer Rast Höllischer Tadel (als Zauber 2. Grades)."]},
+ drachen:{n:"Drachenblütige",lang:[],speed:30,b:{str:2,cha:1},d:"+2 STR, +1 CHA. Odemwaffe und Resistenz, passend zum Drachenahn.",traits:["Odemwaffe (Art wie dein Drachenahn): 2W6 Schaden, einmal pro kurzer oder langer Rast.","Resistenz gegen den Schadenstyp deines Ahnen.","Hinweis: STR ist für Zauberinnen wenig nützlich."]},
+ hochelf:{n:"Hochelf",lang:["Elfisch","+1 Sprache nach Wahl"],speed:30,b:{dex:2,int:1},skills:["Wahrnehmung"],d:"+2 GES, +1 INT. Wahrnehmung geübt, ein zusätzlicher Magier-Zaubertrick.",traits:["Dunkelsicht 60 ft.","Feenblut: Vorteil gegen Bezauberung, kann nicht magisch eingeschläfert werden.","Trance: 4 Stunden meditieren statt 8 Stunden schlafen.","Wahrnehmung geübt.","Ein Zaubertrick aus der Magier-Liste (INT)."]},
+ halbling:{n:"Halbling (Leichtfuß)",lang:["Halblingisch"],speed:25,b:{dex:2,cha:1},d:"+2 GES, +1 CHA. Glück: eine gewürfelte 1 darf neu gewürfelt werden.",traits:["Glück: Würfelst du bei Angriff, Probe oder Rettungswurf eine 1, würfle neu.","Tapfer: Vorteil gegen Verängstigung.","Halbling-Wendigkeit: durch den Raum größerer Kreaturen bewegen.","Natürlich verstohlen: hinter größeren Kreaturen verstecken."]},
+ gnom:{n:"Gnom (Fels)",lang:["Gnomisch"],speed:25,b:{int:2,con:1},d:"+2 INT, +1 KON. Vorteil auf geistige Rettungswürfe gegen Magie.",traits:["Dunkelsicht 60 ft.","Gnomische Gerissenheit: Vorteil auf INT-, WEI- und CHA-Rettungswürfe gegen Magie.","Tüftler: kleine Uhrwerk-Spielereien bauen."]},
+ zwerg:{n:"Zwerg (Hügel)",lang:["Zwergisch"],speed:25,b:{con:2,wis:1},hp:1,d:"+2 KON, +1 WEI. Zusätzliche Trefferpunkte, sehr robust.",traits:["Dunkelsicht 60 ft.","Zwergische Widerstandskraft: Vorteil gegen Gift, Resistenz gegen Giftschaden.","Zwergische Zähigkeit: +1 TP pro Stufe (eingerechnet).","Bewegung wird durch schwere Rüstung nicht verringert."]},
+ halbork:{n:"Halbork",lang:["Orkisch"],speed:30,b:{str:2,con:1},skills:["Einschüchtern"],d:"+2 STR, +1 KON. Zäh, aber STR hilft Zauberinnen kaum.",traits:["Dunkelsicht 60 ft.","Einschüchtern geübt.","Unerbittliche Ausdauer: einmal pro langer Rast bei 0 TP stattdessen 1 TP.","Wilde Angriffe: kritische Treffer mit Waffen +1 Schadenswürfel."]}
+};
+
+const BGS={
+ weise:{n:"Weise / Gelehrte",s:["Arkane Kunde","Geschichte"],l:2,f:"Forscherin: Weißt du etwas nicht, weißt du oft, wo man es herausfinden kann.",e:"Tinte, Feder, kleines Messer, Brief eines verstorbenen Kollegen, Kleidung, 10 GM",d:"Studierte Bücher, Sterne und alte Geschichten."},
+ seemann:{n:"Seefahrerin",s:["Athletik","Wahrnehmung"],l:0,f:"Schiffspassage: Du kannst für dich und deine Gefährten kostenlose Überfahrt auf Schiffen bekommen.",e:"Belegnagel (Knüppel), 15 m Seidenseil, Glücksbringer, Kleidung, 10 GM",d:"Kennt das Meer, Häfen und Seeleute. Passt zur Insel."},
+ akolyth:{n:"Akolythin",s:["Motiv erkennen","Religion"],l:2,f:"Unterkunft der Gläubigen: Tempel deines Glaubens helfen dir.",e:"Heiliges Symbol, Gebetbuch, 5 Räucherstäbchen, Gewänder, Kleidung, 15 GM",d:"Diente in einem Tempel."},
+ einsiedler:{n:"Einsiedlerin",s:["Heilkunde","Religion"],l:1,f:"Entdeckung: Du kennst eine große Wahrheit oder ein Geheimnis (mit der SL festlegen).",e:"Schriftrollenbehälter mit Notizen, Winterdecke, Kleidung, Kräuterkunde-Set, 5 GM",d:"Lebte zurückgezogen. Gut für Träume und Visionen."},
+ adlige:{n:"Adlige",s:["Geschichte","Überzeugen"],l:1,f:"Privilegierte Stellung: Man empfängt dich in höheren Kreisen.",e:"Feine Kleidung, Siegelring, Stammbaumurkunde, 25 GM",d:"Aus gutem Haus, vielleicht wegen des Drachenbluts."},
+ scharlatan:{n:"Scharlatanin",s:["Täuschen","Fingerfertigkeit"],l:0,f:"Falsche Identität: Du hast eine zweite Identität mit Papieren.",e:"Feine Kleidung, Verkleidungsset, Gaunerwerkzeug, 15 GM",d:"Trickbetrügerin und Hochstaplerin."},
+ krimi:{n:"Kriminelle",s:["Täuschen","Heimlichkeit"],l:0,f:"Kriminelle Kontakte: Du kennst Leute, die Botschaften schmuggeln.",e:"Brecheisen, dunkle Kleidung mit Kapuze, 15 GM",d:"Lebte am Rand des Gesetzes."},
+ unterhalter:{n:"Unterhalterin",s:["Akrobatik","Auftreten"],l:0,f:"Publikumsliebling: Du findest überall eine Bühne und Unterkunft.",e:"Musikinstrument, Geschenk eines Verehrers, Kostüm, 15 GM",d:"Sängerin, Tänzerin oder Gauklerin."},
+ volksheld:{n:"Volksheldin",s:["Mit Tieren umgehen","Überlebenskunst"],l:0,f:"Gastfreundschaft: Einfache Leute verstecken und versorgen dich.",e:"Handwerkszeug, Schaufel, Eisentopf, Kleidung, 10 GM",d:"Einfache Herkunft, ein Held der Leute."},
+ aussen:{n:"Ausgestoßene",s:["Athletik","Überlebenskunst"],l:1,f:"Wanderin: Du findest Nahrung und Wasser und merkst dir Wege.",e:"Wanderstab, Jagdfalle, Trophäe, Reisekleidung, 10 GM",d:"Lebte in der Wildnis."},
+ gilde:{n:"Gildenhandwerkerin",s:["Motiv erkennen","Überzeugen"],l:1,f:"Gildenmitgliedschaft: Deine Gilde hilft dir mit Unterkunft und Kontakten.",e:"Handwerkszeug, Empfehlungsschreiben, Reisekleidung, 15 GM",d:"Ausgebildete Handwerkerin."},
+ soldat:{n:"Soldatin",s:["Athletik","Einschüchtern"],l:0,f:"Militärischer Rang: Soldaten erkennen deine Autorität an.",e:"Rangabzeichen, Trophäe, Würfel- oder Kartenspiel, Kleidung, 10 GM",d:"Diente in einer Armee."},
+ strasse:{n:"Straßenkind",s:["Fingerfertigkeit","Heimlichkeit"],l:0,f:"Stadtgeheimnisse: Du bewegst dich in Städten doppelt so schnell.",e:"Kleines Messer, Stadtkarte, Haustier-Maus, Andenken, Kleidung, 10 GM",d:"Wuchs auf der Straße auf."}
+};
+
+const DRAGONS=[["Bronze","Blitz","Wie Runara und Aidron: metallisch, gut."],["Blau","Blitz","Wie Sparkrender: chromatisch, hochmütig."],["Rot","Feuer","Wie Sharruth: chromatisch, zornig. Dunkle Verbindung zur Insel."],["Gold","Feuer","Metallisch, weise und gerecht."],["Messing","Feuer","Metallisch, gesprächig und neugierig."],["Silber","Kälte","Metallisch, freundlich zu Menschen."],["Weiß","Kälte","Chromatisch, wild und kalt."],["Kupfer","Säure","Metallisch, verspielt, liebt Rätsel."],["Schwarz","Säure","Chromatisch, grausam."],["Grün","Gift","Chromatisch, listig und manipulativ."]];
+
+// Zauber: [id, Grad, Deutsch, Englisch, Kosten, Reichweite, Text, Tipp?, Konzentration?]
+const SPELLS=[
+ ["feuerpfeil",0,"Feuerpfeil","Fire Bolt","Aktion","120 ft","Zauberangriff: 1W10 Feuer. Ab Stufe 5: 2W10. Größte Reichweite und Schaden.",1],
+ ["froststrahl",0,"Froststrahl","Ray of Frost","Aktion","60 ft","Zauberangriff: 1W8 Kälte, das Ziel ist bis zu deinem nächsten Zug 10 ft langsamer. Ab Stufe 5: 2W8.",1],
+ ["schockgriff",0,"Schockgriff","Shocking Grasp","Aktion","Berührung","Zauberangriff (Vorteil gegen Metallrüstung): 1W8 Blitz, das Ziel kann keine Reaktion nutzen. Ideal zum Weglaufen aus dem Nahkampf. Ab Stufe 5: 2W8.",1],
+ ["erfrierung",0,"Erfrierung","Frostbite","Aktion","60 ft","KON-Rettungswurf: 1W6 Kälte, das Ziel hat Nachteil beim nächsten Waffenangriff. Ab Stufe 5: 2W6."],
+ ["kaltehand",0,"Kalte Hand","Chill Touch","Aktion","120 ft","Zauberangriff: 1W8 nekrotisch, das Ziel kann bis zu deinem nächsten Zug nicht geheilt werden. Untote haben Nachteil gegen dich. Ab Stufe 5: 2W8."],
+ ["giftspritzer",0,"Giftspritzer","Poison Spray","Aktion","10 ft","KON-Rettungswurf: 1W12 Gift. Viel Schaden, aber sehr kurze Reichweite. Ab Stufe 5: 2W12."],
+ ["saeure",0,"Säurespritzer","Acid Splash","Aktion","60 ft","Ein oder zwei Ziele, die höchstens 5 ft auseinander stehen, GES-Rettungswurf: 1W6 Säure. Ab Stufe 5: 2W6."],
+ ["licht",0,"Licht","Light","Aktion","Berührung","Ein Gegenstand leuchtet 1 Stunde (20 ft hell, weitere 20 ft dämmrig).",1],
+ ["magierhand",0,"Magierhand","Mage Hand","Aktion","30 ft","Geisterhafte Hand für 1 Minute: Türen öffnen, Dinge holen (bis 5 kg). Kann nicht angreifen.",1],
+ ["botschaft",0,"Botschaft","Message","Aktion","120 ft","Flüstere einer Kreatur eine Nachricht zu, sie kann flüsternd antworten. Niemand sonst hört es."],
+ ["illusion",0,"Kleine Illusion","Minor Illusion","Aktion","30 ft","Ein Geräusch oder ein Bild (bis zu einer Kiste groß) für 1 Minute. Wer es untersucht, kann es durchschauen."],
+ ["taschensp",0,"Taschenspielerei","Prestidigitation","Aktion","10 ft","Kleine Tricks: Funken, Gerüche, Kerze an/aus, säubern, wärmen, kühlen, kleine Zeichen."],
+ ["freunde",0,"Freunde","Friends","Aktion","selbst","Konzentration 1 Minute: Vorteil auf CHA-Proben gegen eine Kreatur. Danach merkt sie es und ist verärgert.",0,1],
+
+ ["geschoss",1,"Magisches Geschoss","Magic Missile","Aktion","120 ft","Trifft immer: 3 Geschosse à 1W4+1 Energie, frei verteilbar. Pro höherem Grad +1 Geschoss.",1],
+ ["schild",1,"Schild","Shield","Reaktion","selbst","Wenn du getroffen wirst: +5 RK bis zu deinem nächsten Zug, auch gegen den Treffer. Rettet Leben.",1],
+ ["brennhaende",1,"Brennende Hände","Burning Hands","Aktion","15-ft-Kegel","GES-Rettungswurf: 3W6 Feuer, halb bei Erfolg. Gut gegen Gruppen in der Nähe. +1W6 pro höherem Grad."],
+ ["donnerwoge",1,"Donnerwoge","Thunderwave","Aktion","15-ft-Würfel","KON-Rettungswurf: 2W8 Schall und 10 ft weggestoßen (bei Erfolg halb, kein Stoß). Sehr laut. +1W8 pro höherem Grad.",1],
+ ["schlaf",1,"Schlaf","Sleep","Aktion","90 ft","Kreaturen mit zusammen 5W8 TP schlafen ein (die schwächsten zuerst), ohne Rettungswurf. Stark auf niedrigen Stufen. +2W8 pro höherem Grad.",1],
+ ["eismesser",1,"Eismesser","Ice Knife","Aktion","60 ft","Zauberangriff: 1W10 Stich, danach explodiert es: alle im Umkreis von 5 ft GES-Rettungswurf, 2W6 Kälte. +1W6 Kälte pro höherem Grad."],
+ ["kugel",1,"Chromatische Kugel","Chromatic Orb","Aktion","90 ft","Zauberangriff: 3W8 Schaden, Art frei wählbar (Säure, Kälte, Feuer, Blitz, Gift, Schall). Braucht einen Diamanten im Wert von 50 GM. +1W8 pro höherem Grad."],
+ ["absorb",1,"Elemente absorbieren","Absorb Elements","Reaktion","selbst","Wenn du Säure-, Kälte-, Feuer-, Blitz- oder Schallschaden nimmst: Resistenz dagegen bis zu deinem nächsten Zug, dein nächster Nahkampftreffer macht +1W6 davon."],
+ ["bezaubern",1,"Person bezaubern","Charm Person","Aktion","30 ft","WEI-Rettungswurf: Ein Humanoider hält dich 1 Stunde lang für eine Freundin. Danach weiß er, dass er verzaubert war."],
+ ["nebelwolke",1,"Nebelwolke","Fog Cloud","Aktion","120 ft","Konzentration bis 1 Stunde: dichter Nebel im Radius von 20 ft. Gut zur Flucht oder als Deckung.",0,1],
+ ["federfall",1,"Federfall","Feather Fall","Reaktion","60 ft","Wenn jemand fällt: Bis zu 5 Kreaturen sinken langsam und nehmen keinen Fallschaden. Auf Klippen und Türmen Gold wert."],
+ ["rueckzug",1,"Rückzug","Expeditious Retreat","Bonusaktion","selbst","Konzentration bis 10 Minuten: Du kannst jede Runde als Bonusaktion spurten.",0,1],
+ ["magentd",1,"Magie entdecken","Detect Magic","Aktion","selbst","Konzentration bis 10 Minuten: Du spürst Magie im Umkreis von 30 ft. (Zauberinnen können keine Rituale, es kostet einen Platz.)",0,1],
+
+ ["strahl",2,"Sengender Strahl","Scorching Ray","Aktion","120 ft","3 Strahlen, je ein Zauberangriff: 2W6 Feuer pro Treffer. Pro höherem Grad +1 Strahl.",1],
+ ["nebelschritt",2,"Nebelschritt","Misty Step","Bonusaktion","selbst","Teleportiere dich bis zu 30 ft an einen Ort, den du siehst. Der beste Fluchtzauber.",1],
+ ["zerbersten",2,"Zerbersten","Shatter","Aktion","60 ft","KON-Rettungswurf in 10 ft Radius: 3W8 Schall, halb bei Erfolg. Sehr laut. +1W8 pro höherem Grad."],
+ ["drachenodem",2,"Drachenodem","Dragon's Breath","Bonusaktion","Berührung","Konzentration 1 Minute: Das Ziel (auch du) kann als Aktion einen 15-ft-Kegel ausatmen, GES-Rettungswurf, 3W6 Säure, Kälte, Feuer, Blitz oder Gift. Passt perfekt zur Blutlinie.",1,1],
+ ["spiegel",2,"Spiegelbilder","Mirror Image","Aktion","selbst","Drei Trugbilder von dir für 1 Minute. Angriffe treffen oft die Bilder statt dich. Ohne Konzentration."],
+ ["unsicht",2,"Unsichtbarkeit","Invisibility","Aktion","Berührung","Konzentration bis 1 Stunde: Ein Ziel ist unsichtbar, bis es angreift oder zaubert.",0,1],
+ ["festhalten",2,"Person festhalten","Hold Person","Aktion","60 ft","Konzentration bis 1 Minute: WEI-Rettungswurf, ein Humanoider ist gelähmt (neuer Rettungswurf jeden Zug).",0,1],
+ ["einfluest",2,"Einflüsterung","Suggestion","Aktion","30 ft","Konzentration bis 8 Stunden: WEI-Rettungswurf, das Ziel folgt einem vernünftig klingenden Vorschlag.",0,1],
+ ["netz",2,"Netz","Web","Aktion","60 ft","Konzentration bis 1 Stunde: klebrige Netze in einem 20-ft-Würfel, GES-Rettungswurf oder festgesetzt.",0,1],
+ ["verschw",2,"Verschwimmen","Blur","Aktion","selbst","Konzentration bis 1 Minute: Angriffe gegen dich haben Nachteil.",0,1],
+ ["vergroess",2,"Vergrößern/Verkleinern","Enlarge/Reduce","Aktion","30 ft","Konzentration bis 1 Minute: Ziel wird größer (Vorteil auf STR, +1W4 Waffenschaden) oder kleiner (Nachteil, −1W4).",0,1],
+
+ ["feuerball",3,"Feuerball","Fireball","Aktion","150 ft","GES-Rettungswurf in 20 ft Radius: 8W6 Feuer, halb bei Erfolg. Der Klassiker. +1W6 pro höherem Grad.",1],
+ ["blitz",3,"Blitz","Lightning Bolt","Aktion","100-ft-Linie","GES-Rettungswurf auf einer 100 ft langen Linie: 8W6 Blitz, halb bei Erfolg. +1W6 pro höherem Grad."],
+ ["gegenz",3,"Gegenzauber","Counterspell","Reaktion","60 ft","Unterbricht einen Zauber bis Grad 3 automatisch. Höhere: Probe mit Charisma gegen SG 10 + Grad.",1],
+ ["hast",3,"Hast","Haste","Aktion","30 ft","Konzentration bis 1 Minute: Ziel hat doppelte Bewegung, +2 RK, Vorteil auf GES-Rettungswürfe und eine zusätzliche Aktion. Danach eine Runde erschöpft.",0,1],
+ ["fliegen",3,"Fliegen","Fly","Aktion","Berührung","Konzentration bis 10 Minuten: Ziel fliegt mit 60 ft.",0,1],
+ ["muster",3,"Hypnotisches Muster","Hypnotic Pattern","Aktion","120 ft","Konzentration bis 1 Minute: WEI-Rettungswurf in einem 30-ft-Würfel, sonst handlungsunfähig, bis jemand das Ziel schüttelt oder verletzt.",0,1],
+ ["verlang",3,"Verlangsamen","Slow","Aktion","120 ft","Konzentration bis 1 Minute: Bis zu 6 Ziele, WEI-Rettungswurf: −2 RK, halbe Bewegung, keine Reaktionen, nur Aktion oder Bonusaktion.",0,1],
+ ["wasser",3,"Wasser atmen","Water Breathing","Aktion","30 ft","Bis zu 10 Kreaturen atmen 24 Stunden unter Wasser. Auf einer Insel sehr nützlich."]
+];
+const SP=Object.fromEntries(SPELLS.map(s=>[s[0],s]));
+
+const META=[
+ ["beschl","Beschleunigter Zauber","Quickened Spell","2 Punkte","Ein Zauber mit Aktion wird zur Bonusaktion. Zwei Zauber in einem Zug (einer davon nur ein Zaubertrick).",1],
+ ["doppelt","Verdoppelter Zauber","Twinned Spell","Punkte = Grad (Zaubertrick: 1)","Ein Zauber, der genau ein Ziel trifft (nicht dich selbst), trifft zusätzlich ein zweites. Z. B. Feuerpfeil auf zwei Gegner für 1 Punkt.",1],
+ ["vorsicht","Vorsichtiger Zauber","Careful Spell","1 Punkt","Bei Flächenzaubern mit Rettungswurf schützt du bis zu CHA-Modifikator viele Verbündete: Sie bestehen automatisch. Perfekt mit Feuerball."],
+ ["entfernt","Entfernter Zauber","Distant Spell","1 Punkt","Doppelte Reichweite. Berührungszauber reichen 30 ft weit."],
+ ["macht","Machtvoller Zauber","Empowered Spell","1 Punkt","Würfle bis zu CHA-Modifikator viele Schadenswürfel neu. Kombinierbar mit anderer Metamagie."],
+ ["verlaeng","Verlängerter Zauber","Extended Spell","1 Punkt","Die Wirkungsdauer verdoppelt sich (höchstens 24 Stunden)."],
+ ["erhoeht","Erhöhter Zauber","Heightened Spell","3 Punkte","Ein Ziel hat Nachteil auf den ersten Rettungswurf gegen deinen Zauber."],
+ ["subtil","Unauffälliger Zauber","Subtle Spell","1 Punkt","Du zauberst ohne Worte und Gesten. Niemand merkt, dass du zauberst. Gut für Gespräche und Gefangenschaft."]
+];
+
+const EQUIP=[
+ ["w",[["armbrust","Leichte Armbrust und 20 Bolzen","Fernkampfwaffe, 1W8 + GES, 80/320 ft. Gute Ersatzwaffe ohne Zauberplätze.",1],["stab","Kampfstab","Nahkampf, 1W6 + STR (beidhändig 1W8). Nur sinnvoll mit guter STR."]]],
+ ["f",[["fokus","Arkaner Fokus (Kristall, Stab o. ä.)","Ersetzt einfache Zauberkomponenten. Eine Hand muss frei sein.",1],["beutel","Komponentenbeutel","Kleiner Beutel mit Zauberzutaten, wirkt wie ein Fokus."]]],
+ ["p",[["entdecker","Entdeckerausrüstung","Rucksack, Schlafsack, Essgeschirr, Zunderkästchen, 10 Fackeln, 10 Rationen, Wasserschlauch, 15 m Seil.",1],["gewoelbe","Gewölbeforscherausrüstung","Rucksack, Brecheisen, Hammer, 10 Kletterhaken, 10 Fackeln, Zunderkästchen, 10 Rationen, Wasserschlauch, 15 m Seil."]]]
+];
+
+const SLOTS={1:[2],2:[3],3:[4,2],4:[4,3],5:[4,3,2]};
+const CANTRIPS_KNOWN={1:4,2:4,3:4,4:5,5:5};
+const SPELLS_KNOWN={1:2,2:3,3:4,4:5,5:6};
+const MAXLVL={1:1,2:1,3:2,4:2,5:3};
+const ARRAY=[15,14,13,12,10,8];
+const KEY="zauberin-guide-v1";
+
+/* ================= STATE ================= */
+let S={step:0,name:"",player:"",level:3,race:"",halfelf:[],bg:"",scores:{},dragon:"",skills:[],extraSkills:[],cantrips:[],spells:[],meta:[],equip:{w:"",f:"",p:""},story:"",appearance:"",hp:"",thp:"",hd:"",slotsUsed:{},spUsed:0,ds:{},coins:{},cond:"",boni:"frei",fb:{two:"cha",one:"con",one2:"dex"}};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ================= BERECHNUNG ================= */
+const L=()=>parseInt(S.level)||3;
+const PB=()=>2+Math.floor((L()-1)/4);
+const mod=v=>Math.floor((v-10)/2);
+const sg=n=>(n>=0?"+":"")+n;
+const FREE=()=>S.boni!=="phb"&&S.race&&S.race!=="mensch";
+function raceBonus(k){const r=RACES[S.race];if(!r)return 0;
+  if(FREE()){let b=0;if(S.fb.two===k)b+=2;if(S.fb.one===k)b+=1;if(r.choose&&S.fb.one2===k)b+=1;return b;}
+  let b=r.b[k]||0;if(r.choose&&S.halfelf.includes(k))b+=1;return b;}
+function freeOk(){if(!FREE())return true;const a=[S.fb.two,S.fb.one];if(RACES[S.race].choose)a.push(S.fb.one2);return a.every(Boolean)&&new Set(a).size===a.length;}
+function base(k){return parseInt(S.scores[k])||0;}
+function score(k){return base(k)?base(k)+raceBonus(k):0;}
+function knownSkills(){const set=new Set(S.skills);const bg=BGS[S.bg];if(bg)bg.s.forEach(x=>set.add(x));const r=RACES[S.race];if(r&&r.skills)r.skills.forEach(x=>set.add(x));S.extraSkills.forEach(x=>set.add(x));return set;}
+function hpMax(){const c=mod(score("con")||10);const r=RACES[S.race];return 6+c+(L()-1)*(4+c)+L()+(r&&r.hp?L():0);}
+
+/* ================= SCHRITTE ================= */
+const STEPS=[
+ {n:"Start",ok:()=>!!S.name},
+ {n:"Volk",ok:()=>!!S.race&&(S.boni!=="phb"||!RACES[S.race].choose||S.halfelf.length===2)},
+ {n:"Hintergrund",ok:()=>!!S.bg},
+ {n:"Attribute",ok:()=>AB.every(([k])=>base(k))&&new Set(AB.map(([k])=>base(k))).size===6&&freeOk()},
+ {n:"Drachenahn",ok:()=>!!S.dragon},
+ {n:"Fertigkeiten",ok:()=>S.skills.length===2&&(!RACES[S.race]||!RACES[S.race].extraSkills||S.extraSkills.length===2)},
+ {n:"Zaubertricks",ok:()=>S.cantrips.length===CANTRIPS_KNOWN[L()]},
+ {n:"Zauber",ok:()=>S.spells.length===SPELLS_KNOWN[L()]},
+ {n:"Metamagie",ok:()=>L()<3||S.meta.length===2},
+ {n:"Ausrüstung",ok:()=>S.equip.w&&S.equip.f&&S.equip.p},
+ {n:"Geschichte",ok:()=>true},
+ {n:"Bogen",ok:()=>true}
+];
+
+function renderSteps(){
+  document.getElementById("steps").innerHTML=STEPS.map((s,i)=>`<button class="${i===S.step?"active":""} ${s.ok()&&i<11?"done":""}" onclick="go(${i})"><span class="n">${i+1}</span>${s.n}</button>`).join("");
+}
+function go(i){S.step=i;save();render();window.scrollTo({top:0,behavior:"smooth"});}
+function nav(){
+  const i=S.step;
+  return `<div class="nav">${i>0?`<button class="btn sec" onclick="go(${i-1})">← Zurück</button>`:"<span></span>"}${i<STEPS.length-1?`<button class="btn" onclick="go(${i+1})">Weiter →</button>`:""}</div>`;
+}
+function status(okText,missing){const ok=STEPS[S.step].ok();return `<p class="status ${ok?"ok":"no"}">${ok?"✓ "+okText:missing}</p>`;}
+function opt(sel,dis,title,meta,desc,on,extra=""){return `<div class="opt ${sel?"sel":""} ${dis?"dis":""}" ${dis?"":`onclick="${on}"`}><span class="check"></span><div class="t" style="padding-right:22px">${title}</div>${meta?`<div class="m">${meta}</div>`:""}<div class="d">${desc}</div>${extra}</div>`;}
+const TIP=`<span class="badge">Einsteigertipp</span>`;
+
+function render(){
+  renderSteps();
+  const w=document.getElementById("wizard"), sh=document.getElementById("sheetHost");
+  sh.innerHTML=""; w.style.display="";
+  const i=S.step;
+  let h="";
+  if(i===0){
+    h=`<div class="card"><h2>Willkommen!</h2><p class="lead">Eine <b>Zauberin</b> (Sorcerer) trägt Magie im Blut. Deine stammt von einem <b>Drachen</b> in deiner Ahnenreihe. Du brauchst kein Zauberbuch, deine Zauber kommen aus dir selbst. Dein wichtigstes Attribut ist <b>Charisma</b>.</p>
+    <div class="tip"><b>So funktioniert der Guide:</b> Geh die Schritte oben der Reihe nach durch. Ein grüner Haken zeigt, dass ein Schritt vollständig ist. Du kannst jederzeit zurückspringen und etwas ändern. Am Ende steht dein fertiger Charakterbogen zum Drucken.</div>
+    <div class="two"><div class="field"><label>Name deiner Zauberin</label><input value="${esc(S.name)}" oninput="S.name=this.value;save();renderSteps()" placeholder="z. B. Ilyra"></div>
+    <div class="field"><label>Dein Name (Spielerin)</label><input value="${esc(S.player)}" oninput="S.player=this.value;save()"></div></div>
+    <div class="field" style="max-width:240px"><label>Stufe</label><select onchange="S.level=parseInt(this.value);trimChoices();save();render()">${[1,2,3,4,5].map(n=>`<option ${n==L()?"selected":""}>${n}</option>`).join("")}</select></div>
+    <p class="lead" style="font-size:12.5px">Die Gruppe ist gerade auf Stufe 3. Frag deine SL, falls du unsicher bist.</p>${nav()}</div>`;
+  }
+  if(i===1){
+    const r=RACES[S.race];
+    h=`<div class="card"><h2>Schritt 2: Dein Volk</h2><p class="lead">Dein Volk gibt dir Boni auf Attribute und besondere Fähigkeiten. Für Zauberinnen ist ein Bonus auf <b>Charisma</b> am wertvollsten.</p>${S.boni!=="phb"?`<div class="tip"><b>Wie bei Elara:</b> Die Attributsboni deines Volkes verteilst du in Schritt 4 frei (Tashas Eigene Herkunft). Wähle dein Volk also einfach danach, was dir gefällt. Die Boni unten gelten nur für den PHB-Weg.</div>`:""}
+    ${status("Volk gewählt","Wähle ein Volk.")}
+    <div class="grid">${Object.entries(RACES).map(([k,v])=>opt(S.race===k,false,v.n+(v.tip?TIP:""),Object.entries(v.b).map(([a,n])=>ABN[a]+" +"+n).join(", ")+(v.choose?", +1 auf zwei weitere":"")+" · "+v.speed+" ft",v.d,`S.race='${k}';S.halfelf=[];S.extraSkills=[];save();render()`)).join("")}</div>
+    ${r&&r.choose&&S.boni==="phb"?`<h2 style="margin-top:16px;font-size:16px">Halbelf: Wähle zwei Attribute für je +1</h2><p class="lead">Nicht Charisma (das bekommt schon +2). Empfehlung: Konstitution und Geschicklichkeit.</p>
+      <div class="grid">${AB.filter(([k])=>k!=="cha").map(([k,de])=>opt(S.halfelf.includes(k),!S.halfelf.includes(k)&&S.halfelf.length>=2,de+" +1","","",`toggle('halfelf','${k}',2)`)).join("")}</div>`:""}
+    ${r?`<div class="tip" style="margin-top:14px"><b>${r.n} – Merkmale:</b><br>${r.traits.join("<br>")}</div>`:""}
+    ${nav()}</div>`;
+  }
+  if(i===2){
+    const b=BGS[S.bg];
+    h=`<div class="card"><h2>Schritt 3: Dein Hintergrund</h2><p class="lead">Was hast du gemacht, bevor du Abenteuerin wurdest? Der Hintergrund gibt dir zwei Fertigkeiten, eine Fähigkeit und etwas Ausrüstung. Wähle, was zu deiner Geschichte passt.</p>
+    ${status("Hintergrund gewählt","Wähle einen Hintergrund.")}
+    <div class="grid">${Object.entries(BGS).map(([k,v])=>opt(S.bg===k,false,v.n,v.s.join(", ")+(v.l?` · ${v.l} Sprache${v.l>1?"n":""}`:""),v.d,`S.bg='${k}';S.skills=S.skills.filter(x=>!BGS['${k}'].s.includes(x));save();render()`)).join("")}</div>
+    ${b?`<div class="tip" style="margin-top:14px"><b>${b.n}:</b> ${b.f}<br><b>Ausrüstung:</b> ${b.e}</div>`:""}
+    ${nav()}</div>`;
+  }
+  if(i===3){
+    const used=AB.map(([k])=>base(k)).filter(Boolean);
+    h=`<div class="card"><h2>Schritt 4: Deine Attribute</h2><p class="lead">Verteile die sechs Werte <b>15, 14, 13, 12, 10, 8</b> auf deine Attribute, jeden genau einmal. Die Volksboni kommen automatisch dazu. Der <b>Modifikator</b> ist die Zahl, die du später zu deinen Würfen addierst.</p>
+    <h2 style="font-size:15px;margin:4px 0 8px">Wie kommen die Volksboni dazu?</h2>
+    <div class="grid" style="margin-bottom:12px">
+     ${opt(S.boni!=="phb",false,"Volksboni frei verteilen"+TIP,"Wie bei Elara · Tashas Eigene Herkunft","Den +2-Bonus und den +1-Bonus deines Volkes legst du auf beliebige Attribute. So erreicht jedes Volk 17 Charisma.","S.boni='frei';save();render()")}
+     ${opt(S.boni==="phb",false,"PHB-Volksboni","Nach dem Spielerhandbuch","Die Boni sind fest an dein Volk gebunden (siehe Schritt 2).","S.boni='phb';save();render()")}
+    </div>
+    ${FREE()?`<div class="two" style="grid-template-columns:repeat(${RACES[S.race].choose?3:2},1fr);margin-bottom:12px">
+      ${[["two","+2 auf"],["one","+1 auf"]].concat(RACES[S.race].choose?[["one2","weiteres +1 auf (Halbelf)"]]:[]).map(([f,l])=>`<div class="field"><label>${l}</label><select onchange="S.fb.${f}=this.value;save();render()"><option value="">–</option>${AB.map(([k,de])=>`<option value="${k}" ${S.fb[f]===k?"selected":""}>${de}</option>`).join("")}</select></div>`).join("")}
+     </div>${freeOk()?"":`<p class="status no">Jeder Bonus muss auf ein anderes Attribut.</p>`}`:(S.race==="mensch"&&S.boni!=="phb"?`<div class="tip">Menschen bekommen +1 auf alle Attribute, da gibt es nichts zu verteilen.</div>`:"")}
+    <div class="tip">${TIP} Für Zauberinnen: <b>Charisma</b> am höchsten (deine Zauber), dann <b>Konstitution</b> (Trefferpunkte, Konzentration halten), dann <b>Geschicklichkeit</b> (Rüstungsklasse, Initiative). <button class="btn pu" style="margin-left:6px;padding:4px 10px;font-size:12px" onclick="recommend()">Empfehlung übernehmen</button><br><span style="font-size:12px">${S.boni!=="phb"&&S.race!=="mensch"?"Setzt CHA 15 + 2 = <b>17</b> und KON 14 + 1 = <b>15</b>"+(RACES[S.race]&&RACES[S.race].choose?", GES 13 + 1 = 14":"")+". Elara hat es genauso gemacht, nur mit WEI statt CHA.":"Setzt die Standardreihe passend für eine Zauberin."}</span></div>
+    ${status("Alle Werte verteilt","Jeder Wert muss genau einmal vergeben werden.")}
+    <table class="ab"><tr><th>Attribut</th><th>Wert</th><th>Volksbonus</th><th>Ergebnis</th><th>Modifikator</th><th>Wofür?</th></tr>
+    ${AB.map(([k,de,ab])=>{const v=base(k);const opts=ARRAY.map(n=>`<option value="${n}" ${v===n?"selected":""} ${used.includes(n)&&v!==n?"disabled":""}>${n}</option>`).join("");
+      const tot=score(k);
+      const why={str:"Tragen, klettern, schwere Waffen",dex:"Rüstungsklasse, Initiative, Armbrust",con:"Trefferpunkte, Konzentration",int:"Wissen, Arkane Kunde",wis:"Wahrnehmung, Motiv erkennen",cha:"<b>Deine Zauber</b>, Reden, Verhandeln"}[k];
+      return `<tr><td><b>${ab}</b> ${de}</td><td><select onchange="S.scores['${k}']=parseInt(this.value)||0;save();render()"><option value="">–</option>${opts}</select></td><td>${raceBonus(k)?"+"+raceBonus(k):"–"}</td><td class="big">${tot||"–"}</td><td>${tot?`<span class="mod">${sg(mod(tot))}</span>`:""}</td><td style="font-size:12.5px;color:var(--tx2)">${why}</td></tr>`;}).join("")}
+    </table>${nav()}</div>`;
+  }
+  if(i===4){
+    h=`<div class="card"><h2>Schritt 5: Dein Drachenahn</h2><p class="lead">Welcher Drache war deine Ahnin oder dein Ahn? Das bestimmt die <b>Schadensart</b>, die später (ab Stufe 6) stärker wird, und ist wichtig für deine Geschichte. Du sprichst außerdem <b>Drakonisch</b>, und bei Charisma-Proben mit Drachen zählt dein Übungsbonus doppelt.</p>
+    <div class="tip">Auf Stormwreck Isle leben und lagen viele Drachen. Deine Farbe kann eine Verbindung zu ihnen schaffen. Sprich das gern mit deiner SL ab.</div>
+    ${status("Drachenahn gewählt","Wähle eine Drachenfarbe.")}
+    <div class="grid">${DRAGONS.map(([c,t,d])=>opt(S.dragon===c,false,c,t+"schaden",d,`S.dragon='${c}';save();render()`)).join("")}</div>${nav()}</div>`;
+  }
+  if(i===5){
+    const ks=knownSkills(); const r=RACES[S.race];
+    const fixed=new Set([...(BGS[S.bg]?.s||[]),...(r?.skills||[])]);
+    h=`<div class="card"><h2>Schritt 6: Fertigkeiten</h2><p class="lead">Fertigkeiten sind Dinge, in denen du geübt bist. Auf Proben damit addierst du deinen Übungsbonus (+${PB()}). Wähle <b>zwei</b> aus der Liste der Zauberin.</p>
+    ${fixed.size?`<div class="tip">Schon geübt durch Volk oder Hintergrund: <b>${[...fixed].join(", ")}</b></div>`:""}
+    ${status("Zwei Fertigkeiten gewählt",`Wähle noch ${2-S.skills.length} Fertigkeit(en).`)}
+    <div class="grid">${CLASS_SKILLS.map(n=>{const isF=fixed.has(n);const a=SKILLS.find(s=>s[0]===n)[1];
+      return opt(S.skills.includes(n)||isF,isF||(!S.skills.includes(n)&&S.skills.length>=2),n+(n==="Überzeugen"?TIP:""),ABN[a]+(isF?" · schon geübt":""),SKILL_INFO[n],`toggle('skills','${n}',2)`);}).join("")}</div>
+    ${r&&r.extraSkills?`<h2 style="margin-top:16px;font-size:16px">Halbelf: zwei Bonus-Fertigkeiten (frei wählbar)</h2><div class="grid">${SKILLS.map(([n,a])=>{const has=fixed.has(n)||S.skills.includes(n);return opt(S.extraSkills.includes(n)||has,has||(!S.extraSkills.includes(n)&&S.extraSkills.length>=2),n,ABN[a],"",`toggle('extraSkills','${n}',2)`);}).join("")}</div>`:""}
+    ${nav()}</div>`;
+  }
+  if(i===6){
+    const n=CANTRIPS_KNOWN[L()];
+    h=`<div class="card"><h2>Schritt 7: Zaubertricks</h2><p class="lead">Zaubertricks kosten nichts, du kannst sie <b>unbegrenzt</b> wirken. Wähle <b>${n}</b>. Faustregel: zwei zum Angreifen, der Rest für Erkundung und Alltag.</p>
+    ${status(n+" Zaubertricks gewählt",`Gewählt: ${S.cantrips.length} von ${n}.`)}
+    <div class="grid">${SPELLS.filter(s=>s[1]===0).map(s=>spellOpt(s,"cantrips",n)).join("")}</div>${nav()}</div>`;
+  }
+  if(i===7){
+    const n=SPELLS_KNOWN[L()],mx=MAXLVL[L()];
+    h=`<div class="card"><h2>Schritt 8: Zauber</h2><p class="lead">Diese Zauber kosten einen <b>Zauberplatz</b>. Auf Stufe ${L()} kennst du <b>${n}</b> Zauber bis Grad ${mx}. Du kannst einen Zauber auch mit einem höheren Platz wirken, dann wird er stärker.</p>
+    <div class="tip">${TIP} Nimm mindestens <b>einen Schutzzauber</b> (Schild oder Nebelschritt) und <b>einen starken Angriff</b>. Zauber mit <b>Konzentration</b> (K) laufen nur einzeln: Startest du einen zweiten, endet der erste. Wirst du getroffen, machst du einen KON-Rettungswurf, um die Konzentration zu halten.</div>
+    ${status(n+" Zauber gewählt",`Gewählt: ${S.spells.length} von ${n}.`)}
+    ${[1,2,3].filter(g=>g<=mx).map(g=>`<h2 style="font-size:16px;margin-top:12px">Grad ${g}</h2><div class="grid">${SPELLS.filter(s=>s[1]===g).map(s=>spellOpt(s,"spells",n)).join("")}</div>`).join("")}
+    ${nav()}</div>`;
+  }
+  if(i===8){
+    h=`<div class="card"><h2>Schritt 9: Metamagie</h2>`+(L()<3?`<p class="lead">Metamagie bekommst du erst ab <b>Stufe 3</b>. Dieser Schritt ist für dich erledigt.</p>`:
+    `<p class="lead">Mit <b>Zauberpunkten</b> (auf Stufe ${L()}: ${L()} Stück) kannst du Zauber verändern. Wähle <b>zwei</b> Metamagie-Optionen. Die Punkte kommen nach einer langen Rast zurück.</p>
+    ${status("Zwei Optionen gewählt",`Gewählt: ${S.meta.length} von 2.`)}
+    <div class="grid">${META.map(m=>opt(S.meta.includes(m[0]),!S.meta.includes(m[0])&&S.meta.length>=2,m[1]+(m[5]?TIP:"")+` <small>${m[2]}</small>`,m[3],m[4],`toggle('meta','${m[0]}',2)`)).join("")}</div>`)+nav()+`</div>`;
+  }
+  if(i===9){
+    h=`<div class="card"><h2>Schritt 10: Ausrüstung</h2><p class="lead">Wähle jeweils eine Option. Dazu bekommst du immer <b>zwei Dolche</b> und die Ausrüstung deines Hintergrunds.</p>
+    ${status("Ausrüstung gewählt","Wähle in jeder Zeile eine Option.")}
+    ${EQUIP.map(([k,os])=>`<div class="grid" style="margin-bottom:10px">${os.map(o=>opt(S.equip[k]===o[0],false,o[1]+(o[3]?TIP:""),"",o[2],`S.equip['${k}']='${o[0]}';save();render()`)).join("")}</div>`).join("")}
+    ${nav()}</div>`;
+  }
+  if(i===10){
+    h=`<div class="card"><h2>Schritt 11: Aussehen und Geschichte</h2><p class="lead">Optional, aber schön: Wer bist du? Ein paar Stichworte reichen.</p>
+    <div class="tip">Fragen zum Nachdenken: Woran merkt man dein Drachenblut (Augen, Schuppen, Wärme)? Wovon träumst du? Warum bist du auf Stormwreck Isle? Was willst du unbedingt erreichen?</div>
+    <div class="field"><label>Aussehen</label><textarea oninput="S.appearance=this.value;save()">${esc(S.appearance)}</textarea></div>
+    <div class="field"><label>Persönlichkeit und Geschichte</label><textarea style="min-height:130px" oninput="S.story=this.value;save()">${esc(S.story)}</textarea></div>
+    ${nav()}</div>`;
+  }
+  if(i===11){ w.style.display="none"; renderSheet(); return; }
+  w.innerHTML=h;
+}
+function spellOpt(s,list,n){
+  const [id,g,de,en,time,range,txt,tip,conc]=s; const sel=S[list].includes(id);
+  return opt(sel,!sel&&S[list].length>=n,de+(tip?TIP:"")+` <small>${en}</small>`,`${time} · ${range}${conc?" · K":""}`,txt,`toggle('${list}','${id}',${n})`);
+}
+function recommend(){S.scores={cha:15,con:14,dex:13,wis:12,int:10,str:8};S.fb={two:"cha",one:"con",one2:"dex"};if(S.boni==="phb"&&RACES[S.race]&&RACES[S.race].choose)S.halfelf=["con","dex"];save();render();}
+function toggle(list,v,max){const a=S[list];const i=a.indexOf(v);if(i>=0)a.splice(i,1);else if(a.length<max)a.push(v);save();render();}
+function trimChoices(){S.cantrips=S.cantrips.slice(0,CANTRIPS_KNOWN[L()]);S.spells=S.spells.filter(id=>SP[id][1]<=MAXLVL[L()]).slice(0,SPELLS_KNOWN[L()]);}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ================= BOGEN ================= */
+function renderSheet(){
+  const host=document.getElementById("sheetHost");
+  const missing=STEPS.slice(0,10).map((s,i)=>s.ok()?null:(i+1)+". "+s.n).filter(Boolean);
+  const r=RACES[S.race]||{n:"–",speed:30,traits:[]}, b=BGS[S.bg]||{n:"–",s:[],f:"",e:"",l:0};
+  const P=PB(), sc=k=>score(k)||10, ks=knownSkills();
+  const dex=mod(sc("dex")),con=mod(sc("con")),cha=mod(sc("cha")),wis=mod(sc("wis"));
+  const dc=8+P+cha, atk=P+cha, hpm=hpMax();
+  const dr=DRAGONS.find(d=>d[0]===S.dragon)||["–","–"];
+  if(S.hp===""||S.hp===undefined) S.hp=hpm;
+  if(S.hd===""||S.hd===undefined) S.hd=L();
+  const spMax=L()>=2?L():0;
+  const abl=AB.map(([k,de,ab])=>{const v=sc(k),m=mod(v),save=["con","cha"].includes(k);
+    const sk=SKILLS.filter(s=>s[1]===k).map(([n])=>`<div class="ln"><span class="p ${ks.has(n)?"on":""}"></span><span class="v">${sg(m+(ks.has(n)?P:0))}</span>${n}</div>`).join("");
+    return `<div class="abl"><div class="h"><span>${ab} ${de}</span><span><span class="sv">${v}</span> <span class="mod">${sg(m)}</span></span></div><div class="ln"><span class="p ${save?"on":""}"></span><span class="v">${sg(m+(save?P:0))}</span>Rettungswurf</div>${sk}</div>`;}).join("");
+  const spCard=(ids)=>ids.map(id=>{const [,g,de,en,time,range,txt,,conc]=SP[id];return `<div class="sp"><div class="t"><span>${de} <span style="font-weight:400;color:var(--tx3);font-size:10.5px">${en}</span></span><small>${time} · ${range}${conc?" · K":""}</small></div><p>${txt}</p></div>`;}).join("");
+  const slots=(SLOTS[L()]||[]).map((n,g)=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><b style="width:52px;font-size:12px;color:var(--ac-ink)">Grad ${g+1}</b><div class="dots">${Array.from({length:n},(_,i)=>`<input type="checkbox" class="dot" data-vol ${S.slotsUsed[g+"_"+i]?"":"checked"} onchange="S.slotsUsed['${g}_${i}']=!this.checked;save()">`).join("")}</div></div>`).join("");
+  const spDots=spMax?Array.from({length:spMax},(_,i)=>`<input type="checkbox" class="dot" data-vol ${i<spMax-(S.spUsed||0)?"checked":""} onchange="S.spUsed=${spMax}-this.parentNode.querySelectorAll('input:checked').length;save()">`).join(""):"<span style='font-size:11px;color:var(--tx3)'>ab Stufe 2</span>";
+  const weapon=S.equip.w==="stab"?["Kampfstab",sg(P+mod(sc("str"))),"1W6 "+sg(mod(sc("str")))+" Wucht (beidhändig 1W8)"]:["Leichte Armbrust",sg(P+dex),"1W8 "+sg(dex)+" Stich · 80/320 ft · Laden"];
+  const atkCantrips=S.cantrips.filter(id=>/Zauberangriff|Rettungswurf/.test(SP[id][6])).map(id=>{const s=SP[id];const save=/Rettungswurf/.test(s[6])&&!/Zauberangriff/.test(s[6]);return `<tr><td><b>${s[2]}</b></td><td>${save?"SG "+dc:sg(atk)}</td><td>${s[6].replace(/^Zauberangriff[^:]*: /,"").split(". ")[0]} · ${s[5]}</td></tr>`;}).join("");
+  const metaTxt=S.meta.map(id=>{const m=META.find(x=>x[0]===id);return `<div class="ft"><b>${m[1]}</b> (${m[3]})<p>${m[4]}</p></div>`;}).join("");
+  const eq=[EQUIP[0][1].find(o=>o[0]===S.equip.w),EQUIP[1][1].find(o=>o[0]===S.equip.f),EQUIP[2][1].find(o=>o[0]===S.equip.p)].filter(Boolean).map(o=>o[1]);
+  const langs=["Gemeinsprache","Drakonisch"].concat(r.lang||[]).concat(b.l?[`+${b.l} Sprache(n) aus dem Hintergrund`]:[]);
+  host.innerHTML=`<div class="sheet">
+  <div class="card noprint"><h2>Dein Bogen</h2>
+   ${missing.length?`<p class="status no">Noch offen: ${missing.join(", ")}. Der Bogen zeigt bis dahin Platzhalter.</p>`:`<p class="status ok">✓ Alles gewählt. Dein Charakter ist fertig!</p>`}
+   <div class="sheet-tools"><button class="btn sec" onclick="go(10)">← Zurück zum Guide</button>
+   <button class="btn" onclick="doPrint(false)">Drucken (ausgefüllt)</button><button class="btn" onclick="doPrint(true)">Drucken für Stift &amp; Papier</button>
+   <button class="btn pu" onclick="longRest()">Lange Rast</button>
+   <button class="btn sec" onclick="dl()">Stand herunterladen</button><button class="btn sec" onclick="document.getElementById('up').click()">Stand laden</button><input type="file" id="up" hidden accept=".json" onchange="ul(this)"></div>
+   <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:6px"><label><input type="checkbox" ${S.pNotes!==false?"checked":""} onchange="S.pNotes=this.checked;save()"> Notizseite mitdrucken</label><label><input type="checkbox" ${S.pApp!==false?"checked":""} onchange="S.pApp=this.checked;save()"> Anhang mit ausführlichen Zaubertexten</label></div>
+   <p class="lead" style="margin:0;font-size:12.5px">Ausdruck: Seite 1 ist zum Spielen (Werte, TP, Zauberplätze, Zauber, Kampfnotizen), Seite 2 enthält Charakter, Merkmale und Ausrüstung, Seite 3 ist eine Notizseite, danach folgt der Zauberanhang. „Für Stift &amp; Papier“ lässt TP, temporäre TP, Trefferwürfel, Münzen und Zustände leer. Zauberplätze und Zauberpunkte sind immer leere Kreise zum Abhaken.</p></div>
+  <div class="banner"><h1>${esc(S.name)||"Name"}</h1><div class="meta">Zauberin Stufe ${L()} · Drakonische Blutlinie (${dr[0]}, ${dr[1]}) · ${r.n} · ${b.n}${S.player?" · Spielerin: "+esc(S.player):""}</div></div>
+  <div class="scols">
+   <div>
+    <div class="sc"><h3>Attribute · Übung +${P}</h3>${abl}</div>
+    <div class="sc"><h3>Sinne &amp; Sprachen</h3><div class="ft">Passive Wahrnehmung: <b>${10+wis+(ks.has("Wahrnehmung")?P:0)}</b>${/Dunkelsicht/.test(r.traits.join())?" · Dunkelsicht 60 ft":""}</div><div class="ft">${langs.join(", ")}</div><div class="ft">Waffen: Dolche, Wurfpfeile, Schleudern, Kampfstäbe, leichte Armbrüste · Rüstung: keine</div></div>
+   </div>
+   <div>
+    <div class="sc"><h3>Kampf</h3>
+     <div class="stats"><div class="st"><div class="b">${13+dex}</div><div class="l">RK</div></div><div class="st"><div class="b">${sg(dex)}</div><div class="l">Initiative</div></div><div class="st"><div class="b">${r.speed} ft</div><div class="l">Bewegung</div></div><div class="st"><div class="b">${hpm}</div><div class="l">TP max</div></div></div>
+     <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+      <div class="st"><input type="number" data-vol value="${esc(S.hp)}" oninput="S.hp=this.value;save()"><div class="l">TP aktuell</div></div>
+      <div class="st"><input type="number" data-vol value="${esc(S.thp)}" oninput="S.thp=this.value;save()"><div class="l">Temp. TP</div></div>
+      <div class="st"><input type="number" data-vol value="${esc(S.hd)}" oninput="S.hd=this.value;save()" style="width:45%"> <b style="font-size:14px">/ ${L()}W6</b><div class="l">Trefferwürfel</div></div></div>
+     <div style="display:flex;gap:14px;font-size:11px;color:var(--tx2);align-items:center;flex-wrap:wrap">Todesrettung: Erfolge <span class="dots">${[1,2,3].map(n=>`<input type="checkbox" class="dot" data-vol ${S.ds["s"+n]?"checked":""} onchange="S.ds['s${n}']=this.checked;save()">`).join("")}</span> Fehlschläge <span class="dots">${[1,2,3].map(n=>`<input type="checkbox" class="dot fail" data-vol ${S.ds["f"+n]?"checked":""} onchange="S.ds['f${n}']=this.checked;save()">`).join("")}</span></div>
+    </div>
+    <div class="sc"><h3>Angriffe</h3><table><tr><th>Angriff</th><th>Bonus/SG</th><th>Schaden</th></tr>${atkCantrips}<tr><td><b>${weapon[0]}</b></td><td>${weapon[1]}</td><td>${weapon[2]}</td></tr><tr><td><b>Dolch (2)</b></td><td>${sg(P+dex)}</td><td>1W4 ${sg(dex)} Stich · Wurf 20/60 ft</td></tr></table></div>
+    <div class="sc long"><h3>Zauberei (Charisma)</h3>
+     <div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="st"><div class="b">${dc}</div><div class="l">Zauber-SG</div></div><div class="st"><div class="b">${sg(atk)}</div><div class="l">Zauberangriff</div></div><div class="st"><div class="dots" style="justify-content:center;min-height:24px">${spDots}</div><div class="l">Zauberpunkte (${spMax})</div></div></div>
+     ${slots}
+     <h3 style="margin-top:8px">Zaubertricks</h3>${spCard(S.cantrips)}
+     <h3 style="margin-top:8px">Zauber</h3>${spCard([...S.spells].sort((a,b)=>SP[a][1]-SP[b][1]))}
+     <div class="ft" style="margin-top:6px;color:var(--tx2)">K = Konzentration: nur ein solcher Zauber gleichzeitig; bei Schaden KON-Rettungswurf (SG 10 oder halber Schaden).</div>
+    </div>
+   </div>
+   <div>
+    <div class="sc" style="background:var(--pu-soft)"><h3>Dein Zug</h3><div class="ft"><b>Bewegung</b> bis ${r.speed} ft · <b>Aktion</b>: Zauber, Angriff, Spurt, Ausweichen · <b>Bonusaktion</b>: nur wenn etwas sie erlaubt · <b>Reaktion</b>: einmal pro Runde, z. B. Schild.<p>Zauberst du als Bonusaktion, darfst du im selben Zug als Aktion nur einen Zaubertrick wirken.</p></div></div>
+    <div class="sc"><h3>Merkmale</h3>
+     <div class="ft"><b>Drachenahn: ${dr[0]} (${dr[1]})</b><p>Drakonisch sprechen, lesen, schreiben. Bei CHA-Proben mit Drachen doppelter Übungsbonus.</p></div>
+     <div class="ft"><b>Drakonische Widerstandskraft</b><p>+1 TP pro Stufe (eingerechnet). Ohne Rüstung: RK 13 + GES.</p></div>
+     ${L()>=2?`<div class="ft"><b>Quelle der Magie</b><p>${spMax} Zauberpunkte. Bonusaktion: Platz Grad 1 kostet 2 Punkte, Grad 2 kostet 3. Einen Platz in Punkte umwandeln (Punkte = Grad).</p></div>`:""}
+     ${L()>=3?`<div class="ft"><b>Metamagie</b></div>${metaTxt}`:""}
+     <div class="ft"><b>${r.n}</b><p>${r.traits.join(" · ")}</p></div>
+     <div class="ft"><b>${b.n}</b><p>${b.f}</p></div>
+    </div>
+    <div class="sc"><h3>Ausrüstung</h3><div class="ft">${eq.join("<br>")}<br>2 Dolche<br>${b.e}</div>
+     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px">${["KM","SM","EM","GM","PM"].map(c=>`<div style="text-align:center;font-size:10px;color:var(--tx2)">${c}<input class="vol" data-vol type="number" value="${esc(S.coins[c]||"")}" oninput="S.coins['${c}']=this.value;save()"></div>`).join("")}</div></div>
+    <div class="sc"><h3>Zustände &amp; Notizen</h3><textarea class="vol" data-vol style="min-height:50px" oninput="S.cond=this.value;save()">${esc(S.cond)}</textarea><div class="ptext" data-vol>${esc(S.cond)}</div></div>
+    ${S.appearance||S.story?`<div class="sc"><h3>Aussehen &amp; Geschichte</h3><div class="ft">${esc(S.appearance)}</div><div class="ft">${esc(S.story).replace(/\n/g,"<br>")}</div></div>`:""}
+   </div>
+  </div></div>`;
+  save();
+}
+function longRest(){S.hp=hpMax();S.thp="";S.hd=Math.min(L(),(parseInt(S.hd)||0)+Math.max(1,Math.floor(L()/2)));S.slotsUsed={};S.spUsed=0;S.ds={};save();render();}
+/* ================= AUSFÜHRLICHE ZAUBERTEXTE (Anhang) ================= */
+// s=Schule, k=Komponenten, dur=Dauer, t=Beschreibung, h=Höhere Grade / Stufen, tip=Spieltipp
+const LONG={
+ feuerpfeil:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Du schleuderst einen Feuerfunken auf eine Kreatur oder ein Objekt in Reichweite. Mache einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 1W10 Feuerschaden. Ein brennbares Objekt, das niemand trägt oder hält, fängt Feuer.",h:"Schaden steigt auf 2W10 (Stufe 5), 3W10 (Stufe 11) und 4W10 (Stufe 17).",tip:"Dein Standardangriff, wenn du keine Zauberplätze ausgeben willst. Mit Verdoppeltem Zauber für 1 Punkt auf zwei Ziele."},
+ froststrahl:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Ein eisblauer Strahl trifft eine Kreatur in Reichweite. Mache einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 1W8 Kälteschaden, und seine Bewegungsrate sinkt bis zum Beginn deines nächsten Zuges um 10 ft.",h:"2W8 (Stufe 5), 3W8 (Stufe 11), 4W8 (Stufe 17).",tip:"Gut, um Gegner auf Abstand zu halten oder Fliehende zu bremsen."},
+ schockgriff:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Blitze springen von deiner Hand auf eine Kreatur, die du berührst. Mache einen Nahkampf-Zauberangriff. Trägt das Ziel eine Rüstung aus Metall, hast du Vorteil. Bei einem Treffer erleidet es 1W8 Blitzschaden und kann bis zum Beginn seines nächsten Zuges keine Reaktionen ausführen.",h:"2W8 (Stufe 5), 3W8 (Stufe 11), 4W8 (Stufe 17).",tip:"Steht ein Gegner neben dir: Schockgriff, dann weglaufen. Ohne Reaktion kann er dir keinen Gelegenheitsangriff verpassen."},
+ erfrierung:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Eisige Kälte bildet sich auf einer Kreatur, die du in Reichweite siehst. Das Ziel macht einen Konstitutions-Rettungswurf. Bei einem Fehlschlag erleidet es 1W6 Kälteschaden und hat Nachteil beim nächsten Waffenangriff, den es vor dem Ende seines nächsten Zuges ausführt.",h:"2W6 (Stufe 5), 3W6 (Stufe 11), 4W6 (Stufe 17).",tip:"Gegen flinke Ziele mit hoher RK, weil kein Angriffswurf nötig ist."},
+ kaltehand:{s:"Nekromantie",k:"V, G",dur:"1 Runde",t:"Eine geisterhafte Skeletthand erscheint bei einer Kreatur in Reichweite. Mache einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 1W8 nekrotischen Schaden und kann bis zum Beginn deines nächsten Zuges keine Trefferpunkte zurückgewinnen. Ist das Ziel untot, hat es außerdem bis zum Ende deines nächsten Zuges Nachteil auf Angriffswürfe gegen dich.",h:"2W8 (Stufe 5), 3W8 (Stufe 11), 4W8 (Stufe 17).",tip:"Stark gegen Untote und gegen Gegner, die sich heilen."},
+ giftspritzer:{s:"Beschwörung",k:"V, G",dur:"Sofort",t:"Du streckst die Hand aus und stößt eine Wolke giftigen Gases gegen eine Kreatur in Reichweite. Sie macht einen Konstitutions-Rettungswurf und erleidet bei einem Fehlschlag 1W12 Giftschaden.",h:"2W12 (Stufe 5), 3W12 (Stufe 11), 4W12 (Stufe 17).",tip:"Viele Monster (z. B. Untote, Konstrukte) sind gegen Gift immun. Frag im Zweifel die SL."},
+ saeure:{s:"Beschwörung",k:"V, G",dur:"Sofort",t:"Du schleuderst eine Säureblase. Wähle eine Kreatur in Reichweite oder zwei Kreaturen, die höchstens 5 ft voneinander entfernt stehen. Jedes Ziel macht einen Geschicklichkeits-Rettungswurf und erleidet bei einem Fehlschlag 1W6 Säureschaden.",h:"2W6 (Stufe 5), 3W6 (Stufe 11), 4W6 (Stufe 17).",tip:"Trifft zwei Gegner gleichzeitig, wenn sie nebeneinanderstehen."},
+ licht:{s:"Hervorrufung",k:"V, M (ein Glühwürmchen oder phosphoreszierendes Moos)",dur:"1 Stunde",t:"Du berührst ein Objekt, das höchstens 10 ft groß ist. Es strahlt helles Licht im Umkreis von 20 ft und dämmriges Licht für weitere 20 ft aus, in einer Farbe deiner Wahl. Wird es mit etwas Undurchsichtigem vollständig bedeckt, ist das Licht blockiert. Der Zauber endet, wenn du ihn erneut wirkst oder als Aktion beendest. Hält ein Gegner das Objekt, muss er einen Geschicklichkeits-Rettungswurf bestehen, um dem Zauber zu entgehen.",tip:"Unverzichtbar in Höhlen und Gewölben, falls niemand in der Gruppe Dunkelsicht hat."},
+ magierhand:{s:"Beschwörung",k:"V, G",dur:"1 Minute",t:"Eine geisterhafte, schwebende Hand erscheint an einem Punkt in Reichweite. Mit deiner Aktion steuerst du sie: Sie bewegt sich bis zu 30 ft und kann Gegenstände bis etwa 5 kg bewegen, Türen und Behälter öffnen, Dinge aus offenen Behältern holen oder etwas ausgießen. Sie kann nicht angreifen, keine magischen Gegenstände aktivieren und nichts tragen, das schwerer ist. Entfernt sie sich mehr als 30 ft von dir oder wirkst du den Zauber erneut, verschwindet sie.",tip:"Öffne verdächtige Truhen und Türen aus sicherer Entfernung (Fallen!)."},
+ botschaft:{s:"Verwandlung",k:"V, G, M (ein kurzes Stück Kupferdraht)",dur:"1 Runde",t:"Du zeigst auf eine Kreatur in Reichweite und flüsterst eine Nachricht. Nur das Ziel hört sie und kann flüsternd antworten, nur du hörst die Antwort. Du kannst den Zauber auch durch Hindernisse wirken, wenn du weißt, wo das Ziel ist. Magische Stille, 1 ft Stein, 1 Zoll Metall, eine dünne Bleischicht oder 3 ft Holz blockieren ihn.",tip:"Heimliche Absprachen während Verhandlungen oder beim Schleichen."},
+ illusion:{s:"Illusion",k:"G, M (ein Stückchen Vlies)",dur:"1 Minute",t:"Du erschaffst ein Geräusch oder das Bild eines Objekts an einem Punkt in Reichweite. Ein Geräusch kann ein Flüstern oder ein Schrei sein, bis zur Lautstärke eines brüllenden Löwen. Ein Bild darf nicht größer als ein 5-ft-Würfel sein und erzeugt weder Licht noch Geruch oder Geräusch. Wer das Bild berührt, merkt sofort, dass es eine Illusion ist. Eine Kreatur kann ihre Aktion nutzen, um die Illusion zu untersuchen: Sie würfelt Intelligenz (Nachforschungen) gegen deinen Zauber-SG.",tip:"Eine Kiste als Versteck, Schritte als Ablenkung, eine Wand vor einer Nische. Kreativität lohnt sich."},
+ taschensp:{s:"Verwandlung",k:"V, G",dur:"Bis zu 1 Stunde",t:"Ein kleiner Zaubertrick, wähle einen Effekt: harmlose Funken oder ein Windhauch; eine Kerze, Fackel oder ein kleines Lagerfeuer entzünden oder löschen; ein Objekt (bis 1 Kubikfuß) säubern oder beschmutzen; nicht lebendes Material (bis 1 Kubikfuß) für 1 Stunde kühlen, wärmen oder würzen; ein kleines Symbol oder eine Farbe für 1 Stunde auf einem Objekt erscheinen lassen; ein kleines Schmuckstück oder Trugbild erschaffen, das bis zum Ende deines nächsten Zuges hält. Bis zu drei dauerhafte Effekte können gleichzeitig aktiv sein.",tip:"Rollenspiel-Gold: dein Drachenblut zeigen (Funken, warme Hände, glühende Augen)."},
+ freunde:{s:"Verzauberung",k:"G, M (etwas Schminke)",dur:"Konzentration, bis zu 1 Minute",t:"Für die Dauer hast du Vorteil auf alle Charisma-Proben gegen eine Kreatur deiner Wahl, die dir nicht feindlich gesinnt ist. Wenn der Zauber endet, merkt die Kreatur, dass du sie magisch beeinflusst hast, und wird dir gegenüber feindlich. Je nach Art reagiert sie gewaltsam oder auf andere Weise.",tip:"Nur einsetzen, wenn du die Person danach nicht mehr brauchst!"},
+ geschoss:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Du erschaffst drei leuchtende Pfeile aus magischer Kraft. Jeder trifft automatisch eine Kreatur deiner Wahl in Reichweite, die du sehen kannst, und verursacht 1W4 + 1 Energieschaden. Alle Pfeile treffen gleichzeitig, du kannst sie auf ein oder mehrere Ziele verteilen.",h:"+1 Pfeil pro Platzgrad über 1.",tip:"Trifft immer: perfekt, um einen fast toten Gegner zu erledigen oder Konzentration zu brechen (jeder Pfeil ist ein eigener Rettungswurf)."},
+ schild:{s:"Bannmagie",k:"V, G",dur:"1 Runde",zeit:"1 Reaktion, wenn du von einem Angriff getroffen wirst oder Ziel von Magisches Geschoss bist",t:"Eine unsichtbare Barriere schützt dich. Bis zum Beginn deines nächsten Zuges erhältst du +5 auf deine RK, auch gegen den auslösenden Angriff. Du nimmst außerdem keinen Schaden durch Magisches Geschoss.",tip:"Sag deiner SL: „Trifft ein 17er? Dann Schild!“ Deine RK steigt rückwirkend, oft wird aus dem Treffer ein Fehlschlag."},
+ brennhaende:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Ein Fächer aus Flammen schießt aus deinen Fingerspitzen. Jede Kreatur in einem 15-ft-Kegel macht einen Geschicklichkeits-Rettungswurf. Bei einem Fehlschlag erleidet sie 3W6 Feuerschaden, bei einem Erfolg die Hälfte. Brennbare Objekte im Bereich, die niemand trägt, fangen Feuer.",h:"+1W6 pro Platzgrad über 1.",tip:"Pass auf, dass keine Verbündeten im Kegel stehen."},
+ donnerwoge:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Eine Welle aus Donnerkraft geht von dir aus. Jede Kreatur in einem 15-ft-Würfel, der von dir ausgeht, macht einen Konstitutions-Rettungswurf. Bei einem Fehlschlag erleidet sie 2W8 Schallschaden und wird 10 ft von dir weggestoßen, bei einem Erfolg halben Schaden und wird nicht gestoßen. Lose Objekte im Bereich werden ebenfalls weggestoßen. Der Donner ist bis zu 300 ft weit zu hören.",h:"+1W8 pro Platzgrad über 1.",tip:"Befreiungsschlag, wenn du umzingelt bist, oder um Gegner von Klippen zu stoßen."},
+ schlaf:{s:"Verzauberung",k:"V, G, M (eine Prise Sand, Rosenblätter oder eine Grille)",dur:"1 Minute",t:"Würfle 5W8: So viele Trefferpunkte an Kreaturen schläfst du ein. Betroffen sind Kreaturen in einem Radius von 20 ft um einen Punkt in Reichweite, beginnend mit der Kreatur mit den wenigsten aktuellen TP. Jede Kreatur fällt bewusstlos um, ihre TP werden vom Wurf abgezogen, dann ist die nächste dran. Reicht der Rest nicht für die nächste Kreatur, endet es. Schlafende wachen auf, wenn sie Schaden nehmen oder jemand sie mit einer Aktion weckt. Untote und Kreaturen, die nicht bezaubert werden können, sind nicht betroffen.",h:"+2W8 pro Platzgrad über 1.",tip:"Kein Rettungswurf! Auf niedrigen Stufen kann er einen ganzen Kampf beenden. Ist auch gut, um Gegner gefangen zu nehmen."},
+ eismesser:{s:"Beschwörung",k:"G, M (ein Tropfen Wasser oder ein Stück Eis)",dur:"Sofort",t:"Du schleuderst einen Eissplitter auf eine Kreatur in Reichweite. Mache einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 1W10 Stichschaden. Treffer oder nicht: Der Splitter explodiert. Das Ziel und jede Kreatur im Umkreis von 5 ft machen einen Geschicklichkeits-Rettungswurf und erleiden bei einem Fehlschlag 2W6 Kälteschaden.",h:"+1W6 Kälteschaden pro Platzgrad über 1 (nur die Explosion).",tip:"Explodiert auch bei einem Fehlschuss. Gut gegen Gegnergruppen."},
+ kugel:{s:"Hervorrufung",k:"V, G, M (ein Diamant im Wert von mindestens 50 GM)",dur:"Sofort",t:"Du schleuderst eine Energiekugel auf eine Kreatur in Reichweite. Wähle Säure, Kälte, Feuer, Blitz, Gift oder Schall als Schadensart und mache einen Fernkampf-Zauberangriff. Bei einem Treffer erleidet das Ziel 3W8 Schaden der gewählten Art.",h:"+1W8 pro Platzgrad über 1.",tip:"Du kannst die Resistenzen eines Gegners umgehen. Den Diamanten musst du besitzen, er wird aber nicht verbraucht."},
+ absorb:{s:"Bannmagie",k:"G",dur:"1 Runde",zeit:"1 Reaktion, wenn du Säure-, Kälte-, Feuer-, Blitz- oder Schallschaden erleidest",t:"Der Zauber fängt einen Teil der Energie ab. Du hast bis zum Beginn deines nächsten Zuges Resistenz gegen die auslösende Schadensart, auch gegen den auslösenden Schaden (du nimmst also nur die Hälfte). Trifft dich in deinem nächsten Zug ein Nahkampfangriff von dir, verursacht er zusätzlich 1W6 Schaden dieser Art.",h:"+1W6 Bonusschaden pro Platzgrad über 1.",tip:"Gegen Drachenodem und Feuerbälle: halbiert den Schaden sofort."},
+ bezaubern:{s:"Verzauberung",k:"V, G",dur:"1 Stunde",t:"Ein Humanoider in Reichweite, den du sehen kannst, macht einen Weisheits-Rettungswurf. Kämpfst du oder deine Gefährten gerade gegen ihn, hat er Vorteil. Bei einem Fehlschlag ist er bezaubert, bis der Zauber endet oder du bzw. deine Gefährten ihm schaden. Er betrachtet dich als freundliche Bekannte. Endet der Zauber, weiß er, dass du ihn bezaubert hast.",h:"+1 Ziel pro Platzgrad über 1 (alle innerhalb von 30 ft zueinander).",tip:"Bezaubert heißt nicht Sklave: Er hilft dir wie einer Freundin, tut aber nichts Selbstzerstörerisches."},
+ nebelwolke:{s:"Beschwörung",k:"V, G",dur:"Konzentration, bis zu 1 Stunde",t:"Eine Kugel aus dichtem Nebel mit 20 ft Radius entsteht an einem Punkt in Reichweite. Sie breitet sich um Ecken aus, der Bereich ist stark verschleiert (man sieht nichts hindurch). Ein mäßiger Wind (mind. 10 mph) zerstreut sie.",h:"Radius +20 ft pro Platzgrad über 1.",tip:"Fernkämpfer können nicht mehr zielen, und die Gruppe kann ungesehen fliehen."},
+ federfall:{s:"Verwandlung",k:"V, M (eine kleine Feder oder Daune)",dur:"1 Minute",zeit:"1 Reaktion, wenn du oder eine Kreatur in 60 ft fällt",t:"Wähle bis zu fünf fallende Kreaturen in Reichweite. Ihre Fallgeschwindigkeit sinkt auf 60 ft pro Runde. Landet eine Kreatur, bevor der Zauber endet, nimmt sie keinen Fallschaden und landet auf den Füßen. Danach endet der Zauber für sie.",tip:"Klippen, Türme und Observatorien: Auf Stormwreck Isle gibt es genug Gelegenheiten zu fallen."},
+ rueckzug:{s:"Verwandlung",k:"V, G",dur:"Konzentration, bis zu 10 Minuten",zeit:"1 Bonusaktion",t:"Du bewegst dich unglaublich schnell. Wenn du den Zauber wirkst und danach in jedem deiner Züge, kannst du als Bonusaktion die Spurt-Aktion ausführen.",tip:"Flucht oder schnell einen Verbündeten erreichen. Kostet die Konzentration."},
+ magentd:{s:"Erkenntnis",k:"V, G",dur:"Konzentration, bis zu 10 Minuten",t:"Für die Dauer spürst du die Anwesenheit von Magie im Umkreis von 30 ft. Spürst du Magie, kannst du mit deiner Aktion eine schwache Aura um sichtbare magische Kreaturen oder Objekte erkennen und erfährst ihre Schule der Magie. Der Zauber durchdringt die meisten Hindernisse, wird aber von 1 ft Stein, 1 Zoll Metall, einer dünnen Bleischicht oder 3 ft Holz oder Erde blockiert.",tip:"Andere Klassen wirken das als Ritual ohne Platz, du nicht. Vielleicht kann das jemand anderes in der Gruppe übernehmen."},
+ strahl:{s:"Hervorrufung",k:"V, G",dur:"Sofort",t:"Du erschaffst drei Feuerstrahlen und schleuderst sie auf Ziele in Reichweite, auf eines oder mehrere. Mache für jeden Strahl einen eigenen Fernkampf-Zauberangriff. Jeder Treffer verursacht 2W6 Feuerschaden.",h:"+1 Strahl pro Platzgrad über 2.",tip:"Bis zu 6W6 Schaden auf ein Ziel. Stark mit Machtvollem Zauber."},
+ nebelschritt:{s:"Beschwörung",k:"V",dur:"Sofort",zeit:"1 Bonusaktion",t:"Silbriger Nebel umhüllt dich kurz und du teleportierst dich bis zu 30 ft weit an einen freien Ort, den du sehen kannst.",tip:"Bonusaktion: Erst wegteleportieren, dann noch einen Zaubertrick wirken. Gegen Fesseln, Netze und Umzingelung."},
+ zerbersten:{s:"Hervorrufung",k:"V, G, M (ein Splitter Glimmer)",dur:"Sofort",t:"Ein schmerzhaft lautes Klingen bricht an einem Punkt in Reichweite los. Jede Kreatur in einer Kugel mit 10 ft Radius macht einen Konstitutions-Rettungswurf und erleidet bei einem Fehlschlag 3W8 Schallschaden, bei einem Erfolg die Hälfte. Kreaturen aus anorganischem Material (Stein, Kristall, Metall) haben Nachteil. Nicht getragene Objekte im Bereich nehmen ebenfalls Schaden.",h:"+1W8 pro Platzgrad über 2.",tip:"Stark gegen Konstrukte und Steinwesen. Sehr laut, Heimlichkeit ist danach vorbei."},
+ drachenodem:{s:"Verwandlung",k:"V, G, M (eine scharfe Pfefferschote)",dur:"Konzentration, bis zu 1 Minute",zeit:"1 Bonusaktion",t:"Du berührst eine bereitwillige Kreatur (auch dich selbst) und gibst ihr die Macht, Energie wie ein Drache auszuatmen. Wähle Säure, Kälte, Feuer, Blitz oder Gift. Bis der Zauber endet, kann die Kreatur mit ihrer Aktion einen 15-ft-Kegel ausatmen. Jede Kreatur darin macht einen Geschicklichkeits-Rettungswurf gegen deinen Zauber-SG und erleidet 3W6 Schaden der gewählten Art, bei einem Erfolg die Hälfte.",h:"+1W6 pro Platzgrad über 2.",tip:"Gib ihn einem Verbündeten ohne gute Angriffe (z. B. Flaum!) oder nutze ihn jede Runde selbst."},
+ spiegel:{s:"Illusion",k:"V, G",dur:"1 Minute",t:"Drei Trugbilder von dir erscheinen und bewegen sich mit dir, sodass man nicht erkennt, welche du bist. Wird ein Angriff gegen dich gemacht, würfle einen W20: Bei 3 Bildern trifft der Angriff ein Bild bei 6 oder mehr, bei 2 Bildern bei 8 oder mehr, bei 1 Bild bei 11 oder mehr. Ein Bild hat RK 10 + dein GES-Modifikator und verschwindet, wenn es getroffen wird. Kreaturen, die nicht auf Sicht angewiesen sind (Blindsicht, Wahrer Blick), sind nicht betroffen.",tip:"Keine Konzentration: Du kannst gleichzeitig einen anderen Konzentrationszauber halten."},
+ unsicht:{s:"Illusion",k:"V, G, M (eine Wimper in Gummiarabikum)",dur:"Konzentration, bis zu 1 Stunde",t:"Eine Kreatur, die du berührst, wird mit allem, was sie trägt, unsichtbar. Der Zauber endet für sie, sobald sie angreift oder einen Zauber wirkt.",h:"+1 Ziel pro Platzgrad über 2.",tip:"Zum Kundschaften, Fliehen oder um einen Verbündeten unbemerkt irgendwohin zu bringen."},
+ festhalten:{s:"Verzauberung",k:"V, G, M (ein kleines, gerades Stück Eisen)",dur:"Konzentration, bis zu 1 Minute",t:"Ein Humanoider in Reichweite, den du siehst, macht einen Weisheits-Rettungswurf. Bei einem Fehlschlag ist er gelähmt. Am Ende jedes seiner Züge darf er erneut würfeln, bei einem Erfolg endet der Zauber für ihn.",h:"+1 Ziel pro Platzgrad über 2 (innerhalb von 30 ft zueinander).",tip:"Nahkampfangriffe gegen Gelähmte sind automatisch kritische Treffer. Sag deinen Kämpfern Bescheid!"},
+ einfluest:{s:"Verzauberung",k:"V, M (eine Schlangenzunge und etwas Honigwabe oder süßes Öl)",dur:"Konzentration, bis zu 8 Stunden",t:"Du schlägst einer Kreatur in Reichweite, die dich hören und verstehen kann, eine Handlung vor (ein bis zwei Sätze), die vernünftig klingt. Sie macht einen Weisheits-Rettungswurf und befolgt den Vorschlag bei einem Fehlschlag, so gut sie kann. Offensichtlich schädliche Vorschläge beenden den Zauber. Der Zauber endet, wenn die Handlung erledigt ist oder du bzw. deine Gefährten der Kreatur schaden. Kreaturen, die nicht bezaubert werden können, sind immun.",tip:"„Die Wachen sollten jetzt Pause machen.“ Formuliere den Vorschlag so, dass er sinnvoll klingt."},
+ netz:{s:"Beschwörung",k:"V, G, M (ein Stück Spinnennetz)",dur:"Konzentration, bis zu 1 Stunde",t:"Dicke Spinnweben füllen einen 20-ft-Würfel an einem Punkt in Reichweite. Sie müssen zwischen zwei festen Punkten (Wände, Bäume) verankert sein, sonst fallen sie zu einer 5 ft dicken Schicht zusammen. Der Bereich ist schwieriges Gelände und leicht verschleiert. Wer seinen Zug darin beginnt oder ihn betritt, macht einen Geschicklichkeits-Rettungswurf und ist bei einem Fehlschlag festgesetzt. Ein Festgesetzter kann mit seiner Aktion eine Stärkeprobe gegen deinen SG machen, um sich zu befreien. Die Netze sind brennbar: Ein 5-ft-Würfel brennt in einer Runde ab und verursacht 2W4 Feuerschaden.",tip:"Ideal in Gängen und Höhlen. Mit Feuer kombiniert kannst du Gegner gleich verbrennen."},
+ verschw:{s:"Illusion",k:"V",dur:"Konzentration, bis zu 1 Minute",t:"Dein Körper verschwimmt und flackert. Alle Angriffswürfe gegen dich haben Nachteil. Kreaturen mit Blindsicht oder Wahrem Blick, oder solche, die Illusionen durchschauen, sind nicht betroffen.",tip:"Gut, wenn die Gegner dich gezielt angreifen. Kombinierbar mit Schild."},
+ vergroess:{s:"Verwandlung",k:"V, G, M (eine Prise Eisenpulver)",dur:"Konzentration, bis zu 1 Minute",t:"Eine Kreatur oder ein nicht getragenes Objekt in Reichweite wird größer oder kleiner. Unwillige Kreaturen machen einen Konstitutions-Rettungswurf. Vergrößern: doppelte Größe, eine Größenkategorie größer, Vorteil auf Stärkeproben und -rettungswürfe, Waffen verursachen +1W4 Schaden. Verkleinern: halbe Größe, eine Kategorie kleiner, Nachteil auf Stärkeproben und -rettungswürfe, Waffen verursachen −1W4 Schaden (mindestens 1).",tip:"Mach euren stärksten Nahkämpfer riesig oder einen gefährlichen Gegner winzig."},
+ feuerball:{s:"Hervorrufung",k:"V, G, M (ein Kügelchen aus Fledermausguano und Schwefel)",dur:"Sofort",t:"Ein Lichtstrahl schießt von deinem Finger zu einem Punkt in Reichweite und explodiert dort. Jede Kreatur in einer Kugel mit 20 ft Radius macht einen Geschicklichkeits-Rettungswurf und erleidet bei einem Fehlschlag 8W6 Feuerschaden, bei einem Erfolg die Hälfte. Das Feuer breitet sich um Ecken aus und entzündet brennbare Objekte, die niemand trägt.",h:"+1W6 pro Platzgrad über 3.",tip:"Mit Vorsichtigem Zauber schützt du Verbündete im Explosionsradius."},
+ blitz:{s:"Hervorrufung",k:"V, G, M (etwas Fell und ein Stab aus Bernstein, Kristall oder Glas)",dur:"Sofort",t:"Ein Blitz bildet eine 100 ft lange und 5 ft breite Linie, die von dir ausgeht. Jede Kreatur auf der Linie macht einen Geschicklichkeits-Rettungswurf und erleidet bei einem Fehlschlag 8W6 Blitzschaden, bei einem Erfolg die Hälfte. Brennbare Objekte, die niemand trägt, fangen Feuer.",h:"+1W6 pro Platzgrad über 3.",tip:"Ideal in langen Gängen, wenn die Gegner hintereinanderstehen."},
+ gegenz:{s:"Bannmagie",k:"G",dur:"Sofort",zeit:"1 Reaktion, wenn du siehst, wie eine Kreatur in 60 ft einen Zauber wirkt",t:"Du versuchst, den Zauber zu unterbrechen. Ist er von Grad 3 oder niedriger, schlägt er fehl und hat keine Wirkung. Ist er von Grad 4 oder höher, machst du eine Charisma-Probe gegen SG 10 + Grad des Zaubers. Bei einem Erfolg schlägt er fehl.",h:"Mit einem höheren Platz unterbrichst du Zauber bis zu diesem Grad automatisch.",tip:"Bewahre dir einen Platz für den gefährlichsten gegnerischen Zauber auf."},
+ hast:{s:"Verwandlung",k:"V, G, M (ein Stück Süßholzwurzel)",dur:"Konzentration, bis zu 1 Minute",t:"Eine bereitwillige Kreatur in Reichweite wird beschleunigt: doppelte Bewegungsrate, +2 RK, Vorteil auf Geschicklichkeits-Rettungswürfe und in jedem Zug eine zusätzliche Aktion. Diese darf nur für einen Angriff (ein Waffenangriff), Spurt, Rückzug, Verstecken oder einen Gegenstand benutzen genutzt werden. Endet der Zauber, kann sich das Ziel bis zum Ende seines nächsten Zuges weder bewegen noch handeln.",tip:"Auf euren besten Nahkämpfer. Verlierst du die Konzentration, fällt er eine Runde aus!"},
+ fliegen:{s:"Verwandlung",k:"V, G, M (eine Schwungfeder)",dur:"Konzentration, bis zu 10 Minuten",t:"Eine bereitwillige Kreatur, die du berührst, erhält eine Flugbewegungsrate von 60 ft. Endet der Zauber, während sie in der Luft ist, fällt sie, sofern sie den Sturz nicht anders aufhalten kann.",h:"+1 Ziel pro Platzgrad über 3.",tip:"Achte auf deine Konzentration, wenn ihr hoch über dem Boden seid."},
+ muster:{s:"Illusion",k:"G, M (ein glühendes Räucherstäbchen oder eine Kristallphiole mit leuchtendem Material)",dur:"Konzentration, bis zu 1 Minute",t:"Ein schillerndes Farbmuster erscheint in einem 30-ft-Würfel in Reichweite. Jede Kreatur im Bereich, die das Muster sieht, macht einen Weisheits-Rettungswurf. Bei einem Fehlschlag ist sie bezaubert, handlungsunfähig und hat Bewegungsrate 0. Das endet, wenn sie Schaden erleidet oder jemand sie mit einer Aktion wachrüttelt.",tip:"Schaltet halbe Gegnergruppen aus. Danach sollte die Gruppe nicht auf die Bezauberten einschlagen, sondern erst die anderen erledigen."},
+ verlang:{s:"Verwandlung",k:"V, G, M (ein Tropfen Melasse)",dur:"Konzentration, bis zu 1 Minute",t:"Bis zu sechs Kreaturen deiner Wahl in einem 40-ft-Würfel in Reichweite machen einen Weisheits-Rettungswurf. Bei einem Fehlschlag: halbe Bewegungsrate, −2 auf RK und Geschicklichkeits-Rettungswürfe, keine Reaktionen, pro Zug nur Aktion oder Bonusaktion und höchstens ein Angriff. Wirkt ein Betroffener einen Zauber, würfelt er einen W20: Bei 11 oder mehr wirkt der Zauber erst in seinem nächsten Zug. Am Ende jedes seiner Züge darf er erneut würfeln.",tip:"Stark gegen viele Gegner mit mehreren Angriffen."},
+ wasser:{s:"Verwandlung",k:"V, G, M (ein kurzes Schilfrohr oder ein Strohhalm)",dur:"24 Stunden",t:"Bis zu zehn bereitwillige Kreaturen in Reichweite, die du sehen kannst, können für die Dauer unter Wasser atmen. Sie behalten ihre normale Atmung.",tip:"Merrow, Wracks, Unterwasserhöhlen: Auf einer Insel lohnt sich das."}
+};
+const CONDS=[["Bezaubert","Greift die Quelle nicht an; sie hat Vorteil bei sozialen Proben gegen dich."],["Blind","Siehst nichts; deine Angriffe Nachteil, Angriffe gegen dich Vorteil."],["Gelähmt","Handlungsunfähig, keine Bewegung; Angriffe gegen dich Vorteil, Nahkampftreffer sind kritisch; STR/GES-RW scheitern."],["Gepackt","Bewegungsrate 0."],["Handlungsunfähig","Keine Aktionen und keine Reaktionen."],["Festgesetzt","Bewegung 0; deine Angriffe Nachteil, Angriffe gegen dich Vorteil; Nachteil auf GES-RW."],["Liegend","Nahkampf gegen dich Vorteil, Fernkampf Nachteil; Aufstehen kostet halbe Bewegung."],["Unsichtbar","Deine Angriffe Vorteil, Angriffe gegen dich Nachteil."],["Verängstigt","Nachteil auf Proben und Angriffe, solange du die Quelle siehst; kannst dich ihr nicht nähern."],["Vergiftet","Nachteil auf Angriffe und Attributsproben."],["Bewusstlos","Handlungsunfähig, liegend, lässt alles fallen; Angriffe gegen dich Vorteil, Nahkampftreffer kritisch."],["Betäubt","Handlungsunfähig; STR/GES-RW scheitern; Angriffe gegen dich Vorteil."]];
+
+/* ================= DRUCKBOGEN ================= */
+function buildPrint(blank){
+  const r=RACES[S.race]||{n:"–",speed:30,traits:[]}, b=BGS[S.bg]||{n:"–",s:[],f:"",e:"",l:0};
+  const P=PB(), sc=k=>score(k)||10, ks=knownSkills();
+  const dex=mod(sc("dex")),cha=mod(sc("cha")),wis=mod(sc("wis")),str=mod(sc("str"));
+  const dc=8+P+cha, atk=P+cha, hpm=hpMax(), spMax=L()>=2?L():0;
+  const dr=DRAGONS.find(d=>d[0]===S.dragon)||["____","____"];
+  const v=x=>blank?"":esc(x==null?"":x);
+  const lines=n=>Array.from({length:n},()=>'<div class="ln"></div>').join("");
+  const abl=AB.map(([k,de,ab])=>{const val=sc(k),m=mod(val),sv=["con","cha"].includes(k);
+    return `<div class="ab"><div class="sc"><div class="k">${ab}</div><div class="m">${sg(m)}</div><div class="v">${val}</div></div><div>
+      <div class="r sv"><span class="pd ${sv?"on":""}"></span><span class="n">${sg(m+(sv?P:0))}</span>Rettungswurf</div>
+      ${SKILLS.filter(s=>s[1]===k).map(([n])=>`<div class="r"><span class="pd ${ks.has(n)?"on":""}"></span><span class="n">${sg(m+(ks.has(n)?P:0))}</span>${n}</div>`).join("")}</div></div>`;}).join("");
+  const weapon=S.equip.w==="stab"?["Kampfstab",sg(P+str),"1W6"+sg(str)+" Wucht"]:["Leichte Armbrust",sg(P+dex),"1W8"+sg(dex)+" Stich, 80/320 ft"];
+  const atkRows=S.cantrips.filter(id=>/Zauberangriff|Rettungswurf/.test(SP[id][6])).map(id=>{const s=SP[id];const isSave=/Rettungswurf/.test(s[6])&&!/Zauberangriff/.test(s[6]);
+     const dmg=(s[6].match(/(\d+W\d+[^,.]*?)(?=,|\.| und| das)/)||["",""])[1];return `<tr><td><b>${s[2]}</b></td><td>${isSave?"SG "+dc:sg(atk)}</td><td>${dmg} · ${s[5]}</td></tr>`;}).join("");
+  const slots=(SLOTS[L()]||[]).map((n,g)=>`<div class="sl"><b>Grad ${g+1}</b>${Array.from({length:n},()=>'<span class="ci big"></span>').join("")}</div>`).join("");
+  const spl=ids=>ids.map(id=>{const s=SP[id];return `<div class="spl"><div class="t"><span>${s[2]}</span><small>${s[1]?"G"+s[1]+" · ":""}${s[4]} · ${s[5]}${s[8]?" · K":""}</small></div><p>${s[6]}</p></div>`;}).join("");
+  const spells=[...S.spells].sort((a,c)=>SP[a][1]-SP[c][1]);
+  const meta=S.meta.map(id=>META.find(x=>x[0]===id)).filter(Boolean);
+  const eq=[EQUIP[0][1].find(o=>o[0]===S.equip.w),EQUIP[1][1].find(o=>o[0]===S.equip.f),EQUIP[2][1].find(o=>o[0]===S.equip.p)].filter(Boolean).map(o=>o[1]);
+  const langs=["Gemeinsprache","Drakonisch"].concat(r.lang||[]).concat(b.l?[`+${b.l} aus Hintergrund`]:[]);
+  const hdr=(sub)=>`<div class="hd"><div><div class="nm">${esc(S.name)||"&nbsp;"}</div></div><div class="mt"><b>Zauberin ${L()}</b> · Drakonische Blutlinie (<b>${dr[0]}</b>, ${dr[1]})<br>${r.n} · ${b.n}${S.player?" · Spielerin: "+esc(S.player):""}${sub?"<br><b>"+sub+"</b>":""}</div></div>`;
+
+  /* Seite 1: Spielen */
+  let h=`<div class="pg">${hdr("")}<div class="g3">
+   <div class="col">
+    <div class="bx"><h3>Attribute <span>Übungsbonus +${P}</span></h3>${abl}</div>
+    <div class="bx"><h3>Sinne &amp; Sprachen</h3><div class="ft">Passive Wahrnehmung <b>${10+wis+(ks.has("Wahrnehmung")?P:0)}</b>${/Dunkelsicht/.test(r.traits.join())?" · Dunkelsicht 60 ft":""}</div><div class="ft">${langs.join(", ")}</div><div class="ft" style="margin:0">Waffen: Dolch, Wurfpfeil, Schleuder, Kampfstab, leichte Armbrust</div></div>
+   </div>
+   <div class="col">
+    <div class="bx"><h3>Kampf</h3>
+     <div class="tiles"><div class="tl"><div class="b">${13+dex}</div><div class="l">RK</div></div><div class="tl"><div class="b">${sg(dex)}</div><div class="l">Initiative</div></div><div class="tl"><div class="b">${r.speed}</div><div class="l">Bewegung ft</div></div><div class="tl"><div class="b">+${P}</div><div class="l">Übung</div></div></div>
+     <div class="hpbox"><span class="lbl">Aktuelle TP</span><span class="mx">Maximum <b>${hpm}</b></span><div class="val">${v(S.hp)}</div></div>
+     <div class="sm2"><div class="smb"><span class="lbl">Temporäre TP</span><div class="val">${v(S.thp)}</div></div><div class="smb"><span class="lbl">Trefferwürfel (W6)</span><div class="val">${blank?"":esc(S.hd)} <span style="font-size:8pt;color:#5c554a">/ ${L()}</span></div></div></div>
+     <div class="ds"><span>Todesrettung &nbsp;Erfolg <span class="ci"></span><span class="ci"></span><span class="ci"></span></span><span>Fehlschlag <span class="ci"></span><span class="ci"></span><span class="ci"></span></span></div>
+    </div>
+    <div class="bx"><h3>Angriffe</h3><table><tr><th>Angriff</th><th>Bonus</th><th>Schaden</th></tr>${atkRows}<tr><td><b>${weapon[0]}</b></td><td>${weapon[1]}</td><td>${weapon[2]}</td></tr><tr><td><b>Dolch</b></td><td>${sg(P+dex)}</td><td>1W4${sg(dex)} Stich, Wurf 20/60</td></tr><tr><td>&nbsp;</td><td></td><td></td></tr></table></div>
+    <div class="bx"><h3>Gerade aktiv</h3><div class="wl"><b>Konzentration auf:</b><i></i></div><div class="wl"><b>Zustände:</b><i>${blank?"":esc(S.cond).split("\n")[0]}</i></div><div class="wl" style="align-items:center;gap:1mm"><b>Inspiration</b><span class="sq"></span></div><div class="wl" style="align-items:center;gap:1.5mm"><b>Erschöpfung</b><span style="flex:none;display:inline-block;width:8mm;height:5.5mm;border:1.2px solid #5c554a;border-radius:1mm"></span><span style="font-size:6.3pt;color:#5c554a">/ 6 (s. Anhang)</span></div></div>
+    <div class="bx grow"><h3>Kampfnotizen <span>Initiative, Gegner …</span></h3><div class="lines">${lines(30)}</div></div>
+   </div>
+   <div class="col">
+    <div class="bx"><h3>Zauberei <span>Attribut: Charisma</span></h3>
+     <div class="tiles" style="grid-template-columns:1fr 1fr"><div class="tl"><div class="b">${dc}</div><div class="l">Zauber-SG</div></div><div class="tl"><div class="b">${sg(atk)}</div><div class="l">Zauberangriff</div></div></div>
+     <div style="margin-top:1.6mm;font-size:6.6pt;color:#5c554a;font-weight:700;text-transform:uppercase">Zauberplätze <span style="font-weight:400;text-transform:none">(abhaken, lange Rast füllt auf)</span></div>${slots}
+     ${spMax?`<div class="sl"><b>Punkte</b>${Array.from({length:spMax},()=>'<span class="ci big"></span>').join("")}</div>
+     <div style="font-size:6.8pt;color:#3f3a33;line-height:1.35">Quelle der Magie (Bonusaktion): Platz G1 = 2 Punkte · G2 = 3 · G3 = 5 (ab St. 5). Platz → Punkte: Punkte = Grad.</div>`:""}
+    </div>
+    <div class="bx"><h3>Zaubertricks <span>unbegrenzt</span></h3>${spl(S.cantrips)}</div>
+    <div class="bx grow"><h3>Zauber <span>kostet Platz · Details im Anhang</span></h3>${spl(spells)}<div class="lines" style="margin-top:1mm">${lines(12)}</div></div>
+   </div></div>
+   <div class="bx turn" style="margin-top:2.5mm;font-size:7.4pt;line-height:1.35"><b>Dein Zug:</b> Bewegung bis ${r.speed} ft (aufteilbar) · <b>1 Aktion</b> (Zauber, Angriff, Spurt, Ausweichen, Rückzug, Helfen, Verstecken) · <b>1 Bonusaktion</b> (nur wenn etwas sie erlaubt, z. B. Nebelschritt, Beschleunigter Zauber) · <b>1 Reaktion</b> pro Runde (Schild, Gelegenheitsangriff). Wirkst du einen Zauber als Bonusaktion, darfst du im selben Zug nur noch einen Zaubertrick wirken. <b>K</b> = Konzentration: bei Schaden KON-Rettungswurf, SG 10 oder halber Schaden (der höhere Wert).</div>
+  </div>`;
+
+  /* Seite 2: Charakter, Merkmale, Ausrüstung */
+  h+=`<div class="pg">${hdr("Charakter &amp; Ausrüstung")}<div class="g2" style="flex:1;min-height:0">
+   <div class="col">
+    <div class="bx"><h3>Merkmale der Zauberin</h3>
+     <div class="ft"><b>Drachenahn: ${dr[0]} (${dr[1]})</b><p>Du sprichst, liest und schreibst Drakonisch. Bei Charisma-Proben im Umgang mit Drachen verdoppelt sich dein Übungsbonus.</p></div>
+     <div class="ft"><b>Drakonische Widerstandskraft</b><p>+1 TP pro Stufe (schon eingerechnet). Ohne Rüstung ist deine RK 13 + GES. Feine Drachenschuppen zeigen sich auf deiner Haut.</p></div>
+     ${L()>=2?`<div class="ft"><b>Quelle der Magie (${spMax} Zauberpunkte)</b><p>Bonusaktion: Zauberpunkte in einen Zauberplatz verwandeln (G1 = 2, G2 = 3, G3 = 5 Punkte) oder einen Platz in Punkte (Punkte = Grad). Erschaffene Plätze verschwinden bei einer langen Rast.</p></div>`:""}
+     ${L()>=3?`<div class="ft"><b>Metamagie</b><p>Pro Zauber nur eine Metamagie, außer wo anders angegeben.</p></div>`+meta.map(m=>`<div class="ft"><b>${m[1]}</b> (${m[3]})<p>${m[4]}</p></div>`).join(""):""}
+     <div class="ft"><b>Ab Stufe 6: Elementare Affinität</b><p>Zauber mit ${dr[1]}schaden: +CHA-Mod. auf einen Schadenswurf; für 1 Punkt 1 Stunde Resistenz gegen ${dr[1]}.</p></div>
+    </div>
+    <div class="bx"><h3>${r.n}</h3>${r.traits.map(t=>`<div class="ft" style="margin-bottom:.8mm">${t}</div>`).join("")}</div>
+    <div class="bx"><h3>Hintergrund: ${b.n}</h3><div class="ft">${b.f}</div><div class="ft" style="margin:0">Geübt: ${b.s.join(", ")}</div></div>
+    <div class="bx grow"><h3>Verbündete, Kontakte &amp; Ziele</h3><div class="lines">${lines(20)}</div></div>
+   </div>
+   <div class="col">
+    <div class="bx"><h3>Persönlichkeit</h3>
+     <div class="wl"><b>Charakterzüge</b><i></i></div><div class="wl"><b>Ideale</b><i></i></div><div class="wl"><b>Bindungen</b><i></i></div><div class="wl"><b>Makel</b><i></i></div>
+     <div class="wl"><b>Aussehen</b><i>${esc(S.appearance).slice(0,70)}</i></div>
+     ${S.story?`<div class="ft" style="margin-top:1.6mm">${esc(S.story).replace(/\n/g,"<br>")}</div>`:`<div class="wl"><b>Herkunft</b><i></i></div><div class="wl"><b></b><i></i></div>`}
+    </div>
+    <div class="bx"><h3>Ausrüstung</h3><div class="ft">${eq.concat(["2 Dolche"]).join(" · ")}</div><div class="ft">${b.e.replace(/, \d+ GM$/,"")}</div><div>${lines(7)}</div></div>
+    <div class="bx"><h3>Münzen</h3><div class="coins">${["KM","SM","EM","GM","PM"].map(c=>`<div><span>${c}</span><i>${v(S.coins[c])}</i></div>`).join("")}</div></div>
+    <div class="bx grow"><h3>Schätze, magische Gegenstände &amp; Notizen</h3><div class="lines">${lines(30)}</div></div>
+   </div></div></div>`;
+
+  /* Seite 3: Notizen */
+  if(S.pNotes!==false) h+=`<div class="pg">${hdr("Abenteuer-Notizen")}<div class="bx grow" style="flex:1"><h3>Notizen <span>Orte, Namen, Hinweise, offene Fragen</span></h3><div class="lines">${lines(60)}</div></div></div>`;
+
+  /* Anhang */
+  if(S.pApp!==false){
+    const card=id=>{const s=SP[id],x=LONG[id]||{};return `<div class="ac"><h4>${s[2]} <small>${s[3]}</small></h4><div class="gr">${s[1]?"Grad "+s[1]:"Zaubertrick"} · ${x.s||""}</div>
+     <dl><dt>Zeitaufwand</dt><dd>${x.zeit||"1 "+s[4]}</dd><dt>Reichweite</dt><dd>${s[5]}</dd><dt>Komponenten</dt><dd>${x.k||""}</dd><dt>Dauer</dt><dd>${x.dur||""}</dd></dl>
+     <p>${x.t||s[6]}</p>${x.h?`<div class="hi"><b>${s[1]?"Höhere Grade":"Höhere Stufen"}:</b> ${x.h}</div>`:""}${x.tip?`<div class="tp"><b>Tipp:</b> ${x.tip}</div>`:""}</div>`;};
+    h+=`<div class="pg flow">${hdr("Anhang: Zauber im Detail")}<div class="ap">
+     <h2 class="sec">Zaubertricks</h2>${S.cantrips.map(card).join("")}
+     <h2 class="sec">Zauber</h2>${spells.map(card).join("")}
+     <h2 class="sec">Zustände &amp; Komponenten</h2><div class="ac"><p style="font-size:7.6pt;margin:0 0 .8mm"><b>Erschöpfung</b> (Stufen summieren sich): 1 Nachteil auf Attributsproben · 2 Bewegungsrate halbiert · 3 Nachteil auf Angriffe und Rettungswürfe · 4 TP-Maximum halbiert · 5 Bewegungsrate 0 · 6 Tod. Eine lange Rast mit Essen und Trinken senkt sie um 1.</p>${CONDS.map(([n,t])=>`<p style="font-size:7.6pt;margin:0 0 .8mm"><b>${n}:</b> ${t}</p>`).join("")}</div>
+     <div class="ac"><h4>Komponenten</h4><p style="font-size:7.6pt"><b>V</b> = verbal (sprechen), <b>G</b> = Gesten (eine Hand frei), <b>M</b> = Material. Material ohne Preis ersetzt dein arkaner Fokus oder Komponentenbeutel. Mit <i>Unauffälligem Zauber</i> entfallen V und G.</p></div>
+    </div></div>`;
+  }
+  let el=document.getElementById("print"); if(!el){el=document.createElement("div");el.id="print";document.body.appendChild(el);}
+  el.innerHTML=h;
+}
+function doPrint(blank){buildPrint(blank);setTimeout(()=>window.print(),60);}
+
+function dl(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"}));a.download=(S.name||"zauberin")+"-stand.json";a.click();}
+function ul(inp){const f=inp.files[0];if(!f)return;f.text().then(t=>{try{S=Object.assign(S,JSON.parse(t));save();render();}catch(e){alert("Datei konnte nicht gelesen werden.");}});}
+render();
+</script>
+</body>
+</html>

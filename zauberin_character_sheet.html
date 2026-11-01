@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zauberin – Charakterbogen (Drakonische Blutlinie)</title>
+<style>
+  :root{
+    --surface-0:#f4f1ec; --surface-1:#ffffff; --surface-2:#faf8f4;
+    --border:#ddd6c9; --border-strong:#b9ad98;
+    --text-primary:#231f1a; --text-secondary:#5c554a; --text-muted:#8c8475;
+    --accent:#8a4b1f; --accent-ink:#5e3214; --accent-soft:#f5e9df;
+    --accent-2:#6b4fa0; --accent-2-soft:#eee9f6;
+    --danger:#a13a2f; --radius:10px;
+    --shadow:0 1px 2px rgba(30,28,20,.06), 0 1px 8px rgba(30,28,20,.05);
+    color-scheme: light;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:24px 16px 80px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  input,select,textarea{font-family:inherit;}
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    max-width:1180px;margin:0 auto 16px;padding:10px 14px;background:var(--surface-1);
+    border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .toolbar-note{font-size:12.5px;color:var(--text-secondary);line-height:1.5;max-width:520px;}
+  .toolbar .btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;
+    font-weight:600;padding:8px 13px;border-radius:8px;cursor:pointer;}
+  .btn:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .btn.secondary{background:var(--surface-1);color:var(--accent-ink);}
+  .btn.secondary:hover{background:var(--accent-soft);}
+  .btn.rest{background:var(--surface-1);color:var(--accent-2);border-color:var(--accent-2);}
+  .btn.rest:hover{background:var(--accent-2-soft);}
+
+  .banner{background:linear-gradient(135deg,#8a4b1f 0%,#b0652a 55%,#6b4fa0 100%);color:#fff;
+    border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow);
+    display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between;}
+  .banner .sub{font-size:12px;opacity:.88;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
+  .banner input.name-input{background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,.55);
+    color:#fff;font-size:28px;font-weight:700;padding:2px 0;width:min(420px,70vw);}
+  .banner input.name-input::placeholder{color:rgba(255,255,255,.65);}
+  .banner-meta{display:flex;gap:16px;flex-wrap:wrap;}
+  .banner-meta div{display:flex;flex-direction:column;gap:2px;}
+  .banner-meta label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.85;}
+  .banner-meta input,.banner-meta select{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);
+    border-radius:6px;color:#fff;font-size:14px;padding:5px 8px;width:150px;}
+  .banner-meta select option{color:#231f1a;}
+
+  .cols{display:grid;grid-template-columns:270px 1fr 310px;gap:16px;align-items:start;}
+  @media (max-width:980px){.cols{grid-template-columns:minmax(0,1fr);}}
+  .cols>div{min-width:0;}
+  .card{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:14px 14px 16px;margin-bottom:16px;}
+  .card h2{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-ink);
+    margin:0 0 10px;padding-left:9px;border-left:3px solid var(--accent);display:flex;justify-content:space-between;gap:8px;align-items:center;}
+  .tag{font-size:10px;font-weight:700;text-transform:none;letter-spacing:0;background:var(--accent-2-soft);
+    color:var(--accent-2);padding:2px 7px;border-radius:20px;}
+  .help{font-size:12px;color:var(--text-secondary);line-height:1.5;margin:6px 0 0;}
+  .help b{color:var(--text-primary);}
+
+  .ability{border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px 10px;margin-bottom:9px;background:var(--surface-2);}
+  .ability-top{display:flex;justify-content:space-between;align-items:baseline;}
+  .ability-name{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-secondary);text-transform:uppercase;}
+  .ability-name span{font-size:9.5px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-muted);}
+  .ability-row{display:flex;align-items:center;gap:10px;margin:3px 0 6px;}
+  .ability-row input.score{width:52px;font-size:24px;font-weight:700;text-align:center;border:1px solid var(--border-strong);border-radius:8px;padding:2px 0;}
+  .mod{font-size:22px;font-weight:700;color:var(--accent-ink);min-width:44px;text-align:center;
+    background:var(--accent-soft);border-radius:8px;padding:2px 6px;}
+  .line{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:2px 0;}
+  .line .val{width:30px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;}
+  .line .prof{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--border-strong);flex:none;}
+  .line .prof.on{background:var(--accent);border-color:var(--accent);}
+  .line small{color:var(--text-muted);}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
+  .stat{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface-2);text-align:center;padding:8px 4px;}
+  .stat .big{font-size:24px;font-weight:700;}
+  .stat .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);}
+  .hp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+  .box{border:1px solid var(--border);border-radius:var(--radius);padding:8px;text-align:center;background:var(--surface-2);}
+  .box label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:3px;}
+  .box input{width:100%;font-size:22px;font-weight:700;text-align:center;border:1px solid var(--border-strong);border-radius:7px;padding:2px 0;}
+  .box .fixed{font-size:22px;font-weight:700;}
+  .dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
+  input.dot{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:2px solid var(--border-strong);border-radius:50%;margin:0;cursor:pointer;background:#fff;}
+  input.dot:checked{background:var(--accent);border-color:var(--accent);}
+  input.dot.fail:checked{background:var(--danger);border-color:var(--danger);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px;}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);
+    border-bottom:1px solid var(--border);padding:4px 5px;}
+  td{border-bottom:1px solid var(--border);padding:5px;vertical-align:top;}
+  td input{width:100%;border:1px solid transparent;border-radius:5px;padding:2px 4px;font-size:12.5px;background:transparent;}
+  td input:hover,td input:focus{border-color:var(--border);background:#fff;}
+
+  .slots{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:13px;}
+  .slots .lvl{font-weight:700;color:var(--accent-ink);}
+  .spell{border:1px solid var(--border);border-radius:8px;padding:7px 9px;margin-bottom:7px;background:var(--surface-2);}
+  .spell-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;}
+  .spell-name{font-weight:700;font-size:13.5px;}
+  .spell-name small{font-weight:400;color:var(--text-muted);}
+  .spell-meta{font-size:10.5px;color:var(--accent-2);font-weight:700;white-space:nowrap;}
+  .spell p{margin:3px 0 0;font-size:12px;line-height:1.45;color:var(--text-secondary);}
+  .feat{margin-bottom:9px;}
+  .feat b{font-size:13px;}
+  .feat p{margin:2px 0 0;font-size:12px;line-height:1.45;color:var(--text-secondary);}
+  textarea{width:100%;min-height:70px;border:1px solid var(--border);border-radius:8px;padding:7px;font-size:12.5px;line-height:1.45;resize:vertical;background:var(--surface-2);}
+  .turn{background:var(--accent-2-soft);border:1px solid #d8cfec;}
+  .turn ul{margin:4px 0 0;padding-left:18px;font-size:12.5px;line-height:1.55;}
+  .coins{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .coins .box input{font-size:16px;}
+  .print-only{display:none;}
+  .print-text{display:none;}
+  @media print{
+    textarea{display:none !important;}
+    .print-text{display:block;white-space:pre-wrap;font-size:10.5px;line-height:1.4;border:1px solid #ddd6c9;
+      border-radius:6px;padding:5px 6px;min-height:34px;margin-top:4px;}
+  }
+
+  /* ---------- Druck ---------- */
+  @page{size:A4;margin:10mm;}
+  @media print{
+    body{background:#fff;padding:0;font-size:11px;}
+    .toolbar,.no-print{display:none !important;}
+    .print-only{display:block;}
+    .banner{background:#fff !important;color:#231f1a;border:2px solid #8a4b1f;padding:10px 14px;margin-bottom:8px;}
+    .banner input.name-input{color:#231f1a;border-bottom-color:#8a4b1f;font-size:22px;}
+    .banner-meta input,.banner-meta select{background:#fff;color:#231f1a;border-color:#b9ad98;}
+    .cols{display:block;column-count:3;column-gap:8px;}
+    .cols>div{display:contents;}
+    .card{box-shadow:none;padding:7px;margin:0 0 7px;break-inside:avoid;display:block;}
+    .card.long{break-inside:auto;}
+    .spell,.ability,.feat{break-inside:avoid;}
+    .stats{grid-template-columns:repeat(2,1fr);gap:5px;margin-bottom:6px;}
+    .hp{gap:5px;} .row2{gap:5px;margin-top:5px;}
+    .stat{padding:4px 2px;} .box{padding:4px;}
+    .banner-meta{gap:8px;} .banner-meta input,.banner-meta select{width:120px;font-size:12px;padding:3px 6px;}
+    .card h2{margin-bottom:6px;font-size:11px;}
+    table{font-size:10.5px;} td,th{padding:3px;}
+    .help{display:none;}
+    .print-help{display:block !important;}
+    .spell p,.feat p{font-size:10px;}
+    .ability{padding:5px 7px;margin-bottom:5px;}
+    .ability-row input.score{font-size:18px;width:42px;}
+    .mod{font-size:16px;}
+    .stat .big,.box input,.box .fixed{font-size:17px;}
+    textarea{min-height:40px;border-color:#ddd6c9;background:#fff;}
+    select{appearance:none;-webkit-appearance:none;}
+  }
+  /* Variante "Stift & Papier": wechselnde Werte leer drucken */
+  @media print{
+    body.blank [data-volatile]{color:transparent !important;}
+    body.blank input.dot{background:#fff !important;border-color:#8c8475 !important;}
+    body.blank textarea[data-volatile]{color:transparent !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <div class="toolbar-note"><b>Einsteiger-Bogen für eine Zauberin (Drakonische Blutlinie), D&amp;D 5e 2014.</b>
+    Alles ist änderbar. Werte wie Modifikatoren, Rettungswürfe und Zauber-SG rechnen sich selbst.
+    Der Stand wird in diesem Browser automatisch gespeichert.</div>
+  <div class="btns">
+    <button class="btn rest" onclick="shortRest()">Kurze Rast</button>
+    <button class="btn rest" onclick="longRest()">Lange Rast</button>
+    <button class="btn secondary" onclick="downloadState()">Stand herunterladen</button>
+    <button class="btn secondary" onclick="document.getElementById('loadFile').click()">Stand laden</button>
+    <input type="file" id="loadFile" accept=".json" hidden onchange="loadState(this)">
+    <button class="btn" onclick="printSheet(false)">Drucken (ausgefüllt)</button>
+    <button class="btn" onclick="printSheet(true)">Drucken für Stift &amp; Papier</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="banner">
+    <div>
+      <div class="sub">Zauberin · Drakonische Blutlinie</div>
+      <input class="name-input" data-k="name" placeholder="Name der Zauberin">
+    </div>
+    <div class="banner-meta">
+      <div><label>Spielerin</label><input data-k="player" placeholder="Name"></div>
+      <div><label>Volk</label><input data-k="race" value="Mensch"></div>
+      <div><label>Hintergrund</label><input data-k="background" value="Weise (Sage)"></div>
+      <div><label>Stufe</label>
+        <select data-k="level" id="level" onchange="recalc()">
+          <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+        </select></div>
+      <div><label>Drachenahn</label>
+        <select data-k="dragon" id="dragon" onchange="recalc()">
+          <option value="Bronze|Blitz">Bronze (Blitz)</option>
+          <option value="Blau|Blitz">Blau (Blitz)</option>
+          <option value="Rot|Feuer">Rot (Feuer)</option>
+          <option value="Gold|Feuer">Gold (Feuer)</option>
+          <option value="Messing|Feuer">Messing (Feuer)</option>
+          <option value="Silber|Kälte">Silber (Kälte)</option>
+          <option value="Weiß|Kälte">Weiß (Kälte)</option>
+          <option value="Kupfer|Säure">Kupfer (Säure)</option>
+          <option value="Schwarz|Säure">Schwarz (Säure)</option>
+          <option value="Grün|Gift">Grün (Gift)</option>
+        </select></div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- ================= LINKS: Attribute ================= -->
+    <div>
+      <div class="card">
+        <h2>Attribute <span class="tag">Übung +<span id="pb">2</span></span></h2>
+        <div id="abilities"></div>
+        <p class="help">Die <b>große Zahl</b> ist der Wert, das <b>braune Feld</b> der Modifikator. Den Modifikator addierst du zu Würfen mit diesem Attribut. Ein <b>gefüllter Punkt</b> heißt: geübt, dann kommt der Übungsbonus dazu.</p>
+      </div>
+      <div class="card">
+        <h2>Passiv &amp; Sprachen</h2>
+        <div class="line"><span class="val" id="passive">11</span> Passive Wahrnehmung <small>(10 + Wahrnehmung)</small></div>
+        <textarea data-k="languages" style="margin-top:8px;min-height:60px">Gemeinsprache, Drakonisch (Drachenahn), Elfisch, Zwergisch, Halblingisch
+Rüstung: keine · Waffen: Dolche, Wurfpfeile, Schleudern, Kampfstäbe, leichte Armbrüste</textarea>
+      </div>
+    </div>
+
+    <!-- ================= MITTE: Kampf, Zauber ================= -->
+    <div>
+      <div class="card">
+        <h2>Kampf</h2>
+        <div class="stats">
+          <div class="stat"><div class="big" id="ac">15</div><div class="lbl">Rüstungsklasse</div></div>
+          <div class="stat"><div class="big" id="init">+2</div><div class="lbl">Initiative</div></div>
+          <div class="stat"><div class="big">30 ft</div><div class="lbl">Bewegung</div></div>
+          <div class="stat"><div class="big" id="dc">13</div><div class="lbl">Zauber-SG</div></div>
+        </div>
+        <div class="hp">
+          <div class="box"><label>TP maximal</label><div class="fixed" id="hpmax">23</div></div>
+          <div class="box"><label>TP aktuell</label><input type="number" data-k="hp" data-volatile></div>
+          <div class="box"><label>Temporäre TP</label><input type="number" data-k="thp" data-volatile></div>
+        </div>
+        <div class="row2">
+          <div class="box"><label>Trefferwürfel (W6) übrig</label>
+            <div style="display:flex;gap:6px;align-items:center;justify-content:center">
+              <input type="number" data-k="hd" data-volatile style="width:60px">
+              <span style="font-weight:700">von <span id="hdmax">3</span></span></div></div>
+          <div class="box"><label>Todesrettungswürfe</label>
+            <div style="font-size:11px;color:var(--text-secondary)">Erfolge</div>
+            <div class="dots"><input type="checkbox" class="dot" data-k="ds1" data-volatile><input type="checkbox" class="dot" data-k="ds2" data-volatile><input type="checkbox" class="dot" data-k="ds3" data-volatile></div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">Fehlschläge</div>
+            <div class="dots"><input type="checkbox" class="dot fail" data-k="df1" data-volatile><input type="checkbox" class="dot fail" data-k="df2" data-volatile><input type="checkbox" class="dot fail" data-k="df3" data-volatile></div>
+          </div>
+        </div>
+        <p class="help"><b>RK</b> ohne Rüstung: 13 + Geschicklichkeit (Drachenschuppen). <b>Zauber-SG</b>: so schwer ist es für Gegner, deinen Zaubern zu widerstehen. Fällst du auf 0 TP, würfelst du pro Zug einen W20: ab 10 ein Erfolg, darunter ein Fehlschlag. Drei Erfolge = stabil, drei Fehlschläge = tot.</p>
+      </div>
+
+      <div class="card">
+        <h2>Angriffe</h2>
+        <table>
+          <tr><th style="width:34%">Angriff</th><th style="width:16%">Bonus</th><th>Schaden / Info</th></tr>
+          <tr><td><b>Feuerpfeil</b> <small>(Zaubertrick)</small></td><td id="atkSpell">+5</td><td>1W10 Feuer · 120 ft · Zauberangriff</td></tr>
+          <tr><td><b>Leichte Armbrust</b></td><td id="atkDex">+4</td><td>1W8 <span class="dexdmg">+2</span> Stich · 80/320 ft · beidhändig, Laden</td></tr>
+          <tr><td><b>Dolch</b> (2)</td><td class="atkDex2">+4</td><td>1W4 <span class="dexdmg">+2</span> Stich · Nahkampf oder Wurf 20/60 ft</td></tr>
+          <tr><td><input data-k="atk4n"></td><td><input data-k="atk4b"></td><td><input data-k="atk4d"></td></tr>
+        </table>
+        <p class="help">Angriff: <b>W20 + Bonus</b>. Ist das Ergebnis mindestens so hoch wie die RK des Ziels, triffst du und würfelst den Schaden.</p>
+      </div>
+
+      <div class="card long">
+        <h2>Zauberei <span class="tag">Charisma</span></h2>
+        <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat"><div class="big" id="dc2">13</div><div class="lbl">Zauber-SG</div></div>
+          <div class="stat"><div class="big" id="atkSpell2">+5</div><div class="lbl">Zauberangriff</div></div>
+          <div class="stat"><div class="big"><span id="spCur" data-volatile></span><span style="font-size:15px;color:var(--text-muted)"> / <span id="spMax">3</span></span></div><div class="lbl">Zauberpunkte</div></div>
+        </div>
+        <div class="box" style="margin-bottom:10px"><label>Zauberpunkte übrig</label>
+          <div class="dots" id="spDots"></div></div>
+        <div class="slots" id="slots"></div>
+        <p class="help"><b>Zauberplätze</b> sind deine Energie für Zauber ab Grad 1. Für jeden gewirkten Zauber hakst du einen Platz ab. <b>Zaubertricks</b> kosten nichts. Nach einer <b>langen Rast</b> ist alles wieder voll.</p>
+
+        <h2 style="margin-top:14px">Zaubertricks (unbegrenzt)</h2>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Feuerpfeil <small>Fire Bolt</small></span><span class="spell-meta">Aktion · 120 ft</span></div>
+          <p>Zauberangriff gegen ein Ziel: <b>1W10 Feuerschaden</b>. Brennbare Gegenstände fangen Feuer. Dein Standard-Angriff.</p></div>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Licht <small>Light</small></span><span class="spell-meta">Aktion · Berührung</span></div>
+          <p>Ein Gegenstand leuchtet 1 Stunde: helles Licht 20 ft, dämmriges weitere 20 ft.</p></div>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Magierhand <small>Mage Hand</small></span><span class="spell-meta">Aktion · 30 ft</span></div>
+          <p>Eine geisterhafte Hand für 1 Minute: Türen öffnen, Dinge holen (bis 5 kg). Kann nicht angreifen.</p></div>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Taschenspielerei <small>Prestidigitation</small></span><span class="spell-meta">Aktion · 10 ft</span></div>
+          <p>Kleine Zaubertricks: Funken, Geruch, Kerze an/aus, etwas säubern, wärmen oder kühlen, kleines Zeichen erscheinen lassen.</p></div>
+
+        <h2 style="margin-top:14px">Zauber Grad 1</h2>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Magisches Geschoss <small>Magic Missile</small></span><span class="spell-meta">Aktion · 120 ft</span></div>
+          <p><b>Trifft immer.</b> 3 Geschosse à <b>1W4+1 Energieschaden</b>, frei auf Ziele verteilbar. Pro höherem Grad +1 Geschoss.</p></div>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Schild <small>Shield</small></span><span class="spell-meta">Reaktion · selbst</span></div>
+          <p>Wenn du getroffen wirst: <b>+5 RK</b> bis zum Beginn deines nächsten Zuges, auch gegen den auslösenden Angriff. Kein Schaden durch Magisches Geschoss.</p></div>
+
+        <h2 style="margin-top:14px">Zauber Grad 2</h2>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Sengender Strahl <small>Scorching Ray</small></span><span class="spell-meta">Aktion · 120 ft</span></div>
+          <p>3 Strahlen, je ein Zauberangriff: <b>2W6 Feuer</b> pro Treffer. Pro höherem Grad +1 Strahl.</p></div>
+        <div class="spell"><div class="spell-head"><span class="spell-name">Nebelschritt <small>Misty Step</small></span><span class="spell-meta">Bonusaktion · selbst</span></div>
+          <p>Du teleportierst dich bis zu <b>30 ft</b> an einen Ort, den du sehen kannst. Perfekt, um aus dem Nahkampf zu entkommen.</p></div>
+        <textarea data-k="spellnotes" placeholder="Weitere Zauber oder Notizen" style="margin-top:4px"></textarea>
+      </div>
+    </div>
+
+    <!-- ================= RECHTS: Merkmale, Zug, Ausrüstung ================= -->
+    <div>
+      <div class="card turn">
+        <h2>Dein Zug (Spickzettel)</h2>
+        <ul>
+          <li><b>Bewegung:</b> bis 30 ft, auch aufgeteilt.</li>
+          <li><b>Aktion:</b> Zauber wirken (z. B. Feuerpfeil, Magisches Geschoss), angreifen, Spurt, Ausweichen, Gegenstand benutzen.</li>
+          <li><b>Bonusaktion:</b> nur wenn etwas sie erlaubt, z. B. Nebelschritt oder Beschleunigter Zauber.</li>
+          <li><b>Reaktion</b> (einmal pro Runde, auch im Zug anderer): Schild, Gelegenheitsangriff.</li>
+          <li><b>Faustregel:</b> Wirkst du einen Zauber als Bonusaktion, darfst du im selben Zug als Aktion nur einen Zaubertrick wirken.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Merkmale</h2>
+        <div class="feat"><b>Drachenahn</b> <span class="tag" id="dragonTag">Bronze · Blitz</span>
+          <p>Du sprichst, liest und schreibst Drakonisch. Bei Charisma-Proben im Umgang mit Drachen wird dein Übungsbonus <b>verdoppelt</b>.</p></div>
+        <div class="feat"><b>Drakonische Widerstandskraft</b>
+          <p>+1 TP pro Stufe (schon eingerechnet). Ohne Rüstung: RK 13 + Geschicklichkeit, Schuppen schimmern auf deiner Haut.</p></div>
+        <div class="feat" data-min="2"><b>Quelle der Magie</b> <span class="tag">ab Stufe 2</span>
+          <p>Du hast <b>Zauberpunkte</b> (Stufe = Anzahl). Als Bonusaktion tauschen: Zauberplatz Grad 1 = <b>2 Punkte</b>, Grad 2 = <b>3 Punkte</b>. Umgekehrt: einen Platz in so viele Punkte umwandeln, wie sein Grad ist.</p></div>
+        <div class="feat" data-min="3"><b>Metamagie</b> <span class="tag">ab Stufe 3</span>
+          <p><b>Beschleunigter Zauber (2 Punkte):</b> Ein Zauber, der eine Aktion kostet, wird zur Bonusaktion.<br>
+             <b>Verdoppelter Zauber (Punkte = Grad, Zaubertrick 1):</b> Ein Zauber, der nur ein Ziel trifft, trifft zusätzlich ein zweites (z. B. Feuerpfeil für 1 Punkt).</p></div>
+        <div class="feat" data-min="6"><b>Elementare Affinität</b> <span class="tag">ab Stufe 6</span>
+          <p>Bei Zaubern mit <span id="dmgType">Blitz</span>schaden addierst du deinen Charisma-Modifikator zum Schaden.</p></div>
+        <div class="feat"><b>Hintergrund-Merkmal: Forscherin</b>
+          <p>Weißt du etwas nicht, weißt du oft, wo oder bei wem man es herausfinden kann.</p></div>
+        <textarea data-k="featnotes" placeholder="Volksmerkmale und eigene Notizen"></textarea>
+      </div>
+
+      <div class="card">
+        <h2>Ausrüstung</h2>
+        <textarea data-k="gear" style="min-height:110px">Leichte Armbrust und 20 Bolzen
+2 Dolche
+Zauberfokus (z. B. ein Kristall)
+Entdeckerausrüstung (Rucksack, Schlafsack, Rationen, Fackeln, Seil)
+Tinte, Feder, kleines Messer, Notizbuch
+Erbstück: Drachenschuppe des Ahnen (zurzeit bei Sparkrender, D5)</textarea>
+        <div class="coins" style="margin-top:8px">
+          <div class="box"><label>KM</label><input type="number" data-k="cp" data-volatile></div>
+          <div class="box"><label>SM</label><input type="number" data-k="sp" data-volatile></div>
+          <div class="box"><label>EM</label><input type="number" data-k="ep" data-volatile></div>
+          <div class="box"><label>GM</label><input type="number" data-k="gp" data-volatile></div>
+          <div class="box"><label>PM</label><input type="number" data-k="pp" data-volatile></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Zustände &amp; Notizen am Tisch</h2>
+        <textarea data-k="conditions" data-volatile placeholder="z. B. vergiftet, Konzentration auf ..."></textarea>
+      </div>
+
+      <div class="card">
+        <h2>Persönlichkeit &amp; Geschichte</h2>
+        <textarea data-k="story" style="min-height:120px">Seit Wochen träumt sie von einer Insel voller Drachengräber. Auf Stormwreck Isle werden die Träume stärker: Die Narben der toten Drachen rufen ihr Blut. Im alten Observatorium wurde sie von Sparkrenders Kobolden gefangen genommen und in einem abgelegenen Turm (D4) festgehalten.</textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ABIL=[["str","Stärke","STR"],["dex","Geschicklichkeit","GES"],["con","Konstitution","KON"],["int","Intelligenz","INT"],["wis","Weisheit","WEI"],["cha","Charisma","CHA"]];
+const DEFAULT_SCORES={str:9,dex:14,con:15,int:11,wis:13,cha:16};
+const SAVES={con:true,cha:true};
+const SKILLS=[["Akrobatik","dex"],["Arkane Kunde","int"],["Athletik","str"],["Auftreten","cha"],["Einschüchtern","cha"],
+ ["Fingerfertigkeit","dex"],["Geschichte","int"],["Heilkunde","wis"],["Heimlichkeit","dex"],["Mit Tieren umgehen","wis"],
+ ["Motiv erkennen","wis"],["Nachforschungen","int"],["Naturkunde","int"],["Religion","int"],["Täuschen","cha"],
+ ["Überlebenskunst","wis"],["Überzeugen","cha"],["Wahrnehmung","wis"]];
+const DEFAULT_SKILLS={"Arkane Kunde":1,"Geschichte":1,"Motiv erkennen":1,"Überzeugen":1};
+// Zauberplätze Zauberer Stufe 1-5
+const SLOTS={1:[2],2:[3],3:[4,2],4:[4,3],5:[4,3,2]};
+const KEY="zauberin-sheet-v1";
+let state={};
+
+function mod(s){return Math.floor((s-10)/2);}
+function sg(n){return (n>=0?"+":"")+n;}
+function lvl(){return parseInt(document.getElementById("level").value)||3;}
+function pb(){return 2+Math.floor((lvl()-1)/4);}
+
+function buildAbilities(){
+  const host=document.getElementById("abilities");
+  host.innerHTML=ABIL.map(([k,de,ab])=>{
+    const skills=SKILLS.filter(s=>s[1]===k).map(([n])=>
+      `<div class="line"><span class="prof skill${state["sk_"+n]?" on":""}" data-skill="${n}" title="Klicken: geübt an/aus" style="cursor:pointer"></span><span class="val" data-skillval="${n}"></span>${n}</div>`).join("");
+    return `<div class="ability"><div class="ability-top"><span class="ability-name">${ab} <span>${de}</span></span></div>
+      <div class="ability-row"><input class="score" type="number" data-k="${k}" min="1" max="30"><span class="mod" id="mod_${k}"></span></div>
+      <div class="line"><span class="prof${SAVES[k]?" on":""}"></span><span class="val" id="save_${k}"></span>Rettungswurf</div>${skills}</div>`;}).join("");
+  host.querySelectorAll(".skill").forEach(el=>el.addEventListener("click",()=>{
+    const n=el.dataset.skill; state["sk_"+n]=!state["sk_"+n]; el.classList.toggle("on",!!state["sk_"+n]); save(); recalc();}));
+}
+
+function sc(k){return parseInt(state[k]??DEFAULT_SCORES[k]);}
+function recalc(){
+  const L=lvl(),P=pb();
+  state.level=String(L);
+  document.getElementById("pb").textContent=P;
+  ABIL.forEach(([k])=>{
+    const m=mod(sc(k));
+    document.getElementById("mod_"+k).textContent=sg(m);
+    document.getElementById("save_"+k).textContent=sg(m+(SAVES[k]?P:0));
+  });
+  SKILLS.forEach(([n,a])=>{
+    const v=mod(sc(a))+(state["sk_"+n]?P:0);
+    const el=document.querySelector(`[data-skillval="${n}"]`); if(el) el.textContent=sg(v);
+  });
+  const dex=mod(sc("dex")),con=mod(sc("con")),cha=mod(sc("cha")),wis=mod(sc("wis"));
+  document.getElementById("passive").textContent=10+wis+(state["sk_Wahrnehmung"]?P:0);
+  document.getElementById("ac").textContent=13+dex;
+  document.getElementById("init").textContent=sg(dex);
+  const dc=8+P+cha, atk=P+cha;
+  ["dc","dc2"].forEach(i=>document.getElementById(i).textContent=dc);
+  ["atkSpell","atkSpell2"].forEach(i=>document.getElementById(i).textContent=sg(atk));
+  document.getElementById("atkDex").textContent=sg(P+dex);
+  document.querySelectorAll(".atkDex2").forEach(e=>e.textContent=sg(P+dex));
+  document.querySelectorAll(".dexdmg").forEach(e=>e.textContent=(dex>=0?"+":"")+dex);
+  const hpmax=6+con+(L-1)*(4+con)+L; // W6, Durchschnitt, +1/Stufe Drakonische Widerstandskraft
+  document.getElementById("hpmax").textContent=hpmax;
+  document.getElementById("hdmax").textContent=L;
+  const spMax=L>=2?L:0;
+  document.getElementById("spMax").textContent=spMax;
+  // Zauberpunkte-Punkte
+  const spd=document.getElementById("spDots");
+  let spu=state.spUsed||0; if(spu>spMax) spu=spMax;
+  spd.innerHTML=spMax?Array.from({length:spMax},(_,i)=>`<input type="checkbox" class="dot" data-volatile data-sp="${i}" ${i<spMax-spu?"checked":""}>`).join(""):"<span style='font-size:12px;color:#8c8475'>ab Stufe 2</span>";
+  spd.querySelectorAll("input").forEach(el=>el.addEventListener("change",()=>{
+    state.spUsed=spMax-spd.querySelectorAll("input:checked").length; save(); updateSpCur();}));
+  updateSpCur();
+  // Zauberplätze
+  const slots=SLOTS[L]||[];
+  const host=document.getElementById("slots");
+  host.innerHTML=slots.map((n,g)=>`<span class="lvl">Grad ${g+1}</span><div class="dots" style="justify-content:flex-start">`+
+    Array.from({length:n},(_,i)=>`<input type="checkbox" class="dot" data-volatile data-slot="${g}-${i}" ${state["slot_"+g+"_"+i]?"":"checked"}>`).join("")+`</div>`).join("");
+  host.querySelectorAll("input").forEach(el=>el.addEventListener("change",()=>{
+    const [g,i]=el.dataset.slot.split("-"); state["slot_"+g+"_"+i]=!el.checked; save();}));
+  // Drache
+  const [col,typ]=document.getElementById("dragon").value.split("|");
+  state.dragon=document.getElementById("dragon").value;
+  document.getElementById("dragonTag").textContent=col+" · "+typ;
+  document.getElementById("dmgType").textContent=typ;
+  document.querySelectorAll("[data-min]").forEach(e=>e.style.opacity=L>=parseInt(e.dataset.min)?1:.45);
+  save();
+}
+function updateSpCur(){
+  const spMax=parseInt(document.getElementById("spMax").textContent)||0;
+  document.getElementById("spCur").textContent=Math.max(0,spMax-(state.spUsed||0));
+}
+
+function bindInputs(){
+  document.querySelectorAll("[data-k]").forEach(el=>{
+    const k=el.dataset.k;
+    if(state[k]!==undefined){ if(el.type==="checkbox") el.checked=!!state[k]; else el.value=state[k]; }
+    else if(DEFAULT_SCORES[k]!==undefined) el.value=DEFAULT_SCORES[k];
+    el.addEventListener(el.tagName==="SELECT"||el.type==="checkbox"?"change":"input",()=>{
+      state[k]=el.type==="checkbox"?el.checked:el.value; save(); recalc();});
+  });
+}
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function load(){try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){state={};}
+  if(!Object.keys(state).length){ Object.keys(DEFAULT_SKILLS).forEach(n=>state["sk_"+n]=true); }}
+
+function longRest(){
+  state.hp=document.getElementById("hpmax").textContent; state.thp="";
+  const L=lvl(); const hd=parseInt(state.hd||0); state.hd=String(Math.min(L,hd+Math.max(1,Math.floor(L/2))));
+  Object.keys(state).forEach(k=>{if(k.startsWith("slot_")) delete state[k];});
+  state.spUsed=0; ["ds1","ds2","ds3","df1","df2","df3"].forEach(k=>state[k]=false);
+  save(); refresh();
+}
+function shortRest(){
+  alert("Kurze Rast: Gib Trefferwürfel aus (je W6 + KON-Modifikator) und trag die neuen TP ein. Zauberplätze und Zauberpunkte kommen erst bei einer langen Rast zurück.");
+}
+function refresh(){bindValues(); recalc();}
+function bindValues(){document.querySelectorAll("[data-k]").forEach(el=>{const k=el.dataset.k;
+  if(state[k]!==undefined){ if(el.type==="checkbox") el.checked=!!state[k]; else el.value=state[k]; }});}
+
+function downloadState(){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,1)],{type:"application/json"}));
+  a.download=(state.name||"zauberin")+"-stand.json"; a.click();
+}
+function loadState(inp){
+  const f=inp.files[0]; if(!f) return;
+  f.text().then(t=>{state=JSON.parse(t); save(); location.reload();});
+}
+function autosize(){document.querySelectorAll("textarea").forEach(t=>{t.style.height="auto";t.style.height=(t.scrollHeight+4)+"px";});}
+document.addEventListener("input",e=>{if(e.target.tagName==="TEXTAREA")autosize();});
+function syncPrintText(){document.querySelectorAll("textarea").forEach(t=>{
+  let d=t.nextElementSibling;
+  if(!d||!d.classList.contains("print-text")){d=document.createElement("div");d.className="print-text";t.after(d);}
+  d.textContent=t.value; if(t.hasAttribute("data-volatile")) d.setAttribute("data-volatile","");});}
+window.addEventListener("beforeprint",()=>{autosize();syncPrintText();});
+window.addEventListener("load",autosize);
+function printSheet(blank){
+  autosize(); syncPrintText();
+  document.body.classList.toggle("blank",blank);
+  setTimeout(()=>{window.print(); setTimeout(()=>document.body.classList.remove("blank"),500);},50);
+}
+
+load();
+buildAbilities();
+bindInputs();
+if(state.hp===undefined){ state.hd=state.hd??"3"; }
+refresh();
+if(state.hp===undefined||state.hp===""){ state.hp=document.getElementById("hpmax").textContent; bindValues(); save(); }
+</script>
+</body>
+</html>
