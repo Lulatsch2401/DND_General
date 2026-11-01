@@ -6,7 +6,7 @@
 <!-- Fassungsnummer des Bogens: bei JEDER Änderung an dieser Datei erhöhen.
      Der Server nimmt nur Änderungen von Fenstern mit der aktuellen Fassung an;
      ältere offene Fenster laden sich dann selbst neu. -->
-<meta name="sheet-build" content="2026101210">
+<meta name="sheet-build" content="2026101211">
 <title>Elara Granger – Druide Charakterbogen</title>
 <style>
   :root{
@@ -1020,15 +1020,15 @@
     <button class="btn secondary" id="saveBtn">💾 Stand herunterladen</button>
     <button class="btn" onclick="window.print()">🖨️ Drucken / Als PDF</button>
   </div>
-  <input type="file" id="fileInput" accept="application/json" style="display:none;">
-  <input type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
+  <input autocomplete="off" type="file" id="fileInput" accept="application/json" style="display:none;">
+  <input autocomplete="off" type="checkbox" id="fantasyModeField" data-field="fantasyMode" style="display:none;">
   <!-- Aktive Spielstufe und die gespeicherten Werte aller Stufen (JSON: {"2":{...},"3":{...}}) -->
-  <input type="hidden" data-field="charLevel" value="2">
-  <input type="hidden" data-field="levelProfiles" value="">
+  <input autocomplete="off" type="hidden" data-field="charLevel" value="2">
+  <input autocomplete="off" type="hidden" data-field="levelProfiles" value="">
   <!-- Aktive Wilde Gestalt: Tier (englischer Schlüssel aus BEAST_DATA, leer = nicht verwandelt) und dessen TP -->
-  <input type="hidden" data-field="ws_form" value="">
-  <input type="hidden" data-field="ws_hp" value="">
-  <input type="hidden" data-field="ws_hpmax" value="">
+  <input autocomplete="off" type="hidden" data-field="ws_form" value="">
+  <input autocomplete="off" type="hidden" data-field="ws_hp" value="">
+  <input autocomplete="off" type="hidden" data-field="ws_hpmax" value="">
 </div>
 <div id="tooltip"></div>
 
@@ -1087,20 +1087,20 @@
   <div class="banner">
     <div>
       <div class="sub">Charakterbogen · Druide</div>
-      <input class="name-input" data-field="name" value="Elara Granger" placeholder="Charaktername">
+      <input autocomplete="off" class="name-input" data-field="name" value="Elara Granger" placeholder="Charaktername">
     </div>
     <div class="banner-meta">
-      <div><label>Rasse</label><input data-field="race" value="Wood Elf"></div>
-      <div><label>Hintergrund</label><input data-field="background" value="Sage"></div>
+      <div><label>Rasse</label><input autocomplete="off" data-field="race" value="Wood Elf"></div>
+      <div><label>Hintergrund</label><input autocomplete="off" data-field="background" value="Sage"></div>
       <div class="level-pick"><label for="levelSelect">Stufe</label>
-        <select id="levelSelect" title="Jede Stufe behält ihre eigenen Werte (TP, Trefferwürfel, vorbereitete Zauber). So lässt sich Stufe 3 schon vorbereiten, während weiter auf Stufe 2 gespielt wird.">
+        <select autocomplete="off" id="levelSelect" title="Jede Stufe behält ihre eigenen Werte (TP, Trefferwürfel, vorbereitete Zauber). So lässt sich Stufe 3 schon vorbereiten, während weiter auf Stufe 2 gespielt wird.">
           <option value="2">Stufe 2</option>
           <option value="3">Stufe 3</option>
         </select>
       </div>
-      <div><label>Klasse &amp; Stufe</label><input data-field="classLevel" value="Druide 2"></div>
-      <div><label>Erfahrung</label><input data-field="xp" value="Milestone"></div>
-      <div><label>Spieler:in</label><input data-field="player" value="wiebke961"></div>
+      <div><label>Klasse &amp; Stufe</label><input autocomplete="off" data-field="classLevel" value="Druide 2"></div>
+      <div><label>Erfahrung</label><input autocomplete="off" data-field="xp" value="Milestone"></div>
+      <div><label>Spieler:in</label><input autocomplete="off" data-field="player" value="wiebke961"></div>
     </div>
   </div>
 
@@ -1145,7 +1145,7 @@
         </div>
         <div class="wt-hp-bar"><div class="wt-hp-fill" id="wtHpFill"></div></div>
         <div class="wt-hp-controls">
-          <input type="number" id="wtAmount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung">
+          <input autocomplete="off" type="number" id="wtAmount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung">
           <button type="button" class="btn wt-dmg" id="wtDamage">− Schaden</button>
           <button type="button" class="btn wt-heal" id="wtHeal">+ Heilung</button>
           <button type="button" class="btn secondary wt-slot" id="wtSlot1" data-slot="1"></button>
@@ -1193,7 +1193,7 @@
       </div>
       <div class="wt-hp-bar"><div class="wt-hp-fill fl-fill"></div></div>
       <div class="wt-hp-controls">
-        <input type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
+        <input autocomplete="off" type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
         <button type="button" class="btn wt-dmg" data-flaum-act="dmg">− Schaden</button>
         <button type="button" class="btn wt-heal" data-flaum-act="heal">+ Heilung</button>
         <button type="button" class="btn secondary fl-anchor-btn" data-flaum-act="anchor">⚓ Notfall-Rückruf</button>
@@ -1211,33 +1211,33 @@
 
         <div class="ability ability-str">
           <div class="ability-top"><span class="ability-name">Strength <span class="ability-name-de">(Stärke)</span></span></div>
-          <div class="ability-score-row"><input class="score" data-field="str_score" value="8"><span class="ability-mod">-1</span></div>
-          <div class="save-row"><input type="checkbox" data-field="str_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="str_save_bonus" value="-1"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="str_score" value="8"><span class="ability-mod">-1</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="str_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="str_save_bonus" value="-1"></div>
         </div>
         <div class="ability ability-dex">
           <div class="ability-top"><span class="ability-name">Dexterity <span class="ability-name-de">(Geschicklichkeit)</span></span></div>
-          <div class="ability-score-row"><input class="score" data-field="dex_score" value="13"><span class="ability-mod">+1</span></div>
-          <div class="save-row"><input type="checkbox" data-field="dex_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="dex_save_bonus" value="+1"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="dex_score" value="13"><span class="ability-mod">+1</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="dex_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="dex_save_bonus" value="+1"></div>
         </div>
         <div class="ability ability-con">
           <div class="ability-top"><span class="ability-name">Constitution <span class="ability-name-de">(Konstitution)</span></span></div>
-          <div class="ability-score-row"><input class="score" data-field="con_score" value="15"><span class="ability-mod">+2</span></div>
-          <div class="save-row"><input type="checkbox" data-field="con_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="con_save_bonus" value="+2"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="con_score" value="15"><span class="ability-mod">+2</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="con_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="con_save_bonus" value="+2"></div>
         </div>
         <div class="ability ability-int">
           <div class="ability-top"><span class="ability-name">Intelligence <span class="ability-name-de">(Intelligenz)</span></span></div>
-          <div class="ability-score-row"><input class="score" data-field="int_score" value="10"><span class="ability-mod">+0</span></div>
-          <div class="save-row"><input type="checkbox" data-field="int_save_prof" checked> Rettungswurf-Übung <input class="savebonus" data-field="int_save_bonus" value="+2"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="int_score" value="10"><span class="ability-mod">+0</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="int_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="int_save_bonus" value="+2"></div>
         </div>
         <div class="ability ability-wis">
           <div class="ability-top"><span class="ability-name">Wisdom <span class="ability-name-de">(Weisheit)</span></span></div>
-          <div class="ability-score-row"><input class="score" data-field="wis_score" value="17"><span class="ability-mod">+3</span></div>
-          <div class="save-row"><input type="checkbox" data-field="wis_save_prof" checked> Rettungswurf-Übung <input class="savebonus" data-field="wis_save_bonus" value="+5"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="wis_score" value="17"><span class="ability-mod">+3</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="wis_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="wis_save_bonus" value="+5"></div>
         </div>
         <div class="ability ability-cha">
           <div class="ability-top"><span class="ability-name">Charisma</span></div>
-          <div class="ability-score-row"><input class="score" data-field="cha_score" value="12"><span class="ability-mod">+1</span></div>
-          <div class="save-row"><input type="checkbox" data-field="cha_save_prof"> Rettungswurf-Übung <input class="savebonus" data-field="cha_save_bonus" value="+1"></div>
+          <div class="ability-score-row"><input autocomplete="off" class="score" data-field="cha_score" value="12"><span class="ability-mod">+1</span></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="cha_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="cha_save_bonus" value="+1"></div>
         </div>
       </div>
 
@@ -1249,11 +1249,11 @@
       <div class="card" data-card="senses">
         <h2>Sinne</h2>
         <div class="field-grid">
-          <div class="field big"><label>Passive Perception <span class="label-de">(Passive Wahrnehmung)</span></label><input data-field="passivePerception" value="15"></div>
-          <div class="field big"><label>Passive Insight <span class="label-de">(Passive Einsicht)</span></label><input data-field="passiveInsight" value="13"></div>
-          <div class="field big"><label>Passive Investigation <span class="label-de">(Passive Untersuchung)</span></label><input data-field="passiveInvestigation" value="10"></div>
+          <div class="field big"><label>Passive Perception <span class="label-de">(Passive Wahrnehmung)</span></label><input autocomplete="off" data-field="passivePerception" value="15"></div>
+          <div class="field big"><label>Passive Insight <span class="label-de">(Passive Einsicht)</span></label><input autocomplete="off" data-field="passiveInsight" value="13"></div>
+          <div class="field big"><label>Passive Investigation <span class="label-de">(Passive Untersuchung)</span></label><input autocomplete="off" data-field="passiveInvestigation" value="10"></div>
         </div>
-        <div class="field" style="margin-top:10px;"><label>Other Senses <span class="label-de">(Weitere Sinne)</span></label><input data-field="senses" value="Dunkelsicht 18 m (60 ft.)"></div>
+        <div class="field" style="margin-top:10px;"><label>Other Senses <span class="label-de">(Weitere Sinne)</span></label><input autocomplete="off" data-field="senses" value="Dunkelsicht 18 m (60 ft.)"></div>
       </div>
     </div>
 
@@ -1262,24 +1262,24 @@
       <div class="card" data-card="combat">
         <h2>Kampfwerte</h2>
         <div class="stat-row">
-          <div class="stat-tile"><label>Armor Class <span class="label-de">(Rüstungsklasse)</span></label><input data-field="ac" value="14"></div>
-          <div class="stat-tile"><label>Initiative</label><input data-field="initiative" value="+1"></div>
-          <div class="stat-tile"><label>Speed <span class="label-de">(Tempo)</span></label><input data-field="speed" value="35 ft."></div>
-          <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input data-field="profBonus" value="+2"></div>
+          <div class="stat-tile"><label>Armor Class <span class="label-de">(Rüstungsklasse)</span></label><input autocomplete="off" data-field="ac" value="14"></div>
+          <div class="stat-tile"><label>Initiative</label><input autocomplete="off" data-field="initiative" value="+1"></div>
+          <div class="stat-tile"><label>Speed <span class="label-de">(Tempo)</span></label><input autocomplete="off" data-field="speed" value="35 ft."></div>
+          <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input autocomplete="off" data-field="profBonus" value="+2"></div>
         </div>
         <div class="stat-row">
-          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input data-field="maxHp" value="17"></div>
-          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input data-field="curHp" value="17"></div>
-          <div class="stat-tile"><label>Temp. HP <span class="label-de">(Temp. TP)</span></label><input data-field="tempHp" value="--"></div>
-          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
+          <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input autocomplete="off" data-field="maxHp" value="17"></div>
+          <div class="stat-tile"><label>Current HP <span class="label-de">(Aktuelle TP)</span></label><input autocomplete="off" data-field="curHp" value="17"></div>
+          <div class="stat-tile"><label>Temp. HP <span class="label-de">(Temp. TP)</span></label><input autocomplete="off" data-field="tempHp" value="--"></div>
+          <div class="stat-tile"><label>Hit Dice <span class="label-de">(Trefferwürfel)</span></label><input autocomplete="off" data-field="hitDice" value="2 / 2 (d8)" title="Format: verfügbar / gesamt (Würfeltyp)"></div>
         </div>
-        <div class="checkline" style="margin-top:4px;"><input type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
+        <div class="checkline" style="margin-top:4px;"><input autocomplete="off" type="checkbox" data-field="inspiration"> <span style="font-size:13px;">Inspiration <span class="label-de" style="text-transform:none;">(Heldeninspiration)</span></span></div>
         <div class="checkline death-saves" style="margin-top:10px; font-size:12px; color:var(--text-secondary);">
           <strong>Death Saves <span class="label-de" style="text-transform:none;">(Todesrettungswürfe)</span></strong>
           <span class="ds-group">Successes <span class="label-de" style="text-transform:none;">(Erfolge)</span>:
-            <input type="checkbox" data-field="death_succ_0"><input type="checkbox" data-field="death_succ_1"><input type="checkbox" data-field="death_succ_2"></span>
+            <input autocomplete="off" type="checkbox" data-field="death_succ_0"><input autocomplete="off" type="checkbox" data-field="death_succ_1"><input autocomplete="off" type="checkbox" data-field="death_succ_2"></span>
           <span class="ds-group">Failures <span class="label-de" style="text-transform:none;">(Fehlschläge)</span>:
-            <input type="checkbox" data-field="death_fail_0"><input type="checkbox" data-field="death_fail_1"><input type="checkbox" data-field="death_fail_2"></span>
+            <input autocomplete="off" type="checkbox" data-field="death_fail_0"><input autocomplete="off" type="checkbox" data-field="death_fail_1"><input autocomplete="off" type="checkbox" data-field="death_fail_2"></span>
         </div>
       </div>
 
@@ -1294,21 +1294,21 @@
       <div class="card" data-card="spellcasting">
         <h2>Zauberwirken <span class="tag">WIS</span></h2>
         <div class="stat-row">
-          <div class="stat-tile"><label>Angriffsbonus</label><input data-field="spellAtk" value="+5"></div>
-          <div class="stat-tile"><label>Rettungswurf-SG</label><input data-field="spellDC" value="13"></div>
-          <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input data-field="cantripsKnown" value="2 von 2" readonly></div>
-          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input data-field="spellsPrepared" value="5 von 5" readonly></div>
+          <div class="stat-tile"><label>Angriffsbonus</label><input autocomplete="off" data-field="spellAtk" value="+5"></div>
+          <div class="stat-tile"><label>Rettungswurf-SG</label><input autocomplete="off" data-field="spellDC" value="13"></div>
+          <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input autocomplete="off" data-field="cantripsKnown" value="2 von 2" readonly></div>
+          <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input autocomplete="off" data-field="spellsPrepared" value="5 von 5" readonly></div>
         </div>
         <div class="field" style="margin-bottom:12px;">
           <label>Zauberplätze (Druide Stufe <span class="lvl-num">2</span>)</label>
           <div class="checkline slot-line">
             <span class="slot-lvl">1. Grad</span>
-            <input type="checkbox" data-field="slot1_0" checked><input type="checkbox" data-field="slot1_1" checked><input type="checkbox" data-field="slot1_2" checked><input type="checkbox" data-field="slot1_3" data-min-level="3" checked>
+            <input autocomplete="off" type="checkbox" data-field="slot1_0" checked><input autocomplete="off" type="checkbox" data-field="slot1_1" checked><input autocomplete="off" type="checkbox" data-field="slot1_2" checked><input autocomplete="off" type="checkbox" data-field="slot1_3" data-min-level="3" checked>
             <span class="res-count" data-count-prefix="slot1_">3 von 3 verfügbar</span>
           </div>
           <div class="checkline slot-line" data-min-level="3">
             <span class="slot-lvl">2. Grad</span>
-            <input type="checkbox" data-field="slot2_0" checked><input type="checkbox" data-field="slot2_1" checked>
+            <input autocomplete="off" type="checkbox" data-field="slot2_0" checked><input autocomplete="off" type="checkbox" data-field="slot2_1" checked>
             <span class="res-count" data-count-prefix="slot2_">2 von 2 verfügbar</span>
           </div>
         </div>
@@ -1344,14 +1344,14 @@
               <button type="button" data-md="hr" title="Trennlinie">— Linie</button>
             </div>
             <div class="note-panel" data-tab="main" data-title="Allgemein">
-              <textarea rows="4" id="spellNotesInput" data-field="spellNotes" placeholder="z. B. Dwalin = Ruben"></textarea>
+              <textarea autocomplete="off" rows="4" id="spellNotesInput" data-field="spellNotes" placeholder="z. B. Dwalin = Ruben"></textarea>
             </div>
             <div class="note-panel" data-tab="inv" data-title="Inventar" hidden>
               <div class="inv-bar">
                 <button type="button" class="mini-btn" id="invAdd">＋ Gegenstand</button>
                 <button type="button" class="mini-btn" id="invAddGroup" title="Neue Gruppe – Gegenstände dann am Griff ⋮⋮ hineinziehen">＋ Gruppe</button>
                 <button type="button" class="mini-btn" id="invSort" title="Nach Namen sortieren (A–Z)">A–Z sortieren</button>
-                <input type="search" id="invFilter" placeholder="Suchen …" aria-label="Inventar durchsuchen">
+                <input autocomplete="off" type="search" id="invFilter" placeholder="Suchen …" aria-label="Inventar durchsuchen">
                 <span class="inv-sum" id="invSum"></span>
               </div>
               <table class="inv-table" id="invTable">
@@ -1363,9 +1363,9 @@
             </div>
           </div>
           <div class="md-help" id="mdHelp">Text markieren und Knopf drücken – ein zweiter Klick nimmt die Formatierung wieder weg. Aufgaben-Kästchen anklicken zum Abhaken. Wer mag, kann auch direkt tippen: <code>**fett**</code>, <code>## Überschrift</code>, <code>- Liste</code> – die Zeichen werden ausgeblendet. Reiter lassen sich mit der Maus verschieben.</div>
-          <input type="hidden" data-field="noteTabs" value="[{&quot;id&quot;:&quot;main&quot;,&quot;title&quot;:&quot;Allgemein&quot;},{&quot;id&quot;:&quot;inv&quot;,&quot;title&quot;:&quot;Inventar&quot;}]">
-          <input type="hidden" data-field="inventory" value="[{&quot;id&quot;:&quot;m0&quot;,&quot;name&quot;:&quot;Quarterstaff&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m1&quot;,&quot;name&quot;:&quot;Scimitar&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m2&quot;,&quot;name&quot;:&quot;Rucksack&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m3&quot;,&quot;name&quot;:&quot;Druidischer Fokus&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m4&quot;,&quot;name&quot;:&quot;Pergament&quot;,&quot;qty&quot;:&quot;8&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m5&quot;,&quot;name&quot;:&quot;Kalligraphenwerkzeug&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m6&quot;,&quot;name&quot;:&quot;Robe&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m7&quot;,&quot;name&quot;:&quot;Buch&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m8&quot;,&quot;name&quot;:&quot;Schlafrolle&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m9&quot;,&quot;name&quot;:&quot;Kochset&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m10&quot;,&quot;name&quot;:&quot;Rationen 1 Tag&quot;,&quot;qty&quot;:&quot;10&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m11&quot;,&quot;name&quot;:&quot;Seil Hanf 15m&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m12&quot;,&quot;name&quot;:&quot;Zunderbüchse&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m13&quot;,&quot;name&quot;:&quot;Fackel&quot;,&quot;qty&quot;:&quot;10&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m14&quot;,&quot;name&quot;:&quot;Wasserschlauch&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;}]">
-          <input type="hidden" data-field="invGroups" value="[]">
+          <input autocomplete="off" type="hidden" data-field="noteTabs" value="[{&quot;id&quot;:&quot;main&quot;,&quot;title&quot;:&quot;Allgemein&quot;},{&quot;id&quot;:&quot;inv&quot;,&quot;title&quot;:&quot;Inventar&quot;}]">
+          <input autocomplete="off" type="hidden" data-field="inventory" value="[{&quot;id&quot;:&quot;m0&quot;,&quot;name&quot;:&quot;Quarterstaff&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m1&quot;,&quot;name&quot;:&quot;Scimitar&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m2&quot;,&quot;name&quot;:&quot;Rucksack&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m3&quot;,&quot;name&quot;:&quot;Druidischer Fokus&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m4&quot;,&quot;name&quot;:&quot;Pergament&quot;,&quot;qty&quot;:&quot;8&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m5&quot;,&quot;name&quot;:&quot;Kalligraphenwerkzeug&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m6&quot;,&quot;name&quot;:&quot;Robe&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m7&quot;,&quot;name&quot;:&quot;Buch&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m8&quot;,&quot;name&quot;:&quot;Schlafrolle&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m9&quot;,&quot;name&quot;:&quot;Kochset&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m10&quot;,&quot;name&quot;:&quot;Rationen 1 Tag&quot;,&quot;qty&quot;:&quot;10&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m11&quot;,&quot;name&quot;:&quot;Seil Hanf 15m&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m12&quot;,&quot;name&quot;:&quot;Zunderbüchse&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m13&quot;,&quot;name&quot;:&quot;Fackel&quot;,&quot;qty&quot;:&quot;10&quot;,&quot;note&quot;:&quot;&quot;},{&quot;id&quot;:&quot;m14&quot;,&quot;name&quot;:&quot;Wasserschlauch&quot;,&quot;qty&quot;:&quot;1&quot;,&quot;note&quot;:&quot;&quot;}]">
+          <input autocomplete="off" type="hidden" data-field="invGroups" value="[]">
         </div>
 
         <div class="field" style="margin-top:12px;">
@@ -1384,8 +1384,8 @@
         <h2>Übungen</h2>
         <div class="pill">Leichte Rüstung</div><div class="pill">Mittlere Rüstung</div><div class="pill">Schilde</div>
         <div class="pill">Einfache Waffen</div>
-        <div class="field" style="margin-top:8px;"><label>Werkzeuge</label><input data-field="tools" value="Kalligraphenwerkzeug, Kräuterkunde-Kit"></div>
-        <div class="field" style="margin-top:8px;"><label>Sprachen</label><input data-field="languages" value="Gemeinsprache, Druidisch, Elfisch"></div>
+        <div class="field" style="margin-top:8px;"><label>Werkzeuge</label><input autocomplete="off" data-field="tools" value="Kalligraphenwerkzeug, Kräuterkunde-Kit"></div>
+        <div class="field" style="margin-top:8px;"><label>Sprachen</label><input autocomplete="off" data-field="languages" value="Gemeinsprache, Druidisch, Elfisch"></div>
       </div>
 
       <div class="card" data-card="flaum" id="flaumCard">
@@ -1400,23 +1400,23 @@
             </div>
             <div class="checkline fl-anchor" title="Flaums Anker: Notfall-Rückruf in die Zuflucht – 1× pro langer Rast">
               <span class="fl-anchor-label">⚓ Flaums Anker</span>
-              <input type="checkbox" data-field="flaum_anchor_0" checked aria-label="Flaums Anker verfügbar">
+              <input autocomplete="off" type="checkbox" data-field="flaum_anchor_0" checked aria-label="Flaums Anker verfügbar">
               <span class="res-count" data-count-prefix="flaum_anchor_">1 von 1 verfügbar</span>
               <span class="fl-anchor-hint">· Notfall-Rückruf, 1× pro langer Rast</span>
             </div>
           </div>
         </div>
-        <input type="checkbox" data-field="flaum_present" style="display:none;">
+        <input autocomplete="off" type="checkbox" data-field="flaum_present" style="display:none;">
         <div class="stat-row flaum-stats">
           <div class="stat-tile"><label>RK</label><div class="flaum-val">11</div></div>
-          <div class="stat-tile flaum-hp-tile"><label>TP</label><input data-field="flaum_hp" value="18" inputmode="numeric" aria-label="Flaums aktuelle TP"><div class="flaum-hp-of">von <input data-field="flaum_hpmax" value="18" inputmode="numeric" aria-label="Flaums maximale TP"></div></div>
+          <div class="stat-tile flaum-hp-tile"><label>TP</label><input autocomplete="off" data-field="flaum_hp" value="18" inputmode="numeric" aria-label="Flaums aktuelle TP"><div class="flaum-hp-of">von <input autocomplete="off" data-field="flaum_hpmax" value="18" inputmode="numeric" aria-label="Flaums maximale TP"></div></div>
           <div class="stat-tile"><label>Tempo</label><div class="flaum-val">30<small>ft.</small></div></div>
           <div class="stat-tile"><label>Wahrn.</label><div class="flaum-val">+3<small>passiv 13</small></div></div>
         </div>
         <div data-flaum-box="card">
           <div class="fl-bar"><div class="fl-fill"></div></div>
           <div class="fl-controls">
-            <input type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
+            <input autocomplete="off" type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
             <button type="button" class="fl-btn dmg" data-flaum-act="dmg">− Schaden</button>
             <button type="button" class="fl-btn heal" data-flaum-act="heal">+ Heilung</button>
             <button type="button" class="fl-btn soft fl-anchor-btn" data-flaum-act="anchor">⚓ Notfall-Rückruf</button>
@@ -1442,7 +1442,7 @@
       <div class="card" data-card="features">
         <h2>Rassen- &amp; Klassenmerkmale</h2>
         <div class="field">
-          <textarea rows="9" data-field="featuresText">WOOD ELF: Dunkelsicht 18m; Scharfe Sinne (Übung Wahrnehmung); Feenabkunft (Vorteil ggü. Bezauberung, immun gg. magischen Schlaf); Trance (4h statt 8h Schlaf); Waffenübung der Elfen (Langschwert, Kurzschwert, Kurzbogen, Langbogen); Leichtfüßigkeit (Tempo 35ft); Maske der Wildnis (verstecken bei leichter Verdeckung).
+          <textarea autocomplete="off" rows="9" data-field="featuresText">WOOD ELF: Dunkelsicht 18m; Scharfe Sinne (Übung Wahrnehmung); Feenabkunft (Vorteil ggü. Bezauberung, immun gg. magischen Schlaf); Trance (4h statt 8h Schlaf); Waffenübung der Elfen (Langschwert, Kurzschwert, Kurzbogen, Langbogen); Leichtfüßigkeit (Tempo 35ft); Maske der Wildnis (verstecken bei leichter Verdeckung).
 
 DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidischer Fokus); Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast, ab Stufe 2 – Details siehe Druidenzirkel); Druidenzirkel: Kreis des Mondes.</textarea>
         </div>
@@ -1450,11 +1450,11 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
       <div class="card" data-card="circle">
         <h2>Druidenzirkel <span class="tag">aktiv: Mond</span></h2>
-        <div class="field" style="margin-bottom:10px;"><label>Gewählter Zirkel</label><input data-field="circleName" value="Kreis des Mondes"></div>
+        <div class="field" style="margin-bottom:10px;"><label>Gewählter Zirkel</label><input autocomplete="off" data-field="circleName" value="Kreis des Mondes"></div>
         <div class="field" style="margin-bottom:10px;">
           <label>Wilde Gestalt (Nutzungen, laden bei kurzer/langer Rast auf)</label>
           <div class="checkline">
-            <input type="checkbox" data-field="wildshape_0" checked><input type="checkbox" data-field="wildshape_1" checked>
+            <input autocomplete="off" type="checkbox" data-field="wildshape_0" checked><input autocomplete="off" type="checkbox" data-field="wildshape_1" checked>
             <span class="res-count" data-count-prefix="wildshape_">2 von 2 verfügbar</span>
           </div>
           <div><button type="button" class="btn secondary wt-open-window wt-open-small">🐾 Tierfenster öffnen</button></div>
@@ -1462,19 +1462,19 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
 
         <div class="active-block">
           <h3><span class="lvl">✓ Stufe 2</span> Kampf-Wildwandel &amp; Kreisformen</h3>
-          <textarea rows="7" data-field="circle_2">Wilde Gestalt als Bonusaktion statt Aktion. Als Bonusaktion einen Zauberplatz ausgeben, um 1d8 TP pro Grad des Slots zu heilen (während verwandelt). Max. Herausforderungsgrad steigt auf 1 (statt 1/4). Achtung: Kein Schwimmen vor Stufe 4 und kein Fliegen vor Stufe 8 – diese Einschränkung der normalen Wildwandel-Tabelle gilt weiterhin, auch mit Kreis des Mondes (Korrektur ggü. vorheriger Fassung dieser Karte).</textarea>
+          <textarea autocomplete="off" rows="7" data-field="circle_2">Wilde Gestalt als Bonusaktion statt Aktion. Als Bonusaktion einen Zauberplatz ausgeben, um 1d8 TP pro Grad des Slots zu heilen (während verwandelt). Max. Herausforderungsgrad steigt auf 1 (statt 1/4). Achtung: Kein Schwimmen vor Stufe 4 und kein Fliegen vor Stufe 8 – diese Einschränkung der normalen Wildwandel-Tabelle gilt weiterhin, auch mit Kreis des Mondes (Korrektur ggü. vorheriger Fassung dieser Karte).</textarea>
         </div>
         <div class="future-block">
           <h3><span class="lvl">Stufe 6</span> Elementarer Schlag</h3>
-          <textarea rows="2" data-field="circle_6">Angriffe in Tiergestalt gelten als magisch (überwinden Resistenz/Immunität ggü. nichtmagischem Schaden).</textarea>
+          <textarea autocomplete="off" rows="2" data-field="circle_6">Angriffe in Tiergestalt gelten als magisch (überwinden Resistenz/Immunität ggü. nichtmagischem Schaden).</textarea>
         </div>
         <div class="future-block">
           <h3><span class="lvl">Stufe 10</span> Elementare Wildwandel</h3>
-          <textarea rows="2" data-field="circle_10">Zwei Nutzungen von Wilder Gestalt gleichzeitig ausgeben, um dich in einen Luft-, Erd-, Feuer- oder Wasserelementar zu verwandeln.</textarea>
+          <textarea autocomplete="off" rows="2" data-field="circle_10">Zwei Nutzungen von Wilder Gestalt gleichzeitig ausgeben, um dich in einen Luft-, Erd-, Feuer- oder Wasserelementar zu verwandeln.</textarea>
         </div>
         <div class="future-block">
           <h3><span class="lvl">Stufe 14</span> Tausend Formen</h3>
-          <textarea rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
+          <textarea autocomplete="off" rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
           Aktuell (Kreis des Mondes, Stufe <span class="lvl-num">2</span>): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
@@ -1485,27 +1485,27 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
       <div class="card" data-card="equipment">
         <h2>Ausrüstung &amp; Vermögen</h2>
         <div class="stat-row">
-          <div class="stat-tile"><label>KM</label><input data-field="cp" value="0"></div>
-          <div class="stat-tile"><label>SM</label><input data-field="sp" value="0"></div>
-          <div class="stat-tile"><label>EM</label><input data-field="ep" value="0"></div>
-          <div class="stat-tile"><label>GM</label><input data-field="gp" value="8"></div>
-          <div class="stat-tile"><label>PM</label><input data-field="pp" value="0"></div>
+          <div class="stat-tile"><label>KM</label><input autocomplete="off" data-field="cp" value="0"></div>
+          <div class="stat-tile"><label>SM</label><input autocomplete="off" data-field="sp" value="0"></div>
+          <div class="stat-tile"><label>EM</label><input autocomplete="off" data-field="ep" value="0"></div>
+          <div class="stat-tile"><label>GM</label><input autocomplete="off" data-field="gp" value="8"></div>
+          <div class="stat-tile"><label>PM</label><input autocomplete="off" data-field="pp" value="0"></div>
         </div>
-        <div class="field" style="margin-bottom:8px;"><label>Rüstung getragen</label><input data-field="armorWorn" value="Lederrüstung + Schild"></div>
+        <div class="field" style="margin-bottom:8px;"><label>Rüstung getragen</label><input autocomplete="off" data-field="armorWorn" value="Lederrüstung + Schild"></div>
         <div class="field">
           <label>Beutel / Ausrüstung</label>
           <div class="inv-link"><span id="invSummary">Inventar</span><button type="button" class="mini-btn" id="openInvBtn">🎒 Inventar öffnen</button></div>
         </div>
-        <div class="field" style="margin-top:8px;"><label>Magische Gegenstände</label><input data-field="magicItems" value="—"></div>
+        <div class="field" style="margin-top:8px;"><label>Magische Gegenstände</label><input autocomplete="off" data-field="magicItems" value="—"></div>
       </div>
 
       <div class="card" data-card="personality">
         <h2>Persönlichkeit &amp; Hintergrund</h2>
-        <div class="field" style="margin-bottom:8px;"><label>Persönlichkeitsmerkmale</label><textarea rows="2" data-field="personality" placeholder="…"></textarea></div>
-        <div class="field" style="margin-bottom:8px;"><label>Ideale</label><textarea rows="2" data-field="ideals" placeholder="…"></textarea></div>
-        <div class="field" style="margin-bottom:8px;"><label>Bindungen</label><textarea rows="2" data-field="bonds" placeholder="…"></textarea></div>
-        <div class="field" style="margin-bottom:8px;"><label>Makel</label><textarea rows="2" data-field="flaws" placeholder="…"></textarea></div>
-        <div class="field"><label>Hintergrundgeschichte</label><textarea rows="5" data-field="backstory" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Persönlichkeitsmerkmale</label><textarea autocomplete="off" rows="2" data-field="personality" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Ideale</label><textarea autocomplete="off" rows="2" data-field="ideals" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Bindungen</label><textarea autocomplete="off" rows="2" data-field="bonds" placeholder="…"></textarea></div>
+        <div class="field" style="margin-bottom:8px;"><label>Makel</label><textarea autocomplete="off" rows="2" data-field="flaws" placeholder="…"></textarea></div>
+        <div class="field"><label>Hintergrundgeschichte</label><textarea autocomplete="off" rows="5" data-field="backstory" placeholder="…"></textarea></div>
       </div>
     </div>
   </div>
@@ -1562,7 +1562,7 @@ SOFTWARE.
   skills.forEach(([nameEn,nameDe,ab,bonus,prof],i)=>{
     const row = document.createElement('div');
     row.className='skill-row';
-    row.innerHTML = `<input type="checkbox" data-field="skill_${i}_prof" ${prof?'checked':''}><span class="sname">${nameEn}${nameDe?` <span class="sname-de">(${nameDe})</span>`:''}</span><span class="sability">${ab}</span><input class="sbonus" data-field="skill_${i}_bonus" value="${bonus}">`;
+    row.innerHTML = `<input autocomplete="off" type="checkbox" data-field="skill_${i}_prof" ${prof?'checked':''}><span class="sname">${nameEn}${nameDe?` <span class="sname-de">(${nameDe})</span>`:''}</span><span class="sability">${ab}</span><input autocomplete="off" class="sbonus" data-field="skill_${i}_bonus" value="${bonus}">`;
     skillList.appendChild(row);
   });
 
@@ -1574,7 +1574,7 @@ SOFTWARE.
   const weaponTable = document.getElementById('weaponTable');
   weapons.forEach(([n,a,d],i)=>{
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input data-field="weapon_${i}_name" value="${n}"></td><td><input data-field="weapon_${i}_atk" value="${a}"></td><td><input data-field="weapon_${i}_dmg" value="${d}"></td>`;
+    tr.innerHTML = `<td><input autocomplete="off" data-field="weapon_${i}_name" value="${n}"></td><td><input autocomplete="off" data-field="weapon_${i}_atk" value="${a}"></td><td><input autocomplete="off" data-field="weapon_${i}_dmg" value="${d}"></td>`;
     weaponTable.appendChild(tr);
   });
 
@@ -1867,7 +1867,7 @@ SOFTWARE.
       col.forEach(([[lvl,name,ritual,known],i])=>{
         const row = document.createElement('div');
         row.className='spell-row';
-        row.innerHTML = `<span class="lvl-badge ${lvlClass(lvl)}">${lvl}</span><input type="checkbox" data-field="spell_${i}_prepared"${known?' checked':''}><span class="sname has-tip" data-tip-key="${name}">${name}</span>${ritual?'<span class="ritual">R</span>':''}`;
+        row.innerHTML = `<span class="lvl-badge ${lvlClass(lvl)}">${lvl}</span><input autocomplete="off" type="checkbox" data-field="spell_${i}_prepared"${known?' checked':''}><span class="sname has-tip" data-tip-key="${name}">${name}</span>${ritual?'<span class="ritual">R</span>':''}`;
         div.appendChild(row);
       });
       spellGrid.appendChild(div);
@@ -1966,7 +1966,7 @@ SOFTWARE.
       const fd = FAV_DATA[name] || {range:"", time:"", save:"--", dmg:"--"};
       const badgeClass = lvlClass(lvl);
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvlTitle(lvl)}">${lvl}</span></td><td><span class="name-tip"><input data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input data-field="fav_${i}_range" value="${fd.range}"></td><td><input data-field="fav_${i}_time" value="${fd.time}"></td><td><input data-field="fav_${i}_save" value="${fd.save}"></td><td><input data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
+      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvlTitle(lvl)}">${lvl}</span></td><td><span class="name-tip"><input autocomplete="off" data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input autocomplete="off" data-field="fav_${i}_range" value="${fd.range}"></td><td><input autocomplete="off" data-field="fav_${i}_time" value="${fd.time}"></td><td><input autocomplete="off" data-field="fav_${i}_save" value="${fd.save}"></td><td><input autocomplete="off" data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
       favSpellTable.appendChild(tr);
     });
   }
@@ -2633,6 +2633,7 @@ SOFTWARE.
         panel.hidden = true;
         const ta = document.createElement('textarea');
         ta.rows = 4;
+        ta.autocomplete = 'off';
         ta.dataset.field = noteFieldKey(t.id);
         ta.placeholder = 'Hier schreiben …';
         panel.appendChild(ta);
@@ -3002,11 +3003,11 @@ SOFTWARE.
     tr.dataset.group = group;
     tr.innerHTML =
       '<td class="inv-handle" title="Ziehen zum Verschieben – auch in eine andere Gruppe (oder Alt + ↑/↓)">⋮⋮</td>' +
-      '<td><input data-inv-k="name" placeholder="Gegenstand" aria-label="Gegenstand"></td>' +
+      '<td><input autocomplete="off" data-inv-k="name" placeholder="Gegenstand" aria-label="Gegenstand"></td>' +
       '<td class="inv-qty"><div class="inv-qty-wrap"><button type="button" class="mini-btn" data-inv-act="dec" title="Einen weniger" aria-label="Einen weniger">−</button>' +
-      '<input data-inv-k="qty" inputmode="numeric" aria-label="Anzahl">' +
+      '<input autocomplete="off" data-inv-k="qty" inputmode="numeric" aria-label="Anzahl">' +
       '<button type="button" class="mini-btn" data-inv-act="inc" title="Einen mehr" aria-label="Einen mehr">+</button></div></td>' +
-      '<td class="inv-note-cell"><textarea data-inv-k="note" rows="1" placeholder="Notiz" aria-label="Notiz (Enter = neue Zeile)"></textarea></td>' +
+      '<td class="inv-note-cell"><textarea autocomplete="off" data-inv-k="note" rows="1" placeholder="Notiz" aria-label="Notiz (Enter = neue Zeile)"></textarea></td>' +
       '<td><button type="button" class="mini-btn danger" data-inv-act="del" title="Aus dem Inventar entfernen" aria-label="Entfernen">✕</button></td>';
     ['name', 'qty', 'note'].forEach(k=>{ tr.querySelector(`[data-inv-k="${k}"]`).value = item[k]; });
     tr.classList.toggle('inv-zero', item.qty.trim() === '0');
@@ -3019,7 +3020,7 @@ SOFTWARE.
     const open = !invCollapsed.has(g.id);
     tr.innerHTML = '<td colspan="5"><div class="inv-group-head">' +
       `<button type="button" class="inv-group-toggle" data-grp-act="toggle" aria-expanded="${open}" title="${open ? 'Zuklappen' : 'Aufklappen'}">${open ? '▾' : '▸'}</button>` +
-      (g.id ? '<input data-grp-k="title" placeholder="Gruppenname" aria-label="Gruppenname">' : '<span class="inv-group-title">Ohne Gruppe</span>') +
+      (g.id ? '<input autocomplete="off" data-grp-k="title" placeholder="Gruppenname" aria-label="Gruppenname">' : '<span class="inv-group-title">Ohne Gruppe</span>') +
       `<span class="inv-group-count">${count}</span>` +
       '<span class="inv-group-tools">' +
       '<button type="button" class="mini-btn" data-grp-act="add" title="Gegenstand in diese Gruppe">＋</button>' +
@@ -3369,6 +3370,7 @@ SOFTWARE.
     if(typeof renderFlaum === 'function') renderFlaum();
     if(typeof updateResourceCounts === 'function') updateResourceCounts();
     if(typeof renderWildShape === 'function') renderWildShape();
+    seenState = collectState();
     // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
     // wurde, den Fokus in dasselbe Feld zurücksetzen.
     if(activeKey && document.activeElement !== active){
@@ -3690,7 +3692,31 @@ SOFTWARE.
 
   // Jede Änderung an einem Feld: Datei-Autospeichern (falls verbunden) und
   // zentrales Speichern auf dem Server (falls die Seite von dort kommt).
-  function noteChange(){ updateResourceCounts(); renderWildShape(); renderFlaum(); updateInvSummary(); scheduleAutoSave(); scheduleSync(); }
+  /* Letzter Stand, den der Bogen selbst kennt: nach jeder echten Änderung
+     (noteChange) und nach jedem Übernehmen eines Stands (applyState). Weicht ein
+     Feld davon ab, ohne dass eine Eingabe stattfand, hat es der Browser selbst
+     gesetzt (z. B. alte Werte beim Wiederherstellen eines Tabs) -- solche Werte
+     werden zurückgesetzt und nie gespeichert. */
+  var seenState = null;
+  function dropForeignChanges(){
+    if(!seenState) return 0;
+    let n = 0;
+    document.querySelectorAll('[data-field]').forEach(el=>{
+      const k = el.dataset.field;
+      if(!(k in seenState)) return;
+      if(el.type === 'checkbox'){
+        if(el.checked !== !!seenState[k]){ el.checked = !!seenState[k]; n++; }
+      }else if(el.value !== String(seenState[k])){ el.value = seenState[k]; n++; }
+    });
+    if(n){
+      console.warn('Bogen: ' + n + ' vom Browser geänderte Felder zurückgesetzt (nicht gespeichert).');
+      if(typeof syncNoteEditors === 'function') syncNoteEditors();
+      if(typeof renderInventory === 'function') renderInventory();
+      if(typeof renderFlaum === 'function') renderFlaum();
+    }
+    return n;
+  }
+  function noteChange(){ seenState = collectState(); updateResourceCounts(); renderWildShape(); renderFlaum(); updateInvSummary(); scheduleAutoSave(); scheduleSync(); }
   // "X von Y verfügbar" neben Zauberplätzen und Wilder Gestalt live zählen.
   function updateResourceCounts(){
     document.querySelectorAll('[data-count-prefix]').forEach(el=>{
@@ -3748,6 +3774,7 @@ SOFTWARE.
   // Eingaben zu verlieren. Gibt true zurück, wenn eigene Eingaben übrig
   // sind, die noch zum Server müssen.
   function takeRemote(remote){
+    dropForeignChanges();
     sync.version = remote.version;
     if(!remote.state){
       // Server hat (noch) keinen Stand -- der eigene wird als erster gespeichert.
@@ -3781,6 +3808,7 @@ SOFTWARE.
     if(document.hidden && !force) return;
     sync.busy = true;
     try{
+      dropForeignChanges();
       const local = collectState();
       if(!statesEqual(local, sync.base)){
         const body = JSON.stringify({baseVersion: sync.version, state: local, build: SHEET_BUILD});
@@ -3864,6 +3892,7 @@ SOFTWARE.
   (async function initSync(){
     if(!/^https?:$/.test(location.protocol)) return;
     const defaults = collectState();
+    seenState = Object.assign({}, defaults);
     let remote;
     try{
       const res = await fetch(SYNC_URL, {cache:'no-store'});
