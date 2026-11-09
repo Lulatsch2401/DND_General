@@ -6,7 +6,7 @@
 <!-- Fassungsnummer des Bogens: bei JEDER Änderung an dieser Datei erhöhen.
      Der Server nimmt nur Änderungen von Fenstern mit der aktuellen Fassung an;
      ältere offene Fenster laden sich dann selbst neu. -->
-<meta name="sheet-build" content="2026101218">
+<meta name="sheet-build" content="2026101219">
 <title>Elara Granger – Druide Charakterbogen</title>
 <style>
   :root{
@@ -364,6 +364,9 @@
   body.fantasy-mode .feat-chip{border-color:var(--f-olive); background:#fffdf6;}
   @media print{ .feat-add, .feat-chip button{display:none !important;} }
   @media print{ .lvl-up-btn{display:none !important;} }
+  #spellModal .sb-up{margin-top:10px; padding:7px 10px; border-left:3px solid #b8892f; background:#f6e5c3; border-radius:0 6px 6px 0; font-size:12.5px; line-height:1.55;}
+  #spellModal .sb-up[hidden]{display:none;}
+  #tooltip .tip-up{margin-top:5px; padding-top:5px; border-top:1px solid rgba(255,255,255,.25); font-size:11.5px;}
   #spellModal .sb-hint{margin-top:14px; font-size:10.5px; color:#8a7355; border-top:1px solid var(--sb-border); padding-top:10px;}
 
   /* Beast shape grid (Wild Shape reference) */
@@ -1132,6 +1135,7 @@
     <div class="sb-subtitle" id="spellModalMeta"></div>
     <div class="sb-rule"></div>
     <div class="sb-text" id="spellModalText"></div>
+    <div class="sb-up" id="spellModalUp" hidden></div>
     <div class="sb-hint">Klicke außerhalb oder auf ✕, um zu schließen.</div>
   </div>
 </div>
@@ -1764,6 +1768,52 @@ SOFTWARE.
   // Full click-to-view descriptions: complete translated 5etools text for the
   // spell's effect at Elara's current level, again without scaling text or
   // school/class labeling. "meta" is time · range · components · duration.
+  /* Was ein höherer Zauberplatz bringt (Quelle: 5etools, "At Higher Levels") bzw. wie
+     Zaubertricks mit der Stufe wachsen. Nicht aufgeführte Zauber werden dadurch nicht stärker. */
+  const SPELL_UPCAST = {
+      "Healing Word": "+1W4 Heilung je Grad über dem 1. Mit Platz 2. Grades: 2W4{WIS} TP.",
+      "Ice Knife": "+1W6 Kälteschaden (Explosion) je Grad über dem 1. Mit Platz 2. Grades: 1W10 Stich + 3W6 Kälte.",
+      "Animal Friendship": "+1 Tier je Grad über dem 1. Mit Platz 2. Grades: 2 Tiere.",
+      "Charm Person": "+1 Ziel je Grad über dem 1. (Ziele höchstens 30 ft voneinander entfernt). Mit Platz 2. Grades: 2 Humanoide.",
+      "Create or Destroy Water": "+10 Gallonen Wasser bzw. Würfel +5 ft je Grad über dem 1. Mit Platz 2. Grades: 20 Gallonen bzw. 35-ft-Würfel.",
+      "Cure Wounds": "+1W8 Heilung je Grad über dem 1. Mit Platz 2. Grades: 2W8{WIS} TP.",
+      "Fog Cloud": "Radius +20 ft je Grad über dem 1. Mit Platz 2. Grades: 40-ft-Radius.",
+      "Longstrider": "+1 Ziel je Grad über dem 1. Mit Platz 2. Grades: 2 Kreaturen.",
+      "Thunderwave": "+1W8 Donnerschaden je Grad über dem 1. Mit Platz 2. Grades: 3W8.",
+      "Absorb Elements": "+1W6 Zusatzschaden je Grad über dem 1. Mit Platz 2. Grades: +2W6 beim nächsten Nahkampftreffer.",
+      "Earth Tremor": "+1W6 Wuchtschaden je Grad über dem 1. Mit Platz 2. Grades: 2W6.",
+      "Air Bubble": "+2 Luftkugeln (Ziele) je Grad über dem 2. Mit Platz 3. Grades: 3 Kreaturen.",
+      "Animal Messenger": "Dauer +48 Std. je Grad über dem 2. Mit Platz 3. Grades: 72 Std.",
+      "Dust Devil": "+1W8 Wuchtschaden je Grad über dem 2. Mit Platz 3. Grades: 2W8.",
+      "Enhance Ability": "+1 Ziel je Grad über dem 2. Mit Platz 3. Grades: 2 Kreaturen.",
+      "Flame Blade": "+1W6 Feuerschaden je zwei Grade über dem 2. Mit Platz 4. Grades: 4W6.",
+      "Flaming Sphere": "+1W6 Feuerschaden je Grad über dem 2. Mit Platz 3. Grades: 3W6.",
+      "Healing Spirit": "+1W6 Heilung je Grad über dem 2. Mit Platz 3. Grades: 2W6.",
+      "Heat Metal": "+1W8 Feuerschaden je Grad über dem 2. Mit Platz 3. Grades: 3W8.",
+      "Hold Person": "+1 Humanoide je Grad über dem 2. (höchstens 30 ft voneinander entfernt). Mit Platz 3. Grades: 2 Ziele.",
+      "Moonbeam": "+1W10 gleißender Schaden je Grad über dem 2. Mit Platz 3. Grades: 3W10.",
+      "Summon Beast": "Der Zaubergrad im Statblock steigt mit: RK 11 + Grad, +5 TP je Grad über dem 2., Zerfleischen 1W8 + 4 + Grad, Angriffe = halber Grad. Mit Platz 3. Grades: RK 14, 35 TP (Luft 25), 1W8+7 Stich.",
+      "Wither and Bloom": "+1W6 nekrotischer Schaden und +1 ausgebbarer Trefferwürfel je Grad über dem 2. Mit Platz 3. Grades: 3W6, bis zu 2 Trefferwürfel."
+  };
+  const CANTRIP_SCALE = {"Create Bonfire": {"dice": "1W8", "type": "Feuer"}, "Produce Flame": {"dice": "1W8", "type": "Feuer"}, "Thorn Whip": {"dice": "1W6", "type": "Stich"}, "Poison Spray": {"dice": "1W12", "type": "Gift"}, "Primal Savagery": {"dice": "1W10", "type": "Säure"}, "Frostbite": {"dice": "1W6", "type": "Kälte"}, "Infestation": {"dice": "1W6", "type": "Gift"}, "Thunderclap": {"dice": "1W6", "type": "Donner"}};
+  function upcastText(name){
+    const sp = spells.find(s => s[1] === name);
+    if(!sp) return '';
+    if(sp[0] === 'C'){
+      const c = CANTRIP_SCALE[name];
+      if(!c) return 'Zaubertrick – wird mit der Stufe nicht stärker.';
+      const n = parseInt(c.dice.slice(0, c.dice.indexOf('W')), 10) || 1, d = c.dice.slice(c.dice.indexOf('W'));
+      const lvl = currentLevel();
+      const steps = [[1, 4], [5, 10], [11, 16], [17, 20]];
+      return 'Wächst mit der Stufe (nicht mit dem Platz): ' + steps.map(([a, b], i) => {
+        const t = `${a === 1 ? 'Stufe 1–4' : 'ab Stufe ' + a}: ${n + i}${d}`;
+        return lvl >= a && lvl <= b ? `<strong>${t} (jetzt)</strong>` : t;
+      }).join(' · ') + ` ${c.type}.`;
+    }
+    const t = SPELL_UPCAST[name];
+    const note = sp[0] === '2' && currentLevel() < 5 ? ' <em>(Plätze 3. Grades erst ab Stufe 5)</em>' : '';
+    return t ? fillStats(t) + note : 'Kein Vorteil durch einen höheren Platz.';
+  }
   const SPELL_LONG = {
     "Shillelagh": { meta:"Zaubertrick · Bonusaktion · Berührung · V, S, M · 1 Minute",
       text:"Das Holz eines Knüppels oder Kampfstabs, den du hältst, wird von Naturmagie durchdrungen. Für die Dauer kannst du deine Zauberfähigkeit anstelle von Stärke für Angriffs- und Schadenswürfe von Nahkampfangriffen mit dieser Waffe verwenden, und der Schadenswürfel der Waffe wird zu einem W8. Die Waffe wird außerdem magisch, falls sie es nicht schon ist. Der Zauber endet, wenn du ihn erneut wirkst oder die Waffe loslässt." },
@@ -4360,6 +4410,8 @@ SOFTWARE.
       text = beastShortTip(key);
     } else {
       text = fillStats(SPELL_INFO[key] || '');
+      const up = text ? upcastText(key) : '';
+      if(up) text += `<div class="tip-up">⬆ ${up}</div>`;
     }
     if(!text) return;
     tooltipEl.innerHTML = `<strong>${label}</strong><br>${text}`;
@@ -4390,6 +4442,10 @@ SOFTWARE.
     spellModalTitle.textContent = key;
     spellModalMeta.textContent = entry.meta;
     spellModalText.textContent = fillStats(entry.text);
+    const up = upcastText(key);
+    const upEl = document.getElementById('spellModalUp');
+    upEl.innerHTML = up ? `<strong>${spells.find(s => s[1] === key)[0] === 'C' ? 'Mit höherer Stufe' : 'Mit höherem Zauberplatz'}:</strong> ${up}` : '';
+    upEl.hidden = !up;
     spellModalOverlay.classList.add('show');
   }
   function closeSpellModal(){ spellModalOverlay.classList.remove('show'); }
