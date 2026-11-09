@@ -6,7 +6,7 @@
 <!-- Fassungsnummer des Bogens: bei JEDER Änderung an dieser Datei erhöhen.
      Der Server nimmt nur Änderungen von Fenstern mit der aktuellen Fassung an;
      ältere offene Fenster laden sich dann selbst neu. -->
-<meta name="sheet-build" content="2026101211">
+<meta name="sheet-build" content="2026101218">
 <title>Elara Granger – Druide Charakterbogen</title>
 <style>
   :root{
@@ -296,6 +296,74 @@
   #spellModal .sb-subtitle{font-style:italic; font-size:12.5px; color:#5a4530; margin-top:1px;}
   #spellModal .sb-rule{height:4px; margin:8px 0; background:linear-gradient(to right, var(--sb-ink), #b8892f 60%, transparent); border-radius:2px;}
   #spellModal .sb-text{font-size:13px; line-height:1.65; color:#2a1a10; white-space:pre-line;}
+  /* Stufenaufstieg */
+  #levelUpOverlay{display:none; position:fixed; inset:0; z-index:1000; background:rgba(20,18,12,.5); align-items:center; justify-content:center; padding:20px;}
+  #levelUpOverlay.show{display:flex;}
+  #levelUpModal{
+    --sb-ink:#7a200f; --sb-border:#c9a35c; --sb-surface:#fdf1dc;
+    background:var(--sb-surface); color:#2a1a10; border-radius:6px; box-shadow:0 12px 40px rgba(0,0,0,.45);
+    max-width:640px; width:100%; max-height:90vh; overflow-y:auto; padding:18px 22px 18px;
+    border:1px solid var(--sb-border); font-family:Georgia,"Times New Roman",serif; position:relative;
+  }
+  #luBody{font-size:13.5px; line-height:1.55;}
+  #levelUpModal .modal-close{position:absolute; top:12px; right:12px; width:26px; height:26px; border-radius:50%; border:1px solid var(--sb-border); background:#f4e4c1; color:var(--sb-ink); font-size:14px; line-height:1; cursor:pointer; font-family:inherit;}
+  #levelUpModal .modal-close:hover{background:var(--sb-ink); color:#f4e4c1;}
+  #levelUpModal .sb-name{font-size:20px; font-weight:700; color:var(--sb-ink); padding-right:28px;}
+  #levelUpModal .sb-subtitle{font-style:italic; font-size:12.5px; color:#5a4530; margin-top:1px;}
+  #levelUpModal .sb-rule{height:4px; margin:8px 0 4px; background:linear-gradient(to right, var(--sb-ink), #b8892f 60%, transparent); border-radius:2px;}
+  #levelUpModal h3{font-size:15px; color:var(--sb-ink); border-bottom:1px solid var(--sb-ink); margin:14px 0 6px; padding-bottom:2px;}
+  .lu-p{margin:4px 0 8px;}
+  .lu-list{margin:4px 0 6px; padding-left:20px;} .lu-list li{margin:2px 0;}
+  .lu-hp{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; padding:8px 10px; background:#f6e5c3; border-radius:6px;}
+  .lu-hp input{width:64px; font:inherit; font-size:16px; font-weight:700; text-align:center; padding:4px; border:1px solid var(--sb-border); border-radius:6px; background:#fffaf0; margin-left:4px;}
+  .lu-hp-res{flex:1 1 220px;}
+  .lu-choice{display:grid; gap:6px;}
+  .lu-choice > label{font-weight:700; cursor:pointer;}
+  .lu-sub{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; margin:-2px 0 4px 24px;}
+  .lu-sub[hidden]{display:none;}
+  .lu-feat{display:grid; gap:6px;}
+  .lu-feat-text{font-size:12.5px; color:#5a4530; font-style:italic;}
+  #luBody select, #luBody .lu-inline input{font:inherit; font-size:13px; padding:3px 6px; border:1px solid var(--sb-border); border-radius:5px; background:#fffaf0; color:#2a1a10;}
+  .lu-inline{display:inline-flex; align-items:center; gap:6px; margin:2px 0;}
+  .lu-spellinfo{font-size:12.5px; color:#3d2a1a; margin:2px 0 8px; padding:6px 8px; border-left:3px solid #b8892f; background:#fbefd8;}
+  .lu-diff{width:100%; border-collapse:collapse; font-size:13px;}
+  .lu-diff td{padding:3px 6px; border-bottom:1px solid #e3cfa6; text-transform:none; letter-spacing:0;}
+  .lu-diff tr:hover td{background:transparent;}
+  .lu-diff td:first-child{font-weight:700; color:#5a3b1e;}
+  .lu-note{font-size:11.5px; color:#7d6650; font-style:italic;}
+  .lu-warn{margin:8px 0; padding:7px 10px; border-radius:6px; background:#f6d9cf; color:#7a200f; font-size:12.5px;}
+  .lu-errors{margin:10px 0 0; padding:7px 10px; border-radius:6px; background:#fbe9c9; color:#7a200f; font-size:12.5px;}
+  .lu-actions{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; margin-top:14px; padding-top:12px; border-top:1px solid #e3cfa6;}
+  .lu-btn{font:inherit; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; padding:8px 14px; border-radius:8px; cursor:pointer; border:1px solid #b88a52; background:#fffaf0; color:#7a200f;}
+  .lu-btn:hover:not(:disabled){background:#f3dfb8;}
+  .lu-btn.soft{background:#fdf6e6;}
+  .lu-btn.primary{background:#7a200f; color:#fff; border-color:#7a200f;}
+  .lu-btn.primary:hover:not(:disabled){background:#5a160a;}
+  .lu-btn:disabled{opacity:.5; cursor:not-allowed;}
+  .lu-hint{font-size:11px; color:#8a7355; margin-top:8px; text-align:right;}
+  .lvl-up-btn{margin-left:6px; font:inherit; font-size:12.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;
+    background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.55); white-space:nowrap;}
+  .lvl-up-btn:hover{background:rgba(255,255,255,.3);}
+  body.fantasy-mode .lvl-up-btn{background:rgba(176,145,63,.18); color:#f4d78a; border-color:rgba(176,145,63,.7); border-radius:3px; font-family:Georgia,serif;}
+  .feat-box{margin-top:10px; padding:8px 10px; border-radius:8px; background:var(--accent-soft);}
+  .feat-head{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-ink); margin-bottom:5px;}
+  .feat-head .feat-sub{font-weight:400; text-transform:none; letter-spacing:0; color:var(--text-muted);}
+  .feat-list{display:flex; flex-wrap:wrap; gap:6px; font-size:12.5px; line-height:1.4;}
+  .feat-none{color:var(--text-muted); font-style:italic;}
+  .feat-chip{display:inline-block; max-width:100%; padding:3px 4px 3px 10px; border-radius:14px; background:var(--surface-1); border:1px solid var(--accent); cursor:help;}
+  .feat-chip .feat-detail{color:var(--text-secondary);}
+  .feat-chip .feat-lvl{font-size:10.5px; color:var(--text-muted);}
+  .feat-chip button{margin-left:2px; border:none; background:transparent; color:var(--text-muted); cursor:pointer; font-size:12px; padding:0 3px; border-radius:50%;}
+  .feat-chip button:hover{color:var(--danger); background:#f6d9cf;}
+  .feat-add{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px;}
+  .feat-add select, .feat-add input{font:inherit; font-size:12.5px; padding:4px 6px; border:1px solid var(--border-strong); border-radius:6px; background:var(--surface-1); color:var(--text-primary); max-width:100%;}
+  .feat-add .feat-desc{flex-basis:100%; font-size:11.5px; color:var(--text-secondary); line-height:1.45;}
+  .feat-add .feat-err{flex-basis:100%; font-size:11.5px; color:var(--danger);}
+  body.fantasy-mode .feat-box{background:rgba(109,122,60,.12);}
+  body.fantasy-mode .feat-head{color:var(--f-olive-dark); font-family:Georgia,serif;}
+  body.fantasy-mode .feat-chip{border-color:var(--f-olive); background:#fffdf6;}
+  @media print{ .feat-add, .feat-chip button{display:none !important;} }
+  @media print{ .lvl-up-btn{display:none !important;} }
   #spellModal .sb-hint{margin-top:14px; font-size:10.5px; color:#8a7355; border-top:1px solid var(--sb-border); padding-top:10px;}
 
   /* Beast shape grid (Wild Shape reference) */
@@ -312,6 +380,13 @@
   /* lange Namen (z. B. Riesentausendfüßler) dürfen in der Pille umbrechen statt herauszuragen */
   .beast-pill{min-width:0; flex-wrap:wrap; row-gap:0;}
   .beast-pill .b-de, .beast-pill .b-en{min-width:0; overflow-wrap:break-word;}
+  .beast-pill[hidden]{display:none !important;}
+  /* Berechnete Werte: nur lesen, Rechenweg im Tooltip */
+  input[data-calc]{cursor:help;}
+  input[data-calc]:focus{outline:none; box-shadow:none;}
+  td input[data-calc]:hover, td input[data-calc]:focus{border-color:transparent; background:transparent;}
+  .calc-note{font-size:10.5px; color:var(--text-muted); margin-top:6px;}
+  .beast-pill .b-swim{font-size:10px; font-weight:600; color:#2c6f8f; white-space:nowrap;}
 
   /* Beast stat-block modal: styled like a classic monster manual entry */
   #beastModalOverlay{
@@ -498,8 +573,14 @@
 
   /* ============ Flaum (Eulenbär-Junges) ============ */
   .flaum-head{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
-  .flaum-avatar{flex:none; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; font-size:26px;
-    background:radial-gradient(circle at 35% 30%, #fff7e6, #ead2a8); border:2px solid var(--accent-2);}
+  /* Flaums Bild (eingebettet) */
+  .fl-portrait{background:#1d1610 url("data:image/webp;base64,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") center / cover no-repeat;}
+  .flaum-avatar{flex:none; width:58px; height:58px; border-radius:50%; border:2px solid var(--accent-2); padding:0; cursor:zoom-in;
+    box-shadow:0 2px 6px rgba(0,0,0,.25); transition:transform .15s ease;}
+  .flaum-avatar:hover{transform:scale(1.06);}
+  .wt-flaum-pic{display:inline-block; width:34px; height:34px; border-radius:50%; border:2px solid #b88a52; vertical-align:middle; margin-right:6px;}
+  #beastModal .sb-portrait{float:right; width:96px; height:96px; border-radius:50%; border:2px solid var(--sb-border); margin:0 30px 6px 10px; box-shadow:0 2px 8px rgba(0,0,0,.3);}
+  #beastModal .sb-portrait[hidden]{display:none;}
   .flaum-intro{min-width:0; flex:1;}
   .flaum-sub{font-size:12px; color:var(--text-secondary);}
   .flaum-where{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:4px;}
@@ -516,6 +597,15 @@
   .fl-anchor{margin-top:5px; font-size:11.5px; color:var(--text-secondary); flex-wrap:wrap; gap:4px 6px;}
   .fl-anchor-label{font-weight:700; color:var(--accent-2);}
   .fl-anchor .res-count{font-size:11px;}
+  /* Flaums Anker: das Bronzeamulett als Symbol */
+  .fl-amulet{display:inline-block; width:22px; height:22px; flex:none; vertical-align:middle; border-radius:5px;
+    background:#18140e url("data:image/webp;base64,UklGRm4FAABXRUJQVlA4IGIFAABQGgCdASpIAEgAPlEijkUjoiEUfbVUOAUEswBi3/2pZ18FuAT6w3qL/M28c/Xb1M/sd6yHob9AD/VdQvvKP9/85Cmrfn8h/Ma/5SsTVTb65/qOg/zqfU/sC/rZvtzQjMvcPcMCAWnusDneR75f0b5YpnkJYSTsNp8CyHmbtjajoJ3OVNnEGhvZ7evUz64EptIDdR2fGjIvsc9QGd8zn73gyOTXVje36VWcPe9WWt6pWrrDsDC1Z3ZelS42WEDwNAMrdaG2ClcEukXzbgisMVtyrVNmFI4Xmj2oRAAA/v6QaDUWlf/W/VDyp1wTqwe1k/A4P8IJgmIdCSco7gi+nSd8sk1/6/DFh7KkRQNIvmv6938/yPuzbb/QXX+Sjvn8cGqQ7q4ZVPhEf7huxcv13J74Wsl768j2xvF6/Wc+cjtC1l92+MF3Y7lbMD0Z1toSe2uOM+xp/AiW6MNnFn1E5Zzg/lvNqvrXqm+jhs3/qCKDqIAVnj5AbrmZ791/aq6QB2Rl6dTiEWl3hizW+/Se5DTF2zm5ixL/FZ782BJlK5NojyvgNoUxdHf6C/3+tGB8r4s37yHV2EhR8wDJM7uDzW08LVXi40SEZMluo1w+vvM/IX+rrLW4FN3Mrp+1dOhmrFA2PRg1wngcb3Q0Xky1YLs2xmgOoETda0FUQdOZGf6FPm9E3fmEBLeJp7dK/oPul9wyCL9AnYNoXsOF5ldfWuGu2whlxMAq/+eqwEZqDr5DaWF2qy5WMVaglPfKOluOZKd2RLlhHdZyQ7FNPE2pXXvRvUMU7L+AcFnsuKc6WaTnj+tshWw3UtvgZ/pzbN3x9hQN377e6Pv+3xUS8Sk5XI1WbvcnputbMsWWKAMxXqLeBpheJDia+oI63+2w9HLHXbbMcTJWAUIBnaj+2r8fTEVC1FmsYbJ+GLzYfSdbPU5d8Sf3qBQwzA4gHZskG6ixiMG/TJfYRsdEKB0Oct23UHT4ZFvXLkLE2T0h6lYg6T3uE6ocbIxOg0AeROm4DhbG6w9bM+G7D0F29fryDCydT5WQ3B5N/4mE4BaURyI8K/oS3zyStMEiSvwG+PRdUfVL0lnbXW2mKwLynogYu/bqQgTYNMf5hUqgfKj+eJy6E1GcUPhKBBhMPuxNfambvG/wuwjja9feE8+y71AtYWue+/l2p3ZJEUHiCmZirCZulQCo+mERjH8/CNko1f52gDokJsuh8uPii8yKeEXpGLFl87yyvh+uk8LRQhnem3w9T8Su3aUbOiu3jnyrOvPbxAzHbi4nQeXlMNA0QPyDxpkulSpP5jAPX2HwjDyItXB2PwQvSZHVhJRHg7qL+pmY1BPZu90O+fOVVZVAkaYClwRk9DRPf5Hfa1C4r0nJBKceeH8q3geZ9VO6ZeZ0E5M7Ie1LMaEHJrD62v4a/usU+7bdjNdrdItX/017MC8s//a/rI/OjtE0XALR9N++YRYeuDjTcN0PMIJcHqoAIVi/TxlPwwQUbbTGr345hty0JLGAgFcWLLXEzKR6PmZk5K/ZPxLx1zQ0CXDThUeV45GHsWnu3HdQKPCm81R1d6C5bFFH1uOWfC618HHIVNjNHdqRy+NKawD6/H/VjzyxARsdQpWt0zOckGya/pPdfCxYNBofnX48D3Ja9da0WjGwnP7+Vlj2KrrC15ne5JT3uPyoLJuNEI1f5zcD/8NBjy2eP0I5RLdPDht14jimvsye0BnWIT6WzPrb/K/57SY8JAAfTBT9Sz871W9ikC6SfMbrjNuzDqdGruX0nDN2joFM+DgAjzN5oxN3wwHGOpApnupCD0gy4TmIF7FULCtqvb4OQgnTo8VuAw4A") center / cover no-repeat;
+    box-shadow:0 0 0 1px #b0913f, 0 1px 3px rgba(0,0,0,.35); margin:-3px 6px -3px -2px;}
+  .fl-amulet.sm{width:18px; height:18px; border-radius:4px; margin:-2px 4px -2px 0;}
+  .fl-anchor-btn{display:inline-flex; align-items:center;}
+  .fl-anchor-btn:disabled .fl-amulet{filter:grayscale(.85) opacity(.6);}
+  .fl-anchor-label{display:inline-flex; align-items:center;}
+  #beastModal .sb-entry-name .fl-amulet{margin:-3px 5px -3px 0;}
   .fl-anchor-hint{font-size:10.5px; color:var(--text-muted);}
   .fl-btn.soft.spent, #wildTracker .btn.fl-anchor-btn.spent{border-style:dashed; color:#8a7458;}
   .fl-btn.fl-anchor-btn.urgent, #wildTracker .btn.fl-anchor-btn.urgent{background:#7a200f; color:#fff; border-color:#7a200f; animation:flAnchorPulse 1.4s ease-in-out infinite;}
@@ -546,7 +636,7 @@
   .flaum-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
   .flaum-actions .wt-open-small{margin-top:0;}
   body.fantasy-mode [data-card="flaum"] h2::before{content:"\1F989\A0";}
-  body.fantasy-mode .flaum-avatar{border-color:var(--f-olive); background:radial-gradient(circle at 35% 30%, #fffdf2, #e3dcbc);}
+  body.fantasy-mode .flaum-avatar{border-color:var(--f-olive);}
   body.fantasy-mode .flaum-phase{background:rgba(109,122,60,.1); border:1px solid rgba(109,122,60,.35); border-radius:4px;}
   body.fantasy-mode .fl-phase-title{color:var(--f-olive-dark); font-family:Georgia,serif; letter-spacing:.1em;}
   body.fantasy-mode .fl-anchor-label{color:var(--f-olive-dark);}
@@ -1014,6 +1104,7 @@
     <span style="width:1px; align-self:stretch; background:var(--border); margin:0 2px;"></span>
     <button class="btn rest" id="shortRestBtn" title="Stellt Wilde-Gestalt-Nutzungen wieder her">🌙 Kurze Rast</button>
     <button class="btn rest" id="longRestBtn" title="Stellt TP, Zauberplätze, Wilde-Gestalt-Nutzungen und Todesrettungswürfe wieder her; Trefferwürfel werden anteilig zurückerlangt">🌛 Lange Rast</button>
+    <button class="btn rest" id="levelUpBtn" title="Stufenaufstieg: zeigt, was sich ändert, fragt TP und Auswahl ab">⬆ Aufstieg</button>
     <span style="width:1px; align-self:stretch; background:var(--border); margin:0 2px;"></span>
     <button class="btn secondary" id="connectBtn" title="Nur in Chrome/Edge: verbindet eine Datei, in die ab jetzt automatisch gespeichert wird">🔗 Mit Datei verbinden</button>
     <button class="btn secondary" id="loadBtn">📂 Stand laden</button>
@@ -1025,6 +1116,8 @@
   <!-- Aktive Spielstufe und die gespeicherten Werte aller Stufen (JSON: {"2":{...},"3":{...}}) -->
   <input autocomplete="off" type="hidden" data-field="charLevel" value="2">
   <input autocomplete="off" type="hidden" data-field="levelProfiles" value="">
+  <!-- Talente (je Stufe, JSON-Liste) -->
+  <input autocomplete="off" type="hidden" data-field="levelFeats" value="[]">
   <!-- Aktive Wilde Gestalt: Tier (englischer Schlüssel aus BEAST_DATA, leer = nicht verwandelt) und dessen TP -->
   <input autocomplete="off" type="hidden" data-field="ws_form" value="">
   <input autocomplete="off" type="hidden" data-field="ws_hp" value="">
@@ -1043,9 +1136,17 @@
   </div>
 </div>
 
+<div id="levelUpOverlay">
+  <div id="levelUpModal" role="dialog" aria-modal="true" aria-label="Stufenaufstieg">
+    <button class="modal-close" id="levelUpClose" title="Schließen" aria-label="Schließen">✕</button>
+    <div id="luBody"></div>
+  </div>
+</div>
+
 <div id="beastModalOverlay">
   <div id="beastModal" role="dialog" aria-modal="true" aria-labelledby="sbName">
     <button class="modal-close" id="beastModalClose" title="Schließen" aria-label="Schließen">✕</button>
+    <div class="sb-portrait fl-portrait" id="sbPortrait" hidden></div>
     <div class="sb-name" id="sbName">Bestienname</div>
     <div class="sb-subtitle" id="sbSubtitle"></div>
     <div class="sb-rule"></div>
@@ -1096,6 +1197,7 @@
         <select autocomplete="off" id="levelSelect" title="Jede Stufe behält ihre eigenen Werte (TP, Trefferwürfel, vorbereitete Zauber). So lässt sich Stufe 3 schon vorbereiten, während weiter auf Stufe 2 gespielt wird.">
           <option value="2">Stufe 2</option>
           <option value="3">Stufe 3</option>
+          <option value="4">Stufe 4</option>
         </select>
       </div>
       <div><label>Klasse &amp; Stufe</label><input autocomplete="off" data-field="classLevel" value="Druide 2"></div>
@@ -1181,7 +1283,7 @@
     </div>
     <div class="wt-flaum" data-flaum-box="wt">
       <div class="wt-flaum-head">
-        <span class="wt-flaum-name">🦉 Flaum</span>
+        <span class="wt-flaum-name"><span class="wt-flaum-pic fl-portrait" aria-hidden="true"></span>Flaum</span>
         <span class="fl-chip" data-fl-where></span>
         <span class="fl-chip" data-fl-phase></span>
         <button type="button" class="btn secondary" data-flaum-sheet>📜 Bogen</button>
@@ -1196,7 +1298,7 @@
         <input autocomplete="off" type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
         <button type="button" class="btn wt-dmg" data-flaum-act="dmg">− Schaden</button>
         <button type="button" class="btn wt-heal" data-flaum-act="heal">+ Heilung</button>
-        <button type="button" class="btn secondary fl-anchor-btn" data-flaum-act="anchor">⚓ Notfall-Rückruf</button>
+        <button type="button" class="btn secondary fl-anchor-btn" data-flaum-act="anchor"><span class="fl-amulet" aria-hidden="true"></span>Notfall-Rückruf</button>
       </div>
       <div class="wt-msg fl-msg"></div>
       <div class="wt-flaum-attacks"><strong>Schnabel</strong> +3, 4 (1W6+1) Stich · <strong>Krallen</strong> +3, 3 (1W4+1) Hieb · <span data-fl-fear></span></div>
@@ -1208,36 +1310,37 @@
     <div>
       <div class="card" data-card="abilities">
         <h2>Attribute &amp; Rettungswürfe</h2>
+        <div class="calc-note" style="margin:-6px 0 8px;">Nur die Attributswerte eintragen – Modifikatoren, Rettungswürfe, Fertigkeiten, passive Werte, Initiative, Übungsbonus und Zauberwerte rechnet der Bogen selbst.</div>
 
         <div class="ability ability-str">
           <div class="ability-top"><span class="ability-name">Strength <span class="ability-name-de">(Stärke)</span></span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="str_score" value="8"><span class="ability-mod">-1</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="str_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="str_save_bonus" value="-1"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="str_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="str_save_bonus" value="-1"></div>
         </div>
         <div class="ability ability-dex">
           <div class="ability-top"><span class="ability-name">Dexterity <span class="ability-name-de">(Geschicklichkeit)</span></span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="dex_score" value="13"><span class="ability-mod">+1</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="dex_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="dex_save_bonus" value="+1"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="dex_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="dex_save_bonus" value="+1"></div>
         </div>
         <div class="ability ability-con">
           <div class="ability-top"><span class="ability-name">Constitution <span class="ability-name-de">(Konstitution)</span></span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="con_score" value="15"><span class="ability-mod">+2</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="con_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="con_save_bonus" value="+2"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="con_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="con_save_bonus" value="+2"></div>
         </div>
         <div class="ability ability-int">
           <div class="ability-top"><span class="ability-name">Intelligence <span class="ability-name-de">(Intelligenz)</span></span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="int_score" value="10"><span class="ability-mod">+0</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="int_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="int_save_bonus" value="+2"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="int_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="int_save_bonus" value="+2"></div>
         </div>
         <div class="ability ability-wis">
           <div class="ability-top"><span class="ability-name">Wisdom <span class="ability-name-de">(Weisheit)</span></span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="wis_score" value="17"><span class="ability-mod">+3</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="wis_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="wis_save_bonus" value="+5"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="wis_save_prof" checked> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="wis_save_bonus" value="+5"></div>
         </div>
         <div class="ability ability-cha">
           <div class="ability-top"><span class="ability-name">Charisma</span></div>
           <div class="ability-score-row"><input autocomplete="off" class="score" data-field="cha_score" value="12"><span class="ability-mod">+1</span></div>
-          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="cha_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-field="cha_save_bonus" value="+1"></div>
+          <div class="save-row"><input autocomplete="off" type="checkbox" data-field="cha_save_prof"> Rettungswurf-Übung <input autocomplete="off" class="savebonus" data-calc readonly data-field="cha_save_bonus" value="+1"></div>
         </div>
       </div>
 
@@ -1249,9 +1352,9 @@
       <div class="card" data-card="senses">
         <h2>Sinne</h2>
         <div class="field-grid">
-          <div class="field big"><label>Passive Perception <span class="label-de">(Passive Wahrnehmung)</span></label><input autocomplete="off" data-field="passivePerception" value="15"></div>
-          <div class="field big"><label>Passive Insight <span class="label-de">(Passive Einsicht)</span></label><input autocomplete="off" data-field="passiveInsight" value="13"></div>
-          <div class="field big"><label>Passive Investigation <span class="label-de">(Passive Untersuchung)</span></label><input autocomplete="off" data-field="passiveInvestigation" value="10"></div>
+          <div class="field big"><label>Passive Perception <span class="label-de">(Passive Wahrnehmung)</span></label><input autocomplete="off" data-calc readonly data-field="passivePerception" value="15"></div>
+          <div class="field big"><label>Passive Insight <span class="label-de">(Passive Einsicht)</span></label><input autocomplete="off" data-calc readonly data-field="passiveInsight" value="13"></div>
+          <div class="field big"><label>Passive Investigation <span class="label-de">(Passive Untersuchung)</span></label><input autocomplete="off" data-calc readonly data-field="passiveInvestigation" value="10"></div>
         </div>
         <div class="field" style="margin-top:10px;"><label>Other Senses <span class="label-de">(Weitere Sinne)</span></label><input autocomplete="off" data-field="senses" value="Dunkelsicht 18 m (60 ft.)"></div>
       </div>
@@ -1263,9 +1366,9 @@
         <h2>Kampfwerte</h2>
         <div class="stat-row">
           <div class="stat-tile"><label>Armor Class <span class="label-de">(Rüstungsklasse)</span></label><input autocomplete="off" data-field="ac" value="14"></div>
-          <div class="stat-tile"><label>Initiative</label><input autocomplete="off" data-field="initiative" value="+1"></div>
+          <div class="stat-tile"><label>Initiative</label><input autocomplete="off" data-calc readonly data-field="initiative" value="+1"></div>
           <div class="stat-tile"><label>Speed <span class="label-de">(Tempo)</span></label><input autocomplete="off" data-field="speed" value="35 ft."></div>
-          <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input autocomplete="off" data-field="profBonus" value="+2"></div>
+          <div class="stat-tile"><label>Proficiency <span class="label-de">(Übungsbonus)</span></label><input autocomplete="off" data-calc readonly data-field="profBonus" value="+2"></div>
         </div>
         <div class="stat-row">
           <div class="stat-tile"><label>Max. HP <span class="label-de">(Max. TP)</span></label><input autocomplete="off" data-field="maxHp" value="17"></div>
@@ -1294,8 +1397,8 @@
       <div class="card" data-card="spellcasting">
         <h2>Zauberwirken <span class="tag">WIS</span></h2>
         <div class="stat-row">
-          <div class="stat-tile"><label>Angriffsbonus</label><input autocomplete="off" data-field="spellAtk" value="+5"></div>
-          <div class="stat-tile"><label>Rettungswurf-SG</label><input autocomplete="off" data-field="spellDC" value="13"></div>
+          <div class="stat-tile"><label>Angriffsbonus</label><input autocomplete="off" data-calc readonly data-field="spellAtk" value="+5"></div>
+          <div class="stat-tile"><label>Rettungswurf-SG</label><input autocomplete="off" data-calc readonly data-field="spellDC" value="13"></div>
           <div class="stat-tile" id="cantripsTile" title="Feste Anzahl laut Druidentabelle (2 auf Stufe 1-3), zählt nicht zu den vorbereitbaren Zaubern"><label>Zaubertricks</label><input autocomplete="off" data-field="cantripsKnown" value="2 von 2" readonly></div>
           <div class="stat-tile" id="preparedTile" title="WIS-Mod + Druidenstufe, neu wählbar nach jeder langen Rast"><label>Zauber vorbereitet</label><input autocomplete="off" data-field="spellsPrepared" value="5 von 5" readonly></div>
         </div>
@@ -1308,7 +1411,7 @@
           </div>
           <div class="checkline slot-line" data-min-level="3">
             <span class="slot-lvl">2. Grad</span>
-            <input autocomplete="off" type="checkbox" data-field="slot2_0" checked><input autocomplete="off" type="checkbox" data-field="slot2_1" checked>
+            <input autocomplete="off" type="checkbox" data-field="slot2_0" checked><input autocomplete="off" type="checkbox" data-field="slot2_1" checked><input autocomplete="off" type="checkbox" data-field="slot2_2" data-min-level="4" checked>
             <span class="res-count" data-count-prefix="slot2_">2 von 2 verfügbar</span>
           </div>
         </div>
@@ -1369,7 +1472,7 @@
         </div>
 
         <div class="field" style="margin-top:12px;">
-          <label>Bestienformen – Wilde Gestalt (Stufe <span class="lvl-num">2</span>, Kreis des Mondes) <span class="tag">CR ≤ 1, kein Schwimmen vor Stufe 4, kein Fliegen vor Stufe 8</span></label>
+          <label>Bestienformen – Wilde Gestalt (Stufe <span class="lvl-num">2</span>, Kreis des Mondes) <span class="tag">CR ≤ 1, <span data-max-level="3">kein Schwimmen vor Stufe 4, </span><span data-min-level="4">🌊 Schwimmen erlaubt, </span>kein Fliegen vor Stufe 8</span></label>
           <div class="beast-grid" id="beastGrid"></div>
           <div style="font-size:10.5px; color:var(--text-muted); margin-top:6px;">Name kurz drüberhalten für die Kurzwerte, anklicken für den vollen Bestiarium-Eintrag. Empfehlung: Brown Bear (viele TP, starker Grapple) oder Dire Wolf (Rudeltaktik) für Kämpfe; Panther oder Wolf für Erkundung/Heimlichkeit.</div>
         </div>
@@ -1391,7 +1494,7 @@
       <div class="card" data-card="flaum" id="flaumCard">
         <h2>Flaum <span class="tag">Eulenbär-Junges</span></h2>
         <div class="flaum-head">
-          <div class="flaum-avatar" aria-hidden="true">🦉</div>
+          <button type="button" class="flaum-avatar fl-portrait" data-flaum-sheet title="Flaums ganzer Bogen" aria-label="Flaums ganzer Bogen"></button>
           <div class="flaum-intro">
             <div class="flaum-sub">Kleine Monstrosität · gesinnungslos · HG 1/4 · an Elaras Bronzeamulett gebunden</div>
             <div class="flaum-where">
@@ -1399,7 +1502,7 @@
               <button type="button" class="fl-btn soft" id="flaumWhereBtn"></button>
             </div>
             <div class="checkline fl-anchor" title="Flaums Anker: Notfall-Rückruf in die Zuflucht – 1× pro langer Rast">
-              <span class="fl-anchor-label">⚓ Flaums Anker</span>
+              <span class="fl-anchor-label"><span class="fl-amulet sm" aria-hidden="true"></span>Flaums Anker</span>
               <input autocomplete="off" type="checkbox" data-field="flaum_anchor_0" checked aria-label="Flaums Anker verfügbar">
               <span class="res-count" data-count-prefix="flaum_anchor_">1 von 1 verfügbar</span>
               <span class="fl-anchor-hint">· Notfall-Rückruf, 1× pro langer Rast</span>
@@ -1419,7 +1522,7 @@
             <input autocomplete="off" type="number" class="fl-amount" min="1" step="1" inputmode="numeric" placeholder="Wert" aria-label="Schaden oder Heilung für Flaum">
             <button type="button" class="fl-btn dmg" data-flaum-act="dmg">− Schaden</button>
             <button type="button" class="fl-btn heal" data-flaum-act="heal">+ Heilung</button>
-            <button type="button" class="fl-btn soft fl-anchor-btn" data-flaum-act="anchor">⚓ Notfall-Rückruf</button>
+            <button type="button" class="fl-btn soft fl-anchor-btn" data-flaum-act="anchor"><span class="fl-amulet" aria-hidden="true"></span>Notfall-Rückruf</button>
           </div>
           <div class="fl-msg"></div>
         </div>
@@ -1445,6 +1548,11 @@
           <textarea autocomplete="off" rows="9" data-field="featuresText">WOOD ELF: Dunkelsicht 18m; Scharfe Sinne (Übung Wahrnehmung); Feenabkunft (Vorteil ggü. Bezauberung, immun gg. magischen Schlaf); Trance (4h statt 8h Schlaf); Waffenübung der Elfen (Langschwert, Kurzschwert, Kurzbogen, Langbogen); Leichtfüßigkeit (Tempo 35ft); Maske der Wildnis (verstecken bei leichter Verdeckung).
 
 DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidischer Fokus); Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast, ab Stufe 2 – Details siehe Druidenzirkel); Druidenzirkel: Kreis des Mondes.</textarea>
+        </div>
+        <div class="feat-box" id="featBox">
+          <div class="feat-head">Talente <span class="feat-sub">(gelten für die gewählte Stufe)</span></div>
+          <div class="feat-list" id="featList"></div>
+          <div class="feat-add" id="featAdd"></div>
         </div>
       </div>
 
@@ -1477,7 +1585,7 @@ DRUIDE: Druidisch (Geheimsprache); Zauberwirken (WIS, SG 13, +5 Treffer, druidis
           <textarea autocomplete="off" rows="2" data-field="circle_14">Jederzeit Ich-Verwandlung (Alter Self) wirken, ohne Zauberplatz oder Komponenten.</textarea>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-          Aktuell (Kreis des Mondes, Stufe <span class="lvl-num">2</span>): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).<br>
+          Aktuell (Kreis des Mondes, Stufe <span class="lvl-num">2</span>): Wilde Gestalt in Bestien bis CR 1 (steigt erst auf Stufe 6 auf CR 2) – <span data-max-level="3">aber weiterhin kein Schwimmen (ab Stufe 4) und kein Fliegen (ab Stufe 8).</span><span data-min-level="4">Schwimmen ist jetzt erlaubt, Fliegen erst ab Stufe 8. Dauer bis zu 2 Stunden.</span><br>
           Referenz Grundgestalt ohne Zirkel (zum Vergleich): Stufe 2 → CR 1/4 (kein Fliegen/Schwimmen) · Stufe 4 → CR 1/2 (kein Fliegen) · Stufe 8 → CR 1 (keine Einschränkung).
         </div>
       </div>
@@ -1562,7 +1670,7 @@ SOFTWARE.
   skills.forEach(([nameEn,nameDe,ab,bonus,prof],i)=>{
     const row = document.createElement('div');
     row.className='skill-row';
-    row.innerHTML = `<input autocomplete="off" type="checkbox" data-field="skill_${i}_prof" ${prof?'checked':''}><span class="sname">${nameEn}${nameDe?` <span class="sname-de">(${nameDe})</span>`:''}</span><span class="sability">${ab}</span><input autocomplete="off" class="sbonus" data-field="skill_${i}_bonus" value="${bonus}">`;
+    row.innerHTML = `<input autocomplete="off" type="checkbox" data-field="skill_${i}_prof" ${prof?'checked':''}><span class="sname">${nameEn}${nameDe?` <span class="sname-de">(${nameDe})</span>`:''}</span><span class="sability">${ab}</span><input autocomplete="off" class="sbonus" data-calc readonly data-field="skill_${i}_bonus" value="${bonus}">`;
     skillList.appendChild(row);
   });
 
@@ -1582,46 +1690,46 @@ SOFTWARE.
   // levels/slots) and no spell school/class labeling, per user request.
   // Sourced and cross-checked against the user's local 5etools data.
   const SPELL_INFO = {
-    "Shillelagh": "Bonusaktion, Berührung, 1 Min. Dein Kampfstab oder Knüppel wird zur Zauberwaffe: Angriff und Schaden nutzen deinen Zaubermodifikator (WIS) statt STR, der Schadenswürfel wird zu 1W8, und die Waffe zählt als magisch. <strong>Elara: +5 zum Treffen, 1W8+3 Wucht.</strong>",
-    "Create Bonfire": "Aktion, 60 ft., Konzentration 1 Min. Erschafft ein Feuer in einem 5-ft-Würfel. Kreaturen darin: GES-Rettungswurf oder 1W8 Feuerschaden, erneut am Ende jedes eigenen Zuges darin. <strong>Elara: SG 13.</strong>",
-    "Produce Flame": "Aktion, Selbst (Wurf bis 30 ft.), 10 Min. Flamme in deiner Hand spendet Licht; als Aktion wirfst du sie: <strong>Fernkampf-Zauberangriff (+5)</strong>, Treffer 1W8 Feuerschaden – der Zauber endet dabei.",
-    "Thorn Whip": "Aktion, 30 ft., Nahkampf-Zauberangriff. Treffer: 1W6 Stichschaden; ist das Ziel groß oder kleiner, ziehst du es bis zu 10 ft zu dir heran. <strong>Elara: +5 zum Treffen.</strong>",
-    "Poison Spray": "Aktion, 10 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W12 Giftschaden.",
-    "Primal Savagery": "Aktion, Selbst, Nahkampf-Zauberangriff (5 ft). Treffer: 1W10 Säureschaden. <strong>Elara: +5 zum Treffen.</strong>",
-    "Frostbite": "Aktion, 60 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Kälteschaden und Nachteil beim nächsten Waffenangriff vor Ende des nächsten Zuges.",
+    "Shillelagh": "Bonusaktion, Berührung, 1 Min. Dein Kampfstab oder Knüppel wird zur Zauberwaffe: Angriff und Schaden nutzen deinen Zaubermodifikator (WIS) statt STR, der Schadenswürfel wird zu 1W8, und die Waffe zählt als magisch. <strong>Elara: {ATK} zum Treffen, 1W8{WIS} Wucht.</strong>",
+    "Create Bonfire": "Aktion, 60 ft., Konzentration 1 Min. Erschafft ein Feuer in einem 5-ft-Würfel. Kreaturen darin: GES-Rettungswurf oder 1W8 Feuerschaden, erneut am Ende jedes eigenen Zuges darin. <strong>Elara: SG {DC}.</strong>",
+    "Produce Flame": "Aktion, Selbst (Wurf bis 30 ft.), 10 Min. Flamme in deiner Hand spendet Licht; als Aktion wirfst du sie: <strong>Fernkampf-Zauberangriff ({ATK})</strong>, Treffer 1W8 Feuerschaden – der Zauber endet dabei.",
+    "Thorn Whip": "Aktion, 30 ft., Nahkampf-Zauberangriff. Treffer: 1W6 Stichschaden; ist das Ziel groß oder kleiner, ziehst du es bis zu 10 ft zu dir heran. <strong>Elara: {ATK} zum Treffen.</strong>",
+    "Poison Spray": "Aktion, 10 ft. Ziel: <strong>KON-Rettungswurf (SG {DC})</strong> oder 1W12 Giftschaden.",
+    "Primal Savagery": "Aktion, Selbst, Nahkampf-Zauberangriff (5 ft). Treffer: 1W10 Säureschaden. <strong>Elara: {ATK} zum Treffen.</strong>",
+    "Frostbite": "Aktion, 60 ft. Ziel: <strong>KON-Rettungswurf (SG {DC})</strong> oder 1W6 Kälteschaden und Nachteil beim nächsten Waffenangriff vor Ende des nächsten Zuges.",
     "Control Flames": "Aktion, 60 ft. Manipuliert nichtmagisches Feuer in einem 5-ft-Würfel: ausdehnen, löschen, Helligkeit/Farbe ändern (1 Std.) oder einfache animierte Formen im Feuer erscheinen lassen (1 Std.).",
     "Druidcraft": "Aktion, 30 ft. Kleiner Natureffekt nach Wahl: Wetter der nächsten 24 Std. vorhersagen, eine Blüte/Knospe sofort öffnen, harmlose Sinneseffekte (Blätter, Windhauch, Tiergeräusch, Geruch) erzeugen oder eine Kerze/Fackel/kleines Lagerfeuer entzünden/löschen.",
     "Guidance": "Aktion, Berührung, Konzentration 1 Min. Berührte Kreatur darf einmal vor Ende des Zaubers 1W4 zu einer Fertigkeitsprobe addieren.",
-    "Gust": "Aktion, 30 ft. Effekt nach Wahl: mittelgroße/kleinere Kreatur macht <strong>STR-Rettungswurf (SG 13)</strong> oder wird 5 ft weggestoßen; oder du bewegst ein leichtes, freies Objekt (≤5 lb) bis 10 ft; oder harmloser Windeffekt.",
-    "Infestation": "Aktion, 30 ft. Ziel: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Giftschaden und wird 5 ft in zufällige Richtung bewegt (falls möglich).",
-    "Magic Stone": "Bonusaktion, Berührung, 1 Min. Verzaubert 1-3 Kieselsteine; ein Wurf/Schuss damit (60 ft) ist ein Fernkampf-Zauberangriff, Treffer 1W6+WIS Wuchtschaden. <strong>Elara: +5 zum Treffen, +3 Schaden.</strong>",
+    "Gust": "Aktion, 30 ft. Effekt nach Wahl: mittelgroße/kleinere Kreatur macht <strong>STR-Rettungswurf (SG {DC})</strong> oder wird 5 ft weggestoßen; oder du bewegst ein leichtes, freies Objekt (≤5 lb) bis 10 ft; oder harmloser Windeffekt.",
+    "Infestation": "Aktion, 30 ft. Ziel: <strong>KON-Rettungswurf (SG {DC})</strong> oder 1W6 Giftschaden und wird 5 ft in zufällige Richtung bewegt (falls möglich).",
+    "Magic Stone": "Bonusaktion, Berührung, 1 Min. Verzaubert 1-3 Kieselsteine; ein Wurf/Schuss damit (60 ft) ist ein Fernkampf-Zauberangriff, Treffer 1W6+WIS Wuchtschaden. <strong>Elara: {ATK} zum Treffen, {WIS} Schaden.</strong>",
     "Mending": "Gießzeit 1 Min., Berührung. Repariert einen einzelnen Bruch oder Riss (max. 1 Fuß) an einem berührten Objekt spurlos.",
     "Mold Earth": "Aktion, 30 ft. Manipuliert Erde/Gestein in einem 5-ft-Würfel: bis 5 ft verschieben, Muster/Schrift einprägen (1 Std.) oder Boden zu schwierigem Gelände machen/normalisieren (1 Std.).",
     "Resistance": "Aktion, Berührung, Konzentration 1 Min. Berührte Kreatur darf einmal vor Ende des Zaubers 1W4 zu einem Rettungswurf addieren.",
     "Shape Water": "Aktion, 30 ft. Manipuliert Wasser in einem 5-ft-Würfel: bis 5 ft bewegen/umlenken, zu einfachen animierten Formen formen (1 Std.), Farbe/Trübung ändern (1 Std.) oder einfrieren (kreaturfrei, taut nach 1 Std.).",
-    "Thunderclap": "Aktion, 5 ft um dich. Andere Kreaturen im Bereich: <strong>KON-Rettungswurf (SG 13)</strong> oder 1W6 Donnerschaden. Hörbar bis 100 ft.",
+    "Thunderclap": "Aktion, 5 ft um dich. Andere Kreaturen im Bereich: <strong>KON-Rettungswurf (SG {DC})</strong> oder 1W6 Donnerschaden. Hörbar bis 100 ft.",
     "Detect Magic": "Ritual · Aktion, Konzentration 10 Min., 30-ft-Radius um dich. Du spürst Magie in Reichweite; mit einer Aktion siehst du die Aura an sichtbaren magischen Dingen.",
-    "Entangle": "Aktion, 90 ft., Konzentration 1 Min. Ranken sprießen in einem 20-ft-Quadrat und machen den Boden zu schwierigem Gelände. Kreaturen darin: <strong>STR-Rettungswurf (SG 13)</strong> oder festgehalten, solange sie bleiben; Befreiung durch eigene STR-Probe gegen SG 13.",
-    "Healing Word": "Bonusaktion, 60 ft. Ziel heilt 1W4 + WIS-Mod TP. <strong>Elara: 1W4+3 TP.</strong>",
-    "Ice Knife": "Aktion, 60 ft., Zauberangriff. Trifft: 1W10 Stichschaden, danach GES-Rettungswurf aller Kreaturen in 5 ft um das Ziel oder 2W6 Kälteschaden. <strong>Elara: +5 zum Treffen, SG 13 GES.</strong>",
-    "Animal Friendship": "Aktion, 30 ft., 24 Std. Ein Tier (INT ≤ 3) macht WIS-Rettungswurf oder gilt als bezaubert und greift dich nicht an. <strong>SG 13.</strong>",
-    "Charm Person": "Aktion, 30 ft., 1 Std. Humanoid macht WIS-Rettungswurf (Vorteil für das Ziel im Kampf) oder gilt als bezaubert, hält dich für einen Freund. <strong>SG 13.</strong>",
+    "Entangle": "Aktion, 90 ft., Konzentration 1 Min. Ranken sprießen in einem 20-ft-Quadrat und machen den Boden zu schwierigem Gelände. Kreaturen darin: <strong>STR-Rettungswurf (SG {DC})</strong> oder festgehalten, solange sie bleiben; Befreiung durch eigene STR-Probe gegen SG {DC}.",
+    "Healing Word": "Bonusaktion, 60 ft. Ziel heilt 1W4 + WIS-Mod TP. <strong>Elara: 1W4{WIS} TP.</strong>",
+    "Ice Knife": "Aktion, 60 ft., Zauberangriff. Trifft: 1W10 Stichschaden, danach GES-Rettungswurf aller Kreaturen in 5 ft um das Ziel oder 2W6 Kälteschaden. <strong>Elara: {ATK} zum Treffen, SG {DC} GES.</strong>",
+    "Animal Friendship": "Aktion, 30 ft., 24 Std. Ein Tier (INT ≤ 3) macht WIS-Rettungswurf oder gilt als bezaubert und greift dich nicht an. <strong>SG {DC}.</strong>",
+    "Charm Person": "Aktion, 30 ft., 1 Std. Humanoid macht WIS-Rettungswurf (Vorteil für das Ziel im Kampf) oder gilt als bezaubert, hält dich für einen Freund. <strong>SG {DC}.</strong>",
     "Create or Destroy Water": "Aktion, 30 ft. Erschafft bis 10 Gallonen Wasser (oder Regen in 30-ft-Würfel) oder vernichtet Wasser/Nebel in 30-ft-Würfel.",
-    "Cure Wounds": "Aktion, Berührung. Ziel heilt 1W8 + WIS-Mod TP (nicht bei Untoten/Konstrukten). <strong>Elara: 1W8+3 TP.</strong>",
+    "Cure Wounds": "Aktion, Berührung. Ziel heilt 1W8 + WIS-Mod TP (nicht bei Untoten/Konstrukten). <strong>Elara: 1W8{WIS} TP.</strong>",
     "Detect Poison and Disease": "Ritual · Aktion, Konzentration 10 Min. Du erkennst Gift, giftige Kreaturen und Krankheiten in 30 ft sowie deren Art.",
-    "Faerie Fire": "Aktion, 60 ft., Konzentration 1 Min. Objekte/Kreaturen in 20-ft-Würfel: DEX-Rettungswurf oder leuchten – Angriffe gegen sie haben Vorteil, sie profitieren nicht von Unsichtbarkeit. <strong>SG 13.</strong>",
+    "Faerie Fire": "Aktion, 60 ft., Konzentration 1 Min. Objekte/Kreaturen in 20-ft-Würfel: DEX-Rettungswurf oder leuchten – Angriffe gegen sie haben Vorteil, sie profitieren nicht von Unsichtbarkeit. <strong>SG {DC}.</strong>",
     "Fog Cloud": "Aktion, 120 ft., Konzentration 1 Std. 20-ft-Radius-Kugel dichten Nebels (blockiert auch deine eigene Sicht), bis starker Wind ihn verweht.",
     "Goodberry": "Aktion, Berührung. Erschafft 10 magische Beeren; je 1 TP Heilung beim Essen (eine Aktion) + Sättigung für einen Tag. Verderben nach 24 Std.",
     "Jump": "Aktion, Berührung, 1 Min. Sprungweite der berührten Kreatur verdreifacht sich.",
     "Longstrider": "Aktion, Berührung, 1 Std. Tempo der berührten Kreatur +10 ft.",
     "Purify Food and Drink": "Ritual · Aktion, 10 ft., 5-ft-Kugel. Entfernt Verunreinigung/Gift aus nichtmagischen Speisen/Getränken in Reichweite.",
     "Speak with Animals": "Ritual · Aktion, 10 Min. Du verstehst Tiere und kommunizierst einfach mit ihnen (begrenzt durch deren Intelligenz).",
-    "Thunderwave": "Aktion, 15-ft-Würfel ab dir. Kreaturen darin: <strong>KON-Rettungswurf (SG 13)</strong> oder 2W8 Donnerschaden + 10 ft zurückgestoßen (halb Schaden, kein Stoß bei Erfolg).",
+    "Thunderwave": "Aktion, 15-ft-Würfel ab dir. Kreaturen darin: <strong>KON-Rettungswurf (SG {DC})</strong> oder 2W8 Donnerschaden + 10 ft zurückgestoßen (halb Schaden, kein Stoß bei Erfolg).",
     "Absorb Elements": "Reaktion (bei Säure/Kälte/Feuer/Blitz/Wucht-Schaden). Halbiert diesen Schaden bis zu deinem nächsten Zug; nächster Nahkampftreffer bis Ende des nächsten Zuges fügt +1W6 desselben Typs zu.",
     "Beast Bond": "Aktion, Berührung, Konzentration 10 Min. Telepathische Verbindung zu einem vertrauten Tier – solange Sichtlinie besteht, habt ihr beide Vorteil bei Angriffen gegen Kreaturen in 5 ft des jeweils anderen.",
-    "Earth Tremor": "Aktion, 10-ft-Radius um dich. Andere Kreaturen darin: <strong>DEX-Rettungswurf (SG 13)</strong> oder 1W6 Wuchtschaden + liegend.",
+    "Earth Tremor": "Aktion, 10-ft-Radius um dich. Andere Kreaturen darin: <strong>DEX-Rettungswurf (SG {DC})</strong> oder 1W6 Wuchtschaden + liegend.",
     "Protection from Evil and Good": "Aktion, Berührung, Konzentration 10 Min. Schutz vor bestimmten Kreaturentypen (u.a. Untote, Feen, Elementare, Teufel/Dämonen): keine Bezauberung/Angst/Besessenheit durch sie, ihre Angriffe gegen das Ziel haben Nachteil.",
-    "Snare": "Gießzeit 1 Min., Berührung, 8 Std. Legt eine fast unsichtbare Falle in einem 5-ft-Radius-Kreis (SG 13 Nachforschung zum Entdecken). Eine kleine bis große Kreatur, die den Bereich betritt: <strong>DEX-Rettungswurf (SG 13)</strong> oder wird kopfüber hochgezogen und hängt festgehalten in der Luft, bis sie sich befreit oder der Zauber endet.",
+    "Snare": "Gießzeit 1 Min., Berührung, 8 Std. Legt eine fast unsichtbare Falle in einem 5-ft-Radius-Kreis (SG {DC} Nachforschung zum Entdecken). Eine kleine bis große Kreatur, die den Bereich betritt: <strong>DEX-Rettungswurf (SG {DC})</strong> oder wird kopfüber hochgezogen und hängt festgehalten in der Luft, bis sie sich befreit oder der Zauber endet.",
     "Air Bubble": "Aktion, 60 ft., 24 Std. Eine Kugel frischer Luft um den Kopf einer bereitwilligen Kreatur – sie kann nicht ersticken, z. B. unter Wasser. <em>Quelle: Astral Adventurer's Guide (Spelljammer) – nur mit Zustimmung der Spielleitung.</em>",
     "Animal Messenger": "Ritual · Aktion, 30 ft., 24 Std. Ein winziges Tier überbringt eine Nachricht (max. 25 Wörter) an einen Ort, an dem du schon warst, und an einen beschriebenen Empfänger – fliegend ca. 50 Meilen, sonst ca. 25 Meilen pro Tag.",
     "Augury": "Ritual · Gießzeit 1 Min., Selbst. Omen zu einer Handlung in den nächsten 30 Minuten: Wohl, Weh, Wohl und Weh oder nichts. Ab dem zweiten Wirken vor einer langen Rast kumulativ 25 % Chance auf eine zufällige Antwort. Material: Orakelstäbchen o. Ä. im Wert von mind. 25 GM.",
@@ -1629,28 +1737,28 @@ SOFTWARE.
     "Beast Sense": "Ritual · Aktion, Berührung, Konzentration 1 Std. Du siehst und hörst durch die Sinne eines bereitwilligen Tiers (Wechsel per Aktion) – solange bist du für deine eigene Umgebung blind und taub.",
     "Continual Flame": "Aktion, Berührung, bis gebannt. Fackelhelle Flamme ohne Hitze an einem Objekt – lässt sich abdecken, aber nicht ersticken oder löschen. Material: Rubinstaub für 50 GM (wird verbraucht).",
     "Darkvision": "Aktion, Berührung, 8 Std. Eine bereitwillige Kreatur erhält Dunkelsicht 60 ft. (Elara hat als Waldelfe schon Dunkelsicht – praktisch für Begleiter.)",
-    "Dust Devil": "Aktion, 60 ft., Konzentration 1 Min. Staubteufel in einem 5-ft-Würfel: Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>STR-Rettungswurf (SG 13)</strong> – 1W8 Wucht und 10 ft weggestoßen (Erfolg: halber Schaden, kein Stoß). Bonusaktion: 30 ft bewegen.",
-    "Earthbind": "Aktion, 300 ft., Konzentration 1 Min. Ziel: <strong>STR-Rettungswurf (SG 13)</strong> oder Flugbewegung 0 – fliegende Kreaturen sinken sicher mit 60 ft pro Runde zu Boden.",
+    "Dust Devil": "Aktion, 60 ft., Konzentration 1 Min. Staubteufel in einem 5-ft-Würfel: Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>STR-Rettungswurf (SG {DC})</strong> – 1W8 Wucht und 10 ft weggestoßen (Erfolg: halber Schaden, kein Stoß). Bonusaktion: 30 ft bewegen.",
+    "Earthbind": "Aktion, 300 ft., Konzentration 1 Min. Ziel: <strong>STR-Rettungswurf (SG {DC})</strong> oder Flugbewegung 0 – fliegende Kreaturen sinken sicher mit 60 ft pro Runde zu Boden.",
     "Enhance Ability": "Aktion, Berührung, Konzentration 1 Std. Vorteil auf Proben eines Attributs nach Wahl. Bär: zusätzlich 2W6 temp. TP · Stier: doppelte Traglast · Katze: kein Fallschaden bis 20 ft.",
-    "Enlarge/Reduce": "Aktion, 30 ft., Konzentration 1 Min. Kreatur oder Objekt wird eine Größenkategorie größer (Vorteil auf STR-Proben/-Rettungswürfe, Waffen +1W4 Schaden) oder kleiner (Nachteil, Waffen −1W4). Unwillige Ziele: <strong>CON-Rettungswurf (SG 13)</strong>.",
+    "Enlarge/Reduce": "Aktion, 30 ft., Konzentration 1 Min. Kreatur oder Objekt wird eine Größenkategorie größer (Vorteil auf STR-Proben/-Rettungswürfe, Waffen +1W4 Schaden) oder kleiner (Nachteil, Waffen −1W4). Unwillige Ziele: <strong>CON-Rettungswurf (SG {DC})</strong>.",
     "Find Traps": "Aktion, 120 ft. Du spürst, ob in Sichtlinie absichtlich angelegte Fallen vorhanden sind, und erfährst grob, welche Gefahr von ihnen ausgeht – aber nicht, wo genau sie liegen.",
-    "Flame Blade": "Bonusaktion, Selbst, Konzentration 10 Min. Feurige Klinge in der freien Hand; als Aktion <strong>Nahkampf-Zauberangriff (+5)</strong>, Treffer 3W6 Feuerschaden. Licht 10 ft hell, 10 ft dämmrig.",
-    "Flaming Sphere": "Aktion, 60 ft., Konzentration 1 Min. Feuerkugel (5 ft Durchmesser): Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>DEX-Rettungswurf (SG 13)</strong> – 2W6 Feuer, halb bei Erfolg. Bonusaktion: 30 ft bewegen; rammt sie eine Kreatur, muss diese sofort retten.",
-    "Gust of Wind": "Aktion, Linie 60 × 10 ft ab dir, Konzentration 1 Min. Wer seinen Zug in der Linie beginnt: <strong>STR-Rettungswurf (SG 13)</strong> oder 15 ft weggestoßen. Bewegung auf dich zu kostet doppelt, offene Flammen erlöschen. Bonusaktion: Richtung ändern.",
+    "Flame Blade": "Bonusaktion, Selbst, Konzentration 10 Min. Feurige Klinge in der freien Hand; als Aktion <strong>Nahkampf-Zauberangriff ({ATK})</strong>, Treffer 3W6 Feuerschaden. Licht 10 ft hell, 10 ft dämmrig.",
+    "Flaming Sphere": "Aktion, 60 ft., Konzentration 1 Min. Feuerkugel (5 ft Durchmesser): Wer seinen Zug innerhalb von 5 ft beendet, macht einen <strong>DEX-Rettungswurf (SG {DC})</strong> – 2W6 Feuer, halb bei Erfolg. Bonusaktion: 30 ft bewegen; rammt sie eine Kreatur, muss diese sofort retten.",
+    "Gust of Wind": "Aktion, Linie 60 × 10 ft ab dir, Konzentration 1 Min. Wer seinen Zug in der Linie beginnt: <strong>STR-Rettungswurf (SG {DC})</strong> oder 15 ft weggestoßen. Bewegung auf dich zu kostet doppelt, offene Flammen erlöschen. Bonusaktion: Richtung ändern.",
     "Healing Spirit": "Bonusaktion, 60 ft., Konzentration 1 Min. Naturgeist in einem 5-ft-Würfel: Wer ihn im Zug erstmals betritt oder dort den Zug beginnt, heilt 1W6 TP. <strong>Elara: 4 Heilungen</strong> (1 + WIS-Mod). Bonusaktion: 30 ft bewegen.",
-    "Heat Metal": "Aktion, 60 ft., Konzentration 1 Min. Ein Metallobjekt glüht: Wer es berührt, erleidet 2W8 Feuerschaden – in späteren Zügen erneut per Bonusaktion, ohne Angriffs- oder Rettungswurf. Wer es hält oder trägt: <strong>CON-Rettungswurf (SG 13)</strong> oder fallen lassen, sonst Nachteil auf Angriffe und Proben.",
-    "Hold Person": "Aktion, 60 ft., Konzentration 1 Min. Ein Humanoid: <strong>WIS-Rettungswurf (SG 13)</strong> oder gelähmt; neuer Rettungswurf am Ende jedes seiner Züge. Nahkampftreffer gegen Gelähmte sind kritisch.",
+    "Heat Metal": "Aktion, 60 ft., Konzentration 1 Min. Ein Metallobjekt glüht: Wer es berührt, erleidet 2W8 Feuerschaden – in späteren Zügen erneut per Bonusaktion, ohne Angriffs- oder Rettungswurf. Wer es hält oder trägt: <strong>CON-Rettungswurf (SG {DC})</strong> oder fallen lassen, sonst Nachteil auf Angriffe und Proben.",
+    "Hold Person": "Aktion, 60 ft., Konzentration 1 Min. Ein Humanoid: <strong>WIS-Rettungswurf (SG {DC})</strong> oder gelähmt; neuer Rettungswurf am Ende jedes seiner Züge. Nahkampftreffer gegen Gelähmte sind kritisch.",
     "Lesser Restoration": "Aktion, Berührung. Beendet eine Krankheit oder einen Zustand: blind, taub, gelähmt oder vergiftet.",
     "Locate Animals or Plants": "Ritual · Aktion, Selbst. Nenne eine Tier- oder Pflanzenart: Du erfährst Richtung und Entfernung zum nächsten Exemplar im Umkreis von 5 Meilen.",
     "Locate Object": "Aktion, Selbst, Konzentration 10 Min. Du spürst die Richtung zu einem bekannten Objekt (oder dem nächsten Objekt einer Art) im Umkreis von 1.000 ft. Blei blockiert den Zauber.",
-    "Moonbeam": "Aktion, 120 ft., Konzentration 1 Min. Mondstrahl (Zylinder, 5 ft Radius): Wer ihn im Zug erstmals betritt oder dort beginnt, macht einen <strong>CON-Rettungswurf (SG 13)</strong> – 2W10 gleißender Schaden, halb bei Erfolg. Gestaltwandler haben Nachteil. Aktion: 60 ft bewegen. <strong>Tipp: läuft in der Wilden Gestalt weiter.</strong>",
+    "Moonbeam": "Aktion, 120 ft., Konzentration 1 Min. Mondstrahl (Zylinder, 5 ft Radius): Wer ihn im Zug erstmals betritt oder dort beginnt, macht einen <strong>CON-Rettungswurf (SG {DC})</strong> – 2W10 gleißender Schaden, halb bei Erfolg. Gestaltwandler haben Nachteil. Aktion: 60 ft bewegen. <strong>Tipp: läuft in der Wilden Gestalt weiter.</strong>",
     "Pass without Trace": "Aktion, Selbst, Konzentration 1 Std. Gewählte Kreaturen im Umkreis von 30 ft (inkl. dir): <strong>+10 auf GES (Heimlichkeit)</strong> und keine Spuren – nur magisch verfolgbar.",
     "Protection from Poison": "Aktion, Berührung, 1 Std. Neutralisiert ein Gift; danach Vorteil auf Rettungswürfe gegen Vergiftung und Resistenz gegen Giftschaden.",
     "Skywrite": "Ritual · Aktion, Sichtweite, Konzentration 1 Std. Bis zu zehn Wörter aus Wolken erscheinen am Himmel; starker Wind kann sie früher auflösen.",
-    "Spike Growth": "Aktion, 150 ft., Konzentration 10 Min. Boden im 20-ft-Radius wird schwieriges Gelände voller Dornen: <strong>2W4 Stichschaden je 5 ft Bewegung</strong> darin. Getarnt – wer es beim Wirken nicht sah, braucht eine Wahrnehmungsprobe gegen SG 13.",
-    "Summon Beast": "Aktion, 90 ft., Konzentration 1 Std. Ruft einen Tiergeist (Luft, Land oder Wasser), der direkt nach dir handelt und deinen Befehlen folgt. <strong>Auf Grad 2: RK 13, 20 TP (Luft) bzw. 30 TP (Land/Wasser), Zerfleischen +5, 1W8+6 Stich.</strong> Material: vergoldete Eichel für mind. 200 GM (wird nicht verbraucht).",
+    "Spike Growth": "Aktion, 150 ft., Konzentration 10 Min. Boden im 20-ft-Radius wird schwieriges Gelände voller Dornen: <strong>2W4 Stichschaden je 5 ft Bewegung</strong> darin. Getarnt – wer es beim Wirken nicht sah, braucht eine Wahrnehmungsprobe gegen SG {DC}.",
+    "Summon Beast": "Aktion, 90 ft., Konzentration 1 Std. Ruft einen Tiergeist (Luft, Land oder Wasser), der direkt nach dir handelt und deinen Befehlen folgt. <strong>Auf Grad 2: RK 13, 20 TP (Luft) bzw. 30 TP (Land/Wasser), Zerfleischen {ATK}, 1W8+6 Stich.</strong> Material: vergoldete Eichel für mind. 200 GM (wird nicht verbraucht).",
     "Warding Wind": "Aktion, Selbst (10-ft-Radius), Konzentration 10 Min. Starker Wind um dich: alle darin (auch du) sind taub, kleine Flammen erlöschen, Gas und Nebel werden abgehalten, schwieriges Gelände für andere, Fernkampf-Waffenangriffe durch den Wind haben Nachteil.",
-    "Wither and Bloom": "Aktion, 60 ft. Kugel mit 10 ft Radius: gewählte Kreaturen machen einen <strong>CON-Rettungswurf (SG 13)</strong> – 2W6 nekrotischer Schaden, halb bei Erfolg. Eine Kreatur im Bereich darf einen Trefferwürfel ausgeben und heilt Wurf + 3. <em>Quelle: Strixhaven – nur mit Zustimmung der Spielleitung.</em>",
+    "Wither and Bloom": "Aktion, 60 ft. Kugel mit 10 ft Radius: gewählte Kreaturen machen einen <strong>CON-Rettungswurf (SG {DC})</strong> – 2W6 nekrotischer Schaden, halb bei Erfolg. Eine Kreatur im Bereich darf einen Trefferwürfel ausgeben und heilt Wurf + 3. <em>Quelle: Strixhaven – nur mit Zustimmung der Spielleitung.</em>",
   };
 
   // Full click-to-view descriptions: complete translated 5etools text for the
@@ -1790,7 +1898,7 @@ SOFTWARE.
     "Spike Growth": { meta:"2. Grad · Aktion · 150 Fuß · V, S, M · Konzentration, bis zu 10 Minuten",
       text:"Der Boden in einem Radius von 20 Fuß um einen Punkt in Reichweite verdreht sich und lässt harte Stacheln und Dornen sprießen. Der Bereich wird für die Dauer zu schwierigem Gelände. Wenn sich eine Kreatur in den Bereich hinein oder darin bewegt, erleidet sie für je 5 Fuß zurückgelegter Strecke 2W4 Stichschaden. Die Veränderung des Bodens ist so getarnt, dass sie natürlich aussieht. Jede Kreatur, die den Bereich beim Wirken des Zaubers nicht sehen kann, muss eine Weisheits(Wahrnehmung)-Probe gegen deinen Zauberrettungswurf-SG ablegen, um das Gelände als gefährlich zu erkennen, bevor sie es betritt." },
     "Summon Beast": { meta:"2. Grad · Aktion · 90 Fuß · V, S, M (vergoldete Eichel, mind. 200 GM) · Konzentration, bis zu 1 Stunde",
-      text:"Du rufst einen Tiergeist herbei. Er manifestiert sich in einem unbesetzten Bereich, den du in Reichweite sehen kannst. Diese körperliche Gestalt verwendet die Spielwerte „Tiergeist“ unten. Wähle beim Wirken des Zaubers eine Umgebung: Luft, Land oder Wasser. Die Kreatur ähnelt einem Tier deiner Wahl, das in der gewählten Umgebung heimisch ist; das bestimmt bestimmte Merkmale in ihren Spielwerten. Die Kreatur verschwindet, wenn sie auf 0 Trefferpunkte sinkt oder der Zauber endet. Die Kreatur ist dir und deinen Gefährten verbündet. Im Kampf teilt sie deine Initiative, handelt aber unmittelbar nach dir. Sie gehorcht deinen gesprochenen Befehlen (keine Aktion für dich erforderlich). Gibst du ihr keine, führt sie die Ausweichen-Aktion aus und nutzt ihre Bewegung, um Gefahren aus dem Weg zu gehen. — Tiergeist (Grad 2): kleines Tier. RK 13 (natürliche Rüstung). TP 20 (nur Luft) oder 30 (nur Land und Wasser). Bewegungsrate 30 Fuß; Klettern 30 Fuß (nur Land); Fliegen 60 Fuß (nur Luft); Schwimmen 30 Fuß (nur Wasser). STR 18 (+4), DEX 11 (+0), CON 16 (+3), INT 4 (−3), WIS 14 (+2), CHA 5 (−3). Sinne: Dunkelsicht 60 Fuß, passive Wahrnehmung 12. Sprachen: versteht die Sprachen, die du sprichst. Wasseratmung (nur Wasser): Das Tier kann nur unter Wasser atmen. Vorbeiflug (nur Luft): Das Tier provoziert keine Gelegenheitsangriffe, wenn es aus der Reichweite eines Gegners fliegt. Rudeltaktik (nur Land und Wasser): Das Tier hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Tiers innerhalb von 5 Fuß um die Kreatur ist und nicht kampfunfähig ist. Mehrfachangriff: Das Tier führt so viele Angriffe aus, wie die Hälfte des Zaubergrads ergibt (abgerundet) – auf Grad 2 also einen. Zerfleischen: Nahkampf-Waffenangriff, +5 zum Treffen (dein Zauberangriffsbonus), Reichweite 5 Fuß, ein Ziel. Treffer: 1W8 + 6 Stichschaden." },
+      text:"Du rufst einen Tiergeist herbei. Er manifestiert sich in einem unbesetzten Bereich, den du in Reichweite sehen kannst. Diese körperliche Gestalt verwendet die Spielwerte „Tiergeist“ unten. Wähle beim Wirken des Zaubers eine Umgebung: Luft, Land oder Wasser. Die Kreatur ähnelt einem Tier deiner Wahl, das in der gewählten Umgebung heimisch ist; das bestimmt bestimmte Merkmale in ihren Spielwerten. Die Kreatur verschwindet, wenn sie auf 0 Trefferpunkte sinkt oder der Zauber endet. Die Kreatur ist dir und deinen Gefährten verbündet. Im Kampf teilt sie deine Initiative, handelt aber unmittelbar nach dir. Sie gehorcht deinen gesprochenen Befehlen (keine Aktion für dich erforderlich). Gibst du ihr keine, führt sie die Ausweichen-Aktion aus und nutzt ihre Bewegung, um Gefahren aus dem Weg zu gehen. — Tiergeist (Grad 2): kleines Tier. RK 13 (natürliche Rüstung). TP 20 (nur Luft) oder 30 (nur Land und Wasser). Bewegungsrate 30 Fuß; Klettern 30 Fuß (nur Land); Fliegen 60 Fuß (nur Luft); Schwimmen 30 Fuß (nur Wasser). STR 18 (+4), DEX 11 (+0), CON 16 (+3), INT 4 (−3), WIS 14 (+2), CHA 5 (−3). Sinne: Dunkelsicht 60 Fuß, passive Wahrnehmung 12. Sprachen: versteht die Sprachen, die du sprichst. Wasseratmung (nur Wasser): Das Tier kann nur unter Wasser atmen. Vorbeiflug (nur Luft): Das Tier provoziert keine Gelegenheitsangriffe, wenn es aus der Reichweite eines Gegners fliegt. Rudeltaktik (nur Land und Wasser): Das Tier hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Tiers innerhalb von 5 Fuß um die Kreatur ist und nicht kampfunfähig ist. Mehrfachangriff: Das Tier führt so viele Angriffe aus, wie die Hälfte des Zaubergrads ergibt (abgerundet) – auf Grad 2 also einen. Zerfleischen: Nahkampf-Waffenangriff, {ATK} zum Treffen (dein Zauberangriffsbonus), Reichweite 5 Fuß, ein Ziel. Treffer: 1W8 + 6 Stichschaden." },
     "Warding Wind": { meta:"2. Grad · Aktion · Selbst (10-Fuß-Radius) · V · Konzentration, bis zu 10 Minuten",
       text:"Ein starker Wind (20 Meilen pro Stunde) weht in einem Radius von 10 Fuß um dich herum, bewegt sich mit dir und bleibt auf dich zentriert. Der Wind hält für die Dauer des Zaubers an. Er hat folgende Effekte: Er macht dich und andere Kreaturen in seinem Bereich taub. Er löscht ungeschützte Flammen in seinem Bereich, die höchstens fackelgroß sind. Er hält Dampf, Gas und Nebel ab, die von starkem Wind zerstreut werden können. Der Bereich ist für andere Kreaturen als dich schwieriges Gelände. Angriffswürfe von Fernkampf-Waffenangriffen haben Nachteil, wenn die Angriffe in den Wind hinein oder aus ihm heraus führen." },
     "Wither and Bloom": { meta:"2. Grad · Aktion · 60 Fuß · V, S, M · Sofort",
@@ -1885,24 +1993,24 @@ SOFTWARE.
   // erhalten, solange sich die vorbereitete Auswahl zwischen Speichern und
   // Laden nicht ändert (siehe applyState unten).
   const FAV_DATA = {
-    "Shillelagh": { range:"Selbst", time:"Bonus", save:"--", dmg:"1W8+3 Wucht" },
+    "Shillelagh": { range:"Selbst", time:"Bonus", save:"--", dmg:"1W8{WIS} Wucht" },
     "Produce Flame": { range:"30 ft.", time:"Akt.", save:"--", dmg:"1W8 Feuer" },
     "Entangle": { range:"90 ft.", time:"Akt.", save:"STR", dmg:"-- (festgehalten)" },
-    "Healing Word": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W4+3)" },
+    "Healing Word": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W4{WIS})" },
     "Faerie Fire": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"-- (Vorteil)" },
     "Goodberry": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1)" },
     "Absorb Elements": { range:"Selbst", time:"Reakt.", save:"--", dmg:"-- (Resistenz +1W6)" },
     "Create Bonfire": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"1W8 Feuer" },
-    "Thorn Whip": { range:"30 ft.", time:"Akt.", save:"--", dmg:"1W6 Stich (+5)" },
+    "Thorn Whip": { range:"30 ft.", time:"Akt.", save:"--", dmg:"1W6 Stich ({ATK})" },
     "Poison Spray": { range:"10 ft.", time:"Akt.", save:"CON", dmg:"1W12 Gift" },
-    "Primal Savagery": { range:"Selbst", time:"Akt.", save:"--", dmg:"1W10 Säure (+5)" },
+    "Primal Savagery": { range:"Selbst", time:"Akt.", save:"--", dmg:"1W10 Säure ({ATK})" },
     "Frostbite": { range:"60 ft.", time:"Akt.", save:"CON", dmg:"1W6 Kälte" },
     "Control Flames": { range:"60 ft.", time:"Akt.", save:"--", dmg:"-- (Feuer formen)" },
     "Druidcraft": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Natureffekt)" },
     "Guidance": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (+1W4 Probe)" },
     "Gust": { range:"30 ft.", time:"Akt.", save:"STR", dmg:"-- (5 ft Stoß)" },
     "Infestation": { range:"30 ft.", time:"Akt.", save:"CON", dmg:"1W6 Gift" },
-    "Magic Stone": { range:"Berühr.", time:"Bonus", save:"--", dmg:"1W6+3 Wucht (+5)" },
+    "Magic Stone": { range:"Berühr.", time:"Bonus", save:"--", dmg:"1W6{WIS} Wucht ({ATK})" },
     "Mending": { range:"Berühr.", time:"1 Min.", save:"--", dmg:"-- (reparieren)" },
     "Mold Earth": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Erde formen)" },
     "Resistance": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (+1W4 Rettung)" },
@@ -1913,7 +2021,7 @@ SOFTWARE.
     "Animal Friendship": { range:"30 ft.", time:"Akt.", save:"WIS", dmg:"-- (bezaubert)" },
     "Charm Person": { range:"30 ft.", time:"Akt.", save:"WIS", dmg:"-- (bezaubert)" },
     "Create or Destroy Water": { range:"30 ft.", time:"Akt.", save:"--", dmg:"-- (Wasser)" },
-    "Cure Wounds": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1W8+3)" },
+    "Cure Wounds": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (heilt 1W8{WIS})" },
     "Detect Poison and Disease": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Gift spüren)" },
     "Fog Cloud": { range:"120 ft.", time:"Akt.", save:"--", dmg:"-- (Nebel 20 ft)" },
     "Jump": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Sprung ×3)" },
@@ -1937,7 +2045,7 @@ SOFTWARE.
     "Enhance Ability": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Vorteil Proben)" },
     "Enlarge/Reduce": { range:"30 ft.", time:"Akt.", save:"CON", dmg:"± 1W4 Waffe" },
     "Find Traps": { range:"120 ft.", time:"Akt.", save:"--", dmg:"-- (Fallen spüren)" },
-    "Flame Blade": { range:"Selbst", time:"Bonus", save:"--", dmg:"3W6 Feuer (+5)" },
+    "Flame Blade": { range:"Selbst", time:"Bonus", save:"--", dmg:"3W6 Feuer ({ATK})" },
     "Flaming Sphere": { range:"60 ft.", time:"Akt.", save:"DEX", dmg:"2W6 Feuer" },
     "Gust of Wind": { range:"Linie 60", time:"Akt.", save:"STR", dmg:"-- (15 ft Stoß)" },
     "Healing Spirit": { range:"60 ft.", time:"Bonus", save:"--", dmg:"-- (heilt 1W6, 4×)" },
@@ -1951,7 +2059,7 @@ SOFTWARE.
     "Protection from Poison": { range:"Berühr.", time:"Akt.", save:"--", dmg:"-- (Giftresistenz)" },
     "Skywrite": { range:"Sicht", time:"Akt.", save:"--", dmg:"-- (Himmelsschrift)" },
     "Spike Growth": { range:"150 ft.", time:"Akt.", save:"--", dmg:"2W4 Stich je 5 ft" },
-    "Summon Beast": { range:"90 ft.", time:"Akt.", save:"--", dmg:"1W8+6 Stich (+5)" },
+    "Summon Beast": { range:"90 ft.", time:"Akt.", save:"--", dmg:"1W8+6 Stich ({ATK})" },
     "Warding Wind": { range:"Selbst", time:"Akt.", save:"--", dmg:"-- (Nachteil Fernk.)" },
     "Wither and Bloom": { range:"60 ft.", time:"Akt.", save:"CON", dmg:"2W6 Nekrotisch" },
   };
@@ -1966,7 +2074,7 @@ SOFTWARE.
       const fd = FAV_DATA[name] || {range:"", time:"", save:"--", dmg:"--"};
       const badgeClass = lvlClass(lvl);
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvlTitle(lvl)}">${lvl}</span></td><td><span class="name-tip"><input autocomplete="off" data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input autocomplete="off" data-field="fav_${i}_range" value="${fd.range}"></td><td><input autocomplete="off" data-field="fav_${i}_time" value="${fd.time}"></td><td><input autocomplete="off" data-field="fav_${i}_save" value="${fd.save}"></td><td><input autocomplete="off" data-field="fav_${i}_dmg" value="${fd.dmg}"></td>`;
+      tr.innerHTML = `<td><span class="lvl-badge ${badgeClass}" title="${lvlTitle(lvl)}">${lvl}</span></td><td><span class="name-tip"><input autocomplete="off" data-field="fav_${i}_name" value="${name}"><span class="info-dot" data-tip-key="${name}">ⓘ</span></span></td><td><input autocomplete="off" data-field="fav_${i}_range" value="${fd.range}"></td><td><input autocomplete="off" data-field="fav_${i}_time" value="${fd.time}"></td><td><input autocomplete="off" data-field="fav_${i}_save" value="${fd.save}"></td><td><input autocomplete="off" data-field="fav_${i}_dmg" value="${fillStats(fd.dmg)}"></td>`;
       favSpellTable.appendChild(tr);
     });
   }
@@ -2516,6 +2624,169 @@ SOFTWARE.
         {name:"Kralle", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (1W8+3) Hiebschaden."}
       ]
     },
+    // ---- Ab Stufe 4: Bestien mit Schwimmen (Monster Manual). swim = erst ab Stufe 4,
+    //      waterOnly = atmet nur unter Wasser (an Land nur mit Atem anhalten bzw. gar nicht)
+    "Crab": {
+      de:"Krabbe", size:"Winzige", cr:"0", crxp:"0 (10 EP)", swim:true,
+      ac:"11 (natürliche Rüstung)", hp:"2 (1W4)", speed:"20 ft., schwimmen 20 ft.",
+      str:2, dex:11, con:10, int:1, wis:8, cha:2,
+      skills:"Heimlichkeit +2", senses:"Blindsicht 30 ft., Passive Wahrnehmung 9", languages:"—",
+      traits:[ {name:"Amphibisch", text:"Die Krabbe kann Luft und Wasser atmen."} ],
+      actions:[ {name:"Schere", text:"Nahkampfwaffenangriff: +0 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Wuchtschaden."} ]
+    },
+    "Frog": {
+      de:"Frosch", size:"Winzige", cr:"0", crxp:"0 (0 EP)", swim:true,
+      ac:"11", hp:"1 (1W4-1)", speed:"20 ft., schwimmen 20 ft.",
+      str:1, dex:13, con:8, int:1, wis:8, cha:3,
+      skills:"Wahrnehmung +1, Heimlichkeit +3", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Amphibisch", text:"Der Frosch kann Luft und Wasser atmen."},
+        {name:"Sprung aus dem Stand", text:"Der Frosch springt bis zu 10 Fuß weit und 5 Fuß hoch, mit oder ohne Anlauf."}
+      ],
+      actions:[ {name:"Keine Angriffe", text:"Der Frosch hat keine nennenswerten Angriffe – gut zum Erkunden und Verstecken."} ]
+    },
+    "Octopus": {
+      de:"Oktopus", size:"Kleine", cr:"0", crxp:"0 (10 EP)", swim:true,
+      ac:"12", hp:"3 (1W6)", speed:"5 ft., schwimmen 30 ft.",
+      str:4, dex:15, con:11, int:3, wis:10, cha:4,
+      skills:"Wahrnehmung +2, Heimlichkeit +4", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 12", languages:"—",
+      traits:[
+        {name:"Atem anhalten", text:"Außerhalb des Wassers kann der Oktopus 30 Minuten lang die Luft anhalten."},
+        {name:"Unterwasser-Tarnung", text:"Der Oktopus hat Vorteil bei Geschicklichkeit (Heimlichkeit)-Proben unter Wasser."},
+        {name:"Wasseratmung", text:"Der Oktopus kann nur unter Wasser atmen."}
+      ],
+      actions:[
+        {name:"Tentakel", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Wuchtschaden, und das Ziel ist gepackt (Entkommen SG 10). Solange es gepackt ist, kann der Oktopus seine Tentakel nicht gegen ein anderes Ziel einsetzen."},
+        {name:"Tintenwolke (lädt nach kurzer oder langer Rast)", text:"Unter Wasser breitet sich eine Tintenwolke mit 5 Fuß Radius um den Oktopus aus. Der Bereich ist 1 Minute lang komplett verdeckt (eine starke Strömung verteilt die Tinte). Danach kann der Oktopus als Bonusaktion die Spurt-Aktion ausführen."}
+      ]
+    },
+    "Quipper": {
+      de:"Quipper (Raubfisch)", size:"Winzige", cr:"0", crxp:"0 (10 EP)", swim:true, waterOnly:true,
+      ac:"13", hp:"1 (1W4-1)", speed:"0 ft., schwimmen 40 ft.",
+      str:2, dex:16, con:9, int:1, wis:7, cha:2,
+      skills:"—", senses:"Dunkelsicht 60 ft., Passive Wahrnehmung 8", languages:"—",
+      traits:[
+        {name:"Blutrausch", text:"Der Quipper hat Vorteil bei Nahkampfangriffen gegen jede Kreatur, die nicht alle ihre Trefferpunkte hat."},
+        {name:"Wasseratmung", text:"Der Quipper kann nur unter Wasser atmen."}
+      ],
+      actions:[ {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Stichschaden."} ]
+    },
+    "Sea Horse": {
+      de:"Seepferdchen", size:"Winzige", cr:"0", crxp:"0 (0 EP)", swim:true, waterOnly:true,
+      ac:"11", hp:"1 (1W4-1)", speed:"0 ft., schwimmen 20 ft.",
+      str:1, dex:12, con:8, int:1, wis:10, cha:2,
+      skills:"—", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[ {name:"Wasseratmung", text:"Das Seepferdchen kann nur unter Wasser atmen."} ],
+      actions:[ {name:"Keine Angriffe", text:"Das Seepferdchen hat keine Angriffe – unauffällig unter Wasser unterwegs."} ]
+    },
+    "Giant Crab": {
+      de:"Riesenkrabbe", size:"Mittelgroße", cr:"1/8", crxp:"1/8 (25 EP)", swim:true,
+      ac:"15 (natürliche Rüstung)", hp:"13 (3W8)", speed:"30 ft., schwimmen 30 ft.",
+      str:13, dex:15, con:11, int:1, wis:9, cha:3,
+      skills:"Heimlichkeit +4", senses:"Blindsicht 30 ft., Passive Wahrnehmung 9", languages:"—",
+      traits:[ {name:"Amphibisch", text:"Die Krabbe kann Luft und Wasser atmen."} ],
+      actions:[ {name:"Schere", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Wuchtschaden, und das Ziel ist gepackt (Entkommen SG 11). Die Krabbe hat zwei Scheren, jede kann ein Ziel gepackt halten."} ]
+    },
+    "Poisonous Snake": {
+      de:"Giftschlange", size:"Winzige", cr:"1/8", crxp:"1/8 (25 EP)", swim:true,
+      ac:"13", hp:"2 (1W4)", speed:"30 ft., schwimmen 30 ft.",
+      str:2, dex:16, con:11, int:1, wis:10, cha:3,
+      skills:"—", senses:"Blindsicht 10 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[],
+      actions:[ {name:"Biss", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 1 Stichschaden, und das Ziel muss einen Konstitutionsrettungswurf (SG 10) ablegen: bei Fehlschlag 5 (2W4) Giftschaden, bei Erfolg die Hälfte."} ]
+    },
+    "Constrictor Snake": {
+      de:"Würgeschlange", size:"Große", cr:"1/4", crxp:"1/4 (50 EP)", swim:true,
+      ac:"12", hp:"13 (2W10+2)", speed:"30 ft., schwimmen 30 ft.",
+      str:15, dex:14, con:12, int:1, wis:10, cha:3,
+      skills:"—", senses:"Blindsicht 10 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 5 (1W6+2) Stichschaden."},
+        {name:"Würgen", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 6 (1W8+2) Wuchtschaden, und das Ziel ist gepackt (Entkommen SG 14). Solange es gepackt ist, ist es festgesetzt, und die Schlange kann kein anderes Ziel würgen."}
+      ]
+    },
+    "Giant Frog": {
+      de:"Riesenfrosch", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)", swim:true,
+      ac:"11", hp:"18 (4W8)", speed:"30 ft., schwimmen 30 ft.",
+      str:12, dex:13, con:11, int:2, wis:10, cha:3,
+      skills:"Wahrnehmung +2, Heimlichkeit +3", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 12", languages:"—",
+      traits:[
+        {name:"Amphibisch", text:"Der Frosch kann Luft und Wasser atmen."},
+        {name:"Sprung aus dem Stand", text:"Der Frosch springt bis zu 20 Fuß weit und 10 Fuß hoch, mit oder ohne Anlauf."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Stichschaden, und das Ziel ist gepackt (Entkommen SG 11). Solange es gepackt ist, ist es festgesetzt, und der Frosch kann kein anderes Ziel beißen."},
+        {name:"Verschlingen", text:"Der Frosch macht einen Bissangriff gegen ein kleines oder kleineres Ziel, das er gepackt hält. Bei einem Treffer ist das Ziel verschlungen und nicht mehr gepackt: Es ist blind und festgesetzt, hat vollständige Deckung gegen alles außerhalb des Froschs und erleidet zu Beginn jedes Zuges des Froschs 5 (2W4) Säureschaden. Nur ein Ziel gleichzeitig. Stirbt der Frosch, kann das Ziel mit 5 Fuß Bewegung herauskriechen und liegt dann am Boden."}
+      ]
+    },
+    "Giant Poisonous Snake": {
+      de:"Riesengiftschlange", size:"Mittelgroße", cr:"1/4", crxp:"1/4 (50 EP)", swim:true,
+      ac:"14", hp:"11 (2W8+2)", speed:"30 ft., schwimmen 30 ft.",
+      str:10, dex:18, con:13, int:2, wis:10, cha:3,
+      skills:"Wahrnehmung +2", senses:"Blindsicht 10 ft., Passive Wahrnehmung 12", languages:"—",
+      traits:[],
+      actions:[ {name:"Biss", text:"Nahkampfwaffenangriff: +6 zum Treffen, Reichweite 10 Fuß, ein Ziel. Treffer: 6 (1W4+4) Stichschaden, und das Ziel muss einen Konstitutionsrettungswurf (SG 11) ablegen: bei Fehlschlag 10 (3W6) Giftschaden, bei Erfolg die Hälfte."} ]
+    },
+    "Crocodile": {
+      de:"Krokodil", size:"Große", cr:"1/2", crxp:"1/2 (100 EP)", swim:true,
+      ac:"12 (natürliche Rüstung)", hp:"19 (3W10+3)", speed:"20 ft., schwimmen 30 ft.",
+      str:15, dex:10, con:13, int:2, wis:10, cha:5,
+      skills:"Heimlichkeit +2", senses:"Passive Wahrnehmung 10", languages:"—",
+      traits:[ {name:"Atem anhalten", text:"Das Krokodil kann 15 Minuten lang die Luft anhalten."} ],
+      actions:[ {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, eine Kreatur. Treffer: 7 (1W10+2) Stichschaden, und das Ziel ist gepackt (Entkommen SG 12). Solange es gepackt ist, ist es festgesetzt, und das Krokodil kann kein anderes Ziel beißen."} ]
+    },
+    "Giant Sea Horse": {
+      de:"Riesenseepferdchen", size:"Große", cr:"1/2", crxp:"1/2 (100 EP)", swim:true, waterOnly:true,
+      ac:"13 (natürliche Rüstung)", hp:"16 (3W10)", speed:"0 ft., schwimmen 40 ft.",
+      str:12, dex:15, con:11, int:2, wis:12, cha:5,
+      skills:"—", senses:"Passive Wahrnehmung 11", languages:"—",
+      traits:[
+        {name:"Sturmangriff", text:"Bewegt sich das Seepferdchen mindestens 20 Fuß geradlinig auf ein Ziel zu und trifft es im selben Zug mit Rammen, erleidet das Ziel zusätzlich 7 (2W6) Wuchtschaden. Eine Kreatur muss außerdem einen Stärkerettungswurf (SG 11) schaffen, sonst liegt sie am Boden."},
+        {name:"Wasseratmung", text:"Das Seepferdchen kann nur unter Wasser atmen."}
+      ],
+      actions:[ {name:"Rammen", text:"Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Wuchtschaden."} ]
+    },
+    "Reef Shark": {
+      de:"Riffhai", size:"Mittelgroße", cr:"1/2", crxp:"1/2 (100 EP)", swim:true, waterOnly:true,
+      ac:"12 (natürliche Rüstung)", hp:"22 (4W8+4)", speed:"0 ft., schwimmen 40 ft.",
+      str:14, dex:13, con:13, int:1, wis:10, cha:4,
+      skills:"Wahrnehmung +2", senses:"Blindsicht 30 ft., Passive Wahrnehmung 12", languages:"—",
+      traits:[
+        {name:"Rudeltaktik", text:"Der Hai hat Vorteil bei einem Angriffswurf gegen eine Kreatur, wenn mindestens ein Verbündeter des Hais sich innerhalb von 5 Fuß der Kreatur befindet und nicht kampfunfähig ist."},
+        {name:"Wasseratmung", text:"Der Hai kann nur unter Wasser atmen."}
+      ],
+      actions:[ {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 6 (1W8+2) Stichschaden."} ]
+    },
+    "Giant Octopus": {
+      de:"Riesenoktopus", size:"Große", cr:"1", crxp:"1 (200 EP)", swim:true,
+      ac:"11", hp:"52 (8W10+8)", speed:"10 ft., schwimmen 60 ft.",
+      str:17, dex:13, con:13, int:4, wis:10, cha:4,
+      skills:"Wahrnehmung +4, Heimlichkeit +5", senses:"Dunkelsicht 60 ft., Passive Wahrnehmung 14", languages:"—",
+      traits:[
+        {name:"Atem anhalten", text:"Außerhalb des Wassers kann der Oktopus 1 Stunde lang die Luft anhalten."},
+        {name:"Unterwasser-Tarnung", text:"Der Oktopus hat Vorteil bei Geschicklichkeit (Heimlichkeit)-Proben unter Wasser."},
+        {name:"Wasseratmung", text:"Der Oktopus kann nur unter Wasser atmen."}
+      ],
+      actions:[
+        {name:"Tentakel", text:"Nahkampfwaffenangriff: +5 zum Treffen, Reichweite 15 Fuß, ein Ziel. Treffer: 10 (2W6+3) Wuchtschaden. Eine Kreatur ist außerdem gepackt (Entkommen SG 16); solange sie gepackt ist, ist sie festgesetzt, und der Oktopus kann seine Tentakel nicht gegen ein anderes Ziel einsetzen."},
+        {name:"Tintenwolke (lädt nach kurzer oder langer Rast)", text:"Unter Wasser breitet sich eine Tintenwolke mit 20 Fuß Radius um den Oktopus aus. Der Bereich ist 1 Minute lang komplett verdeckt (eine starke Strömung verteilt die Tinte). Danach kann der Oktopus als Bonusaktion die Spurt-Aktion ausführen."}
+      ]
+    },
+    "Giant Toad": {
+      de:"Riesenkröte", size:"Große", cr:"1", crxp:"1 (200 EP)", swim:true,
+      ac:"11", hp:"39 (6W10+6)", speed:"20 ft., schwimmen 40 ft.",
+      str:15, dex:13, con:13, int:2, wis:10, cha:3,
+      skills:"—", senses:"Dunkelsicht 30 ft., Passive Wahrnehmung 10", languages:"—",
+      traits:[
+        {name:"Amphibisch", text:"Die Kröte kann Luft und Wasser atmen."},
+        {name:"Sprung aus dem Stand", text:"Die Kröte springt bis zu 20 Fuß weit und 10 Fuß hoch, mit oder ohne Anlauf."}
+      ],
+      actions:[
+        {name:"Biss", text:"Nahkampfwaffenangriff: +4 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 7 (1W10+2) Stichschaden plus 5 (1W10) Giftschaden, und das Ziel ist gepackt (Entkommen SG 13). Solange es gepackt ist, ist es festgesetzt, und die Kröte kann kein anderes Ziel beißen."},
+        {name:"Verschlingen", text:"Die Kröte macht einen Bissangriff gegen ein mittelgroßes oder kleineres Ziel, das sie gepackt hält. Bei einem Treffer ist das Ziel verschlungen und nicht mehr gepackt: Es ist blind und festgesetzt, hat vollständige Deckung gegen alles außerhalb der Kröte und erleidet zu Beginn jedes Zuges der Kröte 10 (3W6) Säureschaden. Nur ein Ziel gleichzeitig. Stirbt die Kröte, kann das Ziel mit 5 Fuß Bewegung herauskriechen und liegt dann am Boden."}
+      ]
+    },
   };
 
   const BEAST_ORDER = ["0", "1/8", "1/4", "1/2", "1"];
@@ -2526,6 +2797,11 @@ SOFTWARE.
     "1/2": ["Ape", "Black Bear", "Giant Goat", "Warhorse"],
     "1": ["Brown Bear", "Dire Wolf", "Giant Hyena", "Giant Spider", "Lion", "Tiger"],
   };
+  // Schwimmende Bestien: erst ab Stufe 4 sichtbar (am Ende ihrer CR-Gruppe)
+  ["0", "1/8", "1/4", "1/2", "1"].forEach(cr=>{
+    Object.keys(BEAST_DATA).filter(en => BEAST_DATA[en].swim && BEAST_DATA[en].cr === cr).forEach(en => BEAST_BY_CR[cr].push(en));
+  });
+  function swimBadge(b){ return b.swim ? `<span class="b-swim" title="${b.waterOnly ? 'Schwimmt – atmet nur unter Wasser' : 'Schwimmt (ab Stufe 4)'}">${b.waterOnly ? '🌊 nur Wasser' : '🌊'}</span>` : ''; }
 
   const CR_LABEL = {"0":"CR 0", "1/8":"CR 1/8", "1/4":"CR 1/4", "1/2":"CR 1/2", "1":"CR 1"};
   const beastGrid = document.getElementById('beastGrid');
@@ -2540,10 +2816,110 @@ SOFTWARE.
       pill.className = 'beast-pill has-tip';
       pill.dataset.tipKey = en;
       pill.dataset.tipKind = 'beast';
-      pill.innerHTML = `<span class="b-de">${b.de}</span><span class="b-en">(${en})</span>`;
+      pill.innerHTML = `<span class="b-de">${b.de}</span><span class="b-en">(${en})</span>${swimBadge(b)}`;
+      if(b.swim) pill.dataset.minLevel = '4';
       beastGrid.appendChild(pill);
     });
   });
+
+  /* ============ Berechnete Werte ============
+     Aus den Attributswerten und der Stufe: Modifikatoren, Übungsbonus,
+     Rettungswürfe, Fertigkeiten, passive Werte, Initiative, Zauberangriff und
+     Zauber-SG, Standardwaffen sowie die Zahlen in Zaubertexten und Lieblingszaubern. */
+  var ABIL = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+  var ABIL_DE = { str:'STÄ', dex:'GES', con:'KON', int:'INT', wis:'WEI', cha:'CHA' };
+  function scoreOf(k){ const v = parseInt((wsEl(k + '_score') || {}).value, 10); return isNaN(v) ? 10 : v; }
+  function profOfLevel(l){ return 2 + Math.floor((Math.max(1, l) - 1) / 4); }
+  function calcStats(){
+    const pb = profOfLevel(currentLevel());
+    const mod = {}; ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(k => { mod[k] = modOf(scoreOf(k)); });   // Literal: wird schon vor diesem Abschnitt gebraucht
+    return { pb, mod, atk: pb + mod.wis, dc: 8 + pb + mod.wis };
+  }
+  function fillStats(text, st){
+    if(!text) return text;
+    st = st || calcStats();
+    return String(text).replace(/\{ATK\}/g, fmtBonus(st.atk)).replace(/\{DC\}/g, String(st.dc)).replace(/\{WIS\}/g, fmtBonus(st.mod.wis));
+  }
+  // Passt ein gespeicherter Text noch zur Vorlage (nur die Zahlen anders)? Dann ist er
+  // automatisch entstanden und darf neu berechnet werden; eigene Texte bleiben stehen.
+  function templateRegex(tpl){
+    const esc = tpl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      .replace(/\\\{ATK\\\}|\\\{WIS\\\}/g, '[+−-]\\d+').replace(/\\\{DC\\\}/g, '\\d+');
+    return new RegExp('^' + esc + '$');
+  }
+  function setCalc(el, value, why){
+    if(!el) return;
+    if(el.value !== value) el.value = value;
+    if(why !== undefined && el.title !== why) el.title = why;
+  }
+  var CALC_WEAPONS = {
+    'Quarterstaff': { ab:['str'], dice:'1d6', type:'Wucht' },
+    'Scimitar': { ab:['str', 'dex'], dice:'1d6', type:'Hieb' },             // Finesse: besserer Wert
+    'Unbewaffneter Schlag': { ab:['str'], dice:'', type:'Wucht' }            // 1 + STÄ
+  };
+  function recalcStats(){
+    if(!wsEl('wis_score')) return;
+    const st = calcStats(), pb = st.pb, m = st.mod;
+    // Attribute & Rettungswürfe
+    document.querySelectorAll('.ability').forEach(box=>{
+      const k = ABIL.find(a => box.classList.contains('ability-' + a));
+      if(!k) return;
+      const span = box.querySelector('.ability-mod');
+      if(span && span.textContent !== fmtBonus(m[k])) span.textContent = fmtBonus(m[k]);
+      const prof = wsEl(k + '_save_prof').checked;
+      setCalc(wsEl(k + '_save_bonus'), fmtBonus(m[k] + (prof ? pb : 0)),
+        `Berechnet: ${ABIL_DE[k]}-Mod ${fmtBonus(m[k])}${prof ? ` + Übung ${fmtBonus(pb)}` : ''}`);
+    });
+    // Fertigkeiten
+    const skillVal = [];
+    skills.forEach(([en, de, ab], i)=>{
+      const k = ab.toLowerCase(), prof = wsEl(`skill_${i}_prof`).checked;
+      skillVal[i] = m[k] + (prof ? pb : 0);
+      setCalc(wsEl(`skill_${i}_bonus`), fmtBonus(skillVal[i]),
+        `Berechnet: ${ABIL_DE[k]}-Mod ${fmtBonus(m[k])}${prof ? ` + Übung ${fmtBonus(pb)}` : ''}`);
+    });
+    const idx = name => skills.findIndex(s => s[0] === name);
+    [['passivePerception', 'Perception', 'Wahrnehmung'], ['passiveInsight', 'Insight', 'Einsicht'], ['passiveInvestigation', 'Investigation', 'Nachforschung']]
+      .forEach(([f, en, de]) => {
+        const extra = f !== 'passiveInsight' ? featBonus('passive') : 0;
+        setCalc(wsEl(f), String(10 + skillVal[idx(en)] + extra), `Berechnet: 10 + ${de} ${fmtBonus(skillVal[idx(en)])}${extra ? ` + Talent ${fmtBonus(extra)}` : ''}`);
+      });
+    const initX = featBonus('init');
+    setCalc(wsEl('initiative'), fmtBonus(m.dex + initX), `Berechnet: GES-Mod ${fmtBonus(m.dex)}${initX ? ` + Talent ${fmtBonus(initX)}` : ''}`);
+    renderFeatList();
+    if(typeof featForm !== 'undefined' && featForm && !document.getElementById('featAdd').contains(document.activeElement)) renderFeatAdd();
+    setCalc(wsEl('profBonus'), fmtBonus(pb), `Berechnet aus der Stufe (${currentLevel()}): +2 bis Stufe 4, +3 ab Stufe 5`);
+    setCalc(wsEl('spellAtk'), fmtBonus(st.atk), `Berechnet: Übung ${fmtBonus(pb)} + WEI-Mod ${fmtBonus(m.wis)}`);
+    setCalc(wsEl('spellDC'), String(st.dc), `Berechnet: 8 + Übung ${fmtBonus(pb)} + WEI-Mod ${fmtBonus(m.wis)}`);
+    // Standardwaffen (bei eigenem Namen bleibt die Zeile frei editierbar)
+    for(let i = 0; wsEl(`weapon_${i}_name`); i++){
+      const w = CALC_WEAPONS[wsEl(`weapon_${i}_name`).value.trim()];
+      const atkEl = wsEl(`weapon_${i}_atk`), dmgEl = wsEl(`weapon_${i}_dmg`);
+      if(!w){
+        [atkEl, dmgEl].forEach(el => { if(el.hasAttribute('data-calc')){ el.removeAttribute('data-calc'); el.readOnly = false; el.title = ''; } });
+        continue;
+      }
+      const best = w.ab.reduce((a, k) => m[k] > m[a] ? k : a, w.ab[0]);
+      [atkEl, dmgEl].forEach(el => { el.setAttribute('data-calc', ''); el.readOnly = true; });
+      setCalc(atkEl, fmtBonus(pb + m[best]), `Berechnet: ${ABIL_DE[best]}-Mod ${fmtBonus(m[best])} + Übung ${fmtBonus(pb)} – für eigene Werte die Waffe umbenennen`);
+      setCalc(dmgEl, w.dice ? `${w.dice}${m[best] ? fmtBonus(m[best]) : ''} ${w.type}` : `${Math.max(0, 1 + m[best])} ${w.type}`,
+        `Berechnet mit ${ABIL_DE[best]}-Mod ${fmtBonus(m[best])} – für eigene Werte die Waffe umbenennen`);
+    }
+    // Lieblingszauber: Schaden/Heilung neu rechnen, solange der Text noch der Vorlage entspricht
+    document.querySelectorAll('#favSpellTable tr').forEach(tr=>{
+      const nameEl = tr.querySelector('[data-field$="_name"]'), dmgEl = tr.querySelector('[data-field$="_dmg"]');
+      const fd = nameEl && FAV_DATA[nameEl.value];
+      if(!fd || !dmgEl || !/\{(ATK|WIS|DC)\}/.test(fd.dmg)) return;
+      if(templateRegex(fd.dmg).test(dmgEl.value)) setCalc(dmgEl, fillStats(fd.dmg, st));
+    });
+    // Merkmalstext: "Zauberwirken (WIS, SG 13, +5 Treffer" mitziehen
+    const ft = wsEl('featuresText');
+    if(ft){
+      const v = ft.value.replace(/Zauberwirken \(WIS, SG \d+, [+−-]\d+ Treffer/, `Zauberwirken (WIS, SG ${st.dc}, ${fmtBonus(st.atk)} Treffer`);
+      if(v !== ft.value) ft.value = v;
+    }
+  }
+  recalcStats();
 
   function autosizeTextareas(){
     document.querySelectorAll('textarea').forEach(t=>{
@@ -3370,6 +3746,7 @@ SOFTWARE.
     if(typeof renderFlaum === 'function') renderFlaum();
     if(typeof updateResourceCounts === 'function') updateResourceCounts();
     if(typeof renderWildShape === 'function') renderWildShape();
+    recalcStats();
     seenState = collectState();
     // Die Favoriten-Tabelle wurde neu aufgebaut -- falls dort gerade getippt
     // wurde, den Fokus in dasselbe Feld zurücksetzen.
@@ -3390,12 +3767,13 @@ SOFTWARE.
      Die Felder oben im Bogen zeigen immer die aktive Stufe; die Werte aller
      Stufen liegen zusätzlich im versteckten Feld "levelProfiles". */
   // Als Funktion, damit sie schon vor dieser Stelle (beim ersten Zählen der Zauber) nutzbar ist
-  function levelOptions(){ return [2, 3]; }
+  function levelOptions(){ return [2, 3, 4]; }
   const LEVEL_DEFAULTS = {
     2: { classLevel:'Druide 2', maxHp:'17', curHp:'17', hitDice:'2 / 2 (d8)' },
-    3: { classLevel:'Druide 3', maxHp:'26', curHp:'26', hitDice:'3 / 3 (d8)' }
+    3: { classLevel:'Druide 3', maxHp:'26', curHp:'26', hitDice:'3 / 3 (d8)' },
+    4: { classLevel:'Druide 4', maxHp:'33', curHp:'33', hitDice:'4 / 4 (d8)' }
   };
-  const LEVEL_HP_GAIN = { 3: 9 };   // Stufe 3: gewürfelt 7 + 2 KON
+  const LEVEL_HP_GAIN = { 3: 9, 4: 7 };   // Stufe 3: gewürfelt 7 + 2 KON · Stufe 4: vorläufig Durchschnitt 5 + 2 KON (Wurf folgt)
   const LEVEL_FIXED_KEYS = ['classLevel', 'maxHp', 'curHp', 'hitDice'];
   function currentLevel(){
     const el = document.querySelector('[data-field="charLevel"]');
@@ -3403,7 +3781,8 @@ SOFTWARE.
     return levelOptions().includes(v) ? v : 2;
   }
   function isPerLevelKey(k){
-    return LEVEL_FIXED_KEYS.includes(k) || /^spell_\d+_prepared$/.test(k) || /^fav_\d+_/.test(k);
+    return LEVEL_FIXED_KEYS.includes(k) || /^spell_\d+_prepared$/.test(k) || /^fav_\d+_/.test(k) ||
+           /^(str|dex|con|int|wis|cha)_(score|save_prof)$/.test(k) || k === 'levelFeats';
   }
   function pickPerLevel(state){
     const p = {};
@@ -3489,6 +3868,24 @@ SOFTWARE.
       if(max === 13){ s.flaum_hpmax = '18'; if(!isNaN(hp)) s.flaum_hp = String(Math.min(18, hp + 5)); }
       delete s.flaum_phase;
     }
+    // Attribute, Rettungswurf-Übungen und Talente gelten jetzt je Stufe: in älteren
+    // Stufen-Ständen die bisherigen gemeinsamen Werte eintragen
+    if(s.levelProfiles){
+      try{
+        const prof = JSON.parse(s.levelProfiles);
+        let changed = false;
+        const keys = ['str', 'dex', 'con', 'int', 'wis', 'cha'].flatMap(k => [k + '_score', k + '_save_prof']).concat(['levelFeats']);
+        Object.keys(prof).forEach(l=>{
+          if(!prof[l] || typeof prof[l] !== 'object') return;
+          keys.forEach(k=>{
+            if(k in prof[l]) return;
+            const v = (k in s) ? s[k] : (k === 'levelFeats' ? '[]' : undefined);
+            if(v !== undefined){ prof[l][k] = v; changed = true; }
+          });
+        });
+        if(changed){ s = Object.assign({}, s); s.levelProfiles = JSON.stringify(prof); }
+      }catch(e){}
+    }
     lastMigrationNote = notes.join(' · ');
     return s;
   }
@@ -3513,7 +3910,11 @@ SOFTWARE.
     if(to === from || !levelOptions().includes(to)) return;
     const profiles = readProfiles();
     profiles[from] = pickPerLevel(collectState());
-    const target = completeProfile(profiles[to], to);
+    // Gibt es die Stufe noch nicht, wird sie aus der Stufe darunter abgeleitet
+    // (TP, Trefferwürfel, vorbereitete Zauber und Lieblingszauber übernommen).
+    const target = profiles[to] ? completeProfile(profiles[to], to)
+                 : profiles[to - 1] ? levelUp(completeProfile(profiles[to - 1], to - 1), to)
+                 : completeProfile(null, to);
     profiles[to] = target;
     wsEl('levelProfiles').value = JSON.stringify(profiles);
     wsEl('charLevel').value = String(to);
@@ -3530,6 +3931,9 @@ SOFTWARE.
     document.querySelectorAll('.lvl-num').forEach(el=>{ el.textContent = lvl; });
     document.querySelectorAll('[data-min-level]').forEach(el=>{
       el.hidden = lvl < parseInt(el.dataset.minLevel, 10);
+    });
+    document.querySelectorAll('[data-max-level]').forEach(el=>{
+      el.hidden = lvl > parseInt(el.dataset.maxLevel, 10);
     });
     spells.forEach((sp, i)=>{
       const cb = document.querySelector(`[data-field="spell_${i}_prepared"]`);
@@ -3548,6 +3952,7 @@ SOFTWARE.
     document.getElementById('preparedTile').title = `WIS-Mod + Druidenstufe = ${preparedMax()}, neu wählbar nach jeder langen Rast`;
     updateSpellCounts();
     updateResourceCounts();
+    recalcStats();
   }
   function stateToBlob(){
     return new Blob([JSON.stringify(collectState(), null, 2)], {type:'application/json'});
@@ -3716,7 +4121,7 @@ SOFTWARE.
     }
     return n;
   }
-  function noteChange(){ seenState = collectState(); updateResourceCounts(); renderWildShape(); renderFlaum(); updateInvSummary(); scheduleAutoSave(); scheduleSync(); }
+  function noteChange(){ recalcStats(); seenState = collectState(); updateResourceCounts(); renderWildShape(); renderFlaum(); updateInvSummary(); scheduleAutoSave(); scheduleSync(); }
   // "X von Y verfügbar" neben Zauberplätzen und Wilder Gestalt live zählen.
   function updateResourceCounts(){
     document.querySelectorAll('[data-count-prefix]').forEach(el=>{
@@ -3954,7 +4359,7 @@ SOFTWARE.
       label = `${b.de} (${key})`;
       text = beastShortTip(key);
     } else {
-      text = SPELL_INFO[key];
+      text = fillStats(SPELL_INFO[key] || '');
     }
     if(!text) return;
     tooltipEl.innerHTML = `<strong>${label}</strong><br>${text}`;
@@ -3984,7 +4389,7 @@ SOFTWARE.
     hideTip();
     spellModalTitle.textContent = key;
     spellModalMeta.textContent = entry.meta;
-    spellModalText.textContent = entry.text;
+    spellModalText.textContent = fillStats(entry.text);
     spellModalOverlay.classList.add('show');
   }
   function closeSpellModal(){ spellModalOverlay.classList.remove('show'); }
@@ -4280,7 +4685,8 @@ SOFTWARE.
         pill.type = 'button';
         pill.className = 'beast-pill';
         pill.dataset.transform = en;
-        pill.innerHTML = `<span class="b-de">${b.de} <span class="b-en">(${en})</span></span><span class="b-stats">RK ${String(b.ac).split(' ')[0]} · ${parseInt(b.hp,10)} TP · ${b.speed}</span>`;
+        pill.innerHTML = `<span class="b-de">${b.de} <span class="b-en">(${en})</span> ${swimBadge(b)}</span><span class="b-stats">RK ${String(b.ac).split(' ')[0]} · ${parseInt(b.hp,10)} TP · ${b.speed}</span>`;
+        if(b.swim) pill.dataset.minLevel = '4';
         picker.appendChild(pill);
       });
     });
@@ -4338,10 +4744,373 @@ SOFTWARE.
     sbTraits.innerHTML = b.traits.map(t=>`<div class="sb-entry"><span class="sb-entry-name">${t.name}.</span> ${t.text}</div>`).join('');
     sbActions.innerHTML = b.actions.map(a=>`<div class="sb-entry"><span class="sb-entry-name">${a.name}.</span> ${a.text}</div>`).join('');
     document.getElementById('sbExtra').innerHTML = '';
+    document.getElementById('sbPortrait').hidden = true;
     document.querySelector('#beastModal .sb-transform').hidden = false;
     beastModalOverlay.classList.add('show');
   }
   function closeBeastModal(){ beastModalOverlay.classList.remove('show'); }
+
+  /* ============ Stufenaufstieg (Assistent) ============
+     Zeigt für die nächste Stufe, was automatisch passiert, was gewählt werden
+     kann und wie sich das auswirkt, fragt die TP ab und legt danach die
+     Werte der neuen Stufe an (wahlweise gleich aktiv, sonst nur vorbereitet). */
+  var DRUID_PROG = {
+    2: { slots:[3],          cantrips:2, maxSpell:1, cr:'1',   swim:false, fly:false, hours:1, feats:['Wilde Gestalt (2 Nutzungen pro kurzer/langer Rast)', 'Druidenzirkel: Kreis des Mondes – Kampf-Wildwandel, Kreisformen (HG 1)'] },
+    3: { slots:[4, 2],       cantrips:2, maxSpell:2, cr:'1',   swim:false, fly:false, hours:1, feats:['Zauber 2. Grades'] },
+    4: { slots:[4, 3],       cantrips:3, maxSpell:2, cr:'1',   swim:true,  fly:false, hours:2, asi:true, feats:['Attributswerterhöhung oder Talent', 'Wilde Gestalt: Bestien mit Schwimmen erlaubt'] },
+    5: { slots:[4, 3, 2],    cantrips:3, maxSpell:3, cr:'1',   swim:true,  fly:false, hours:2, feats:['Zauber 3. Grades', 'Übungsbonus +3'] },
+    6: { slots:[4, 3, 3],    cantrips:3, maxSpell:3, cr:'2',   swim:true,  fly:false, hours:3, feats:['Kreis des Mondes: Elementarer Schlag (Angriffe in Tiergestalt gelten als magisch)', 'Wilde Gestalt bis HG 2'] },
+    7: { slots:[4, 3, 3, 1], cantrips:3, maxSpell:4, cr:'2',   swim:true,  fly:false, hours:3, feats:['Zauber 4. Grades'] },
+    8: { slots:[4, 3, 3, 2], cantrips:3, maxSpell:4, cr:'2',   swim:true,  fly:true,  hours:4, asi:true, feats:['Attributswerterhöhung oder Talent', 'Wilde Gestalt: Bestien mit Fliegen erlaubt'] }
+  };
+  var LU_FEATS = [
+    { id:'fey', name:'Fey Touched', src:'Tasha’s', plus:['int', 'wis', 'cha'], spell:'Bless',
+      text:'+1 INT, WEI oder CHA. Du lernst Misty Step und einen Zauber 1. Grades (Erkenntnis oder Verzauberung, z. B. Bless) – je 1× pro langer Rast ohne Zauberplatz, mit Plätzen beliebig oft.' },
+    { id:'resilient', name:'Resilient', src:'PHB', plus:['str', 'dex', 'con', 'int', 'wis', 'cha'], saveProf:true,
+      text:'+1 auf ein Attribut und Übung in dessen Rettungswürfen. Mit KON: Konzentration hält viel besser – auch in Tiergestalt.' },
+    { id:'warcaster', name:'War Caster', src:'PHB',
+      text:'Vorteil auf Konzentrationswürfe, Gesten auch mit vollen Händen, Zauber statt Gelegenheitsangriff.' },
+    { id:'telekinetic', name:'Telekinetic', src:'Tasha’s', plus:['int', 'wis', 'cha'],
+      text:'+1 INT, WEI oder CHA. Unsichtbare Magierhand; als Bonusaktion eine Kreatur in 30 ft um 5 ft schieben (STÄ-Rettungswurf gegen deinen Zauber-SG).' },
+    { id:'woodelf', name:'Wood Elf Magic', src:'Xanathar’s', cantrip:true,
+      text:'Ein zusätzlicher Druiden-Zaubertrick; je 1× pro langer Rast Longstrider und Pass without Trace ohne Zauberplatz.' },
+    { id:'observant', name:'Observant', src:'PHB', plus:['int', 'wis'], passive:5,
+      text:'+1 INT oder WEI. +5 auf passive Wahrnehmung und passive Untersuchung, Lippenlesen.' },
+    { id:'alert', name:'Alert', src:'PHB', init:5,
+      text:'+5 Initiative, kann nicht überrascht werden, versteckte Angreifer haben keinen Vorteil.' },
+    { id:'tough', name:'Tough', src:'PHB', hpPerLevel:2,
+      text:'+2 max. TP pro Stufe – rückwirkend für alle bisherigen Stufen und bei jedem weiteren Aufstieg.' },
+    { id:'other', name:'Anderes Talent …', custom:true,
+      text:'Name eintragen. Die Wirkung bitte selbst im Bogen berücksichtigen.' }
+  ];
+  function readFeats(){ try{ const v = JSON.parse((wsEl('levelFeats') || {}).value || '[]'); return Array.isArray(v) ? v : []; }catch(e){ return []; } }
+  function featDef(id){ return (LU_FEATS || []).find(f => f.id === id); }   // LU_FEATS kann beim ersten Rechnen noch fehlen
+  function featBonus(kind){ return readFeats().reduce((s, f) => s + ((featDef(f.id) || {})[kind] || 0), 0); }
+  /* ---- Talente direkt im Bogen wählen (Karte "Rassen- & Klassenmerkmale") ---- */
+  var featListHtml = null;
+  function renderFeatList(){
+    const el = document.getElementById('featList');
+    if(!el) return;
+    const feats = readFeats();
+    const html = feats.length
+      ? feats.map((f, i) => `<span class="feat-chip" title="${escHtml((featDef(f.id) || {}).text || '')}">${escHtml(f.name)}${f.detail ? ` <span class="feat-detail">(${escHtml(f.detail)})</span>` : ''}${f.level ? ` <span class="feat-lvl">ab Stufe ${f.level}</span>` : ''}<button type="button" data-feat-del="${i}" title="Talent entfernen" aria-label="Talent ${escHtml(f.name)} entfernen">✕</button></span>`).join('')
+      : '<span class="feat-none">Noch keine Talente.</span>';
+    if(html !== featListHtml){ el.innerHTML = html; featListHtml = html; }
+  }
+  var featForm = { id:'', plus:'', text:'', cantrip:'', name:'', err:'' };
+  function renderFeatAdd(){
+    const el = document.getElementById('featAdd');
+    if(!el || !LU_FEATS) return;
+    const ff = featForm, f = featDef(ff.id), have = readFeats().map(x => x.id);
+    const known = spells.map((sp, i) => ({ sp, i })).filter(x => x.sp[0] === 'C' && wsEl(`spell_${x.i}_prepared`).checked).map(x => x.sp[1]);
+    const plusSel = f && f.plus ? (f.plus.includes(ff.plus) ? ff.plus : (f.plus.includes('wis') ? 'wis' : f.plus[0])) : '';
+    el.innerHTML =
+      `<select data-ff="id" aria-label="Talent wählen"><option value="">＋ Talent hinzufügen …</option>${LU_FEATS.map(x => `<option value="${x.id}"${ff.id === x.id ? ' selected' : ''}${have.includes(x.id) && !x.custom ? ' disabled' : ''}>${x.name}${x.src ? ` (${x.src})` : ''}${have.includes(x.id) && !x.custom ? ' – schon gewählt' : ''}</option>`).join('')}</select>` +
+      (f && f.plus ? `<label>+1 auf <select data-ff="plus">${f.plus.map(k => `<option value="${k}"${plusSel === k ? ' selected' : ''}>${ABIL_NAMES[k]} (${scoreOf(k)})</option>`).join('')}</select></label>` : '') +
+      (f && f.id === 'fey' ? `<label>Zauber <input data-ff="text" value="${escHtml(ff.text || f.spell)}" size="12"></label>` : '') +
+      (f && f.cantrip ? `<label>Zaubertrick <select data-ff="cantrip"><option value="">– wählen –</option>${spells.filter(sp => sp[0] === 'C' && !known.includes(sp[1])).map(sp => `<option${ff.cantrip === sp[1] ? ' selected' : ''}>${sp[1]}</option>`).join('')}</select></label>` : '') +
+      (f && f.custom ? `<input data-ff="name" value="${escHtml(ff.name)}" placeholder="Name des Talents" size="16">` : '') +
+      (f ? '<button type="button" class="mini-btn" data-ff-add>Hinzufügen</button>' : '') +
+      (f ? `<span class="feat-desc">${f.text}${f.hpPerLevel ? ` <strong>Jetzt: +${f.hpPerLevel * currentLevel()} max. TP.</strong>` : ''}</span>` : '<span class="feat-desc">Talente gibt es statt einer Attributswerterhöhung (Stufe 4, 8, …) – nur wenn eure SL Talente erlaubt. Beim Aufstieg wählst du sie im Dialog „⬆ Aufstieg“.</span>') +
+      (ff.err ? `<span class="feat-err">${ff.err}</span>` : '');
+  }
+  function addFeatFromSheet(){
+    const ff = featForm, f = featDef(ff.id);
+    if(!f) return;
+    const plus = f.plus ? (f.plus.includes(ff.plus) ? ff.plus : (f.plus.includes('wis') ? 'wis' : f.plus[0])) : '';
+    const name = f.custom ? ff.name.trim() : f.name;
+    if(f.custom && !name){ ff.err = 'Bitte einen Namen eintragen.'; renderFeatAdd(); return; }
+    if(plus && scoreOf(plus) >= 20){ ff.err = `${ABIL_NAMES[plus]} ist schon 20 – ein anderes Attribut wählen.`; renderFeatAdd(); return; }
+    const lvl = currentLevel();
+    const applied = { plus, saveProf: f.saveProf ? plus : '', hp: f.hpPerLevel ? f.hpPerLevel * lvl : 0 };
+    if(plus) wsEl(`${plus}_score`).value = String(scoreOf(plus) + 1);
+    if(applied.saveProf){
+      if(wsEl(`${plus}_save_prof`).checked) applied.saveProf = '';   // war schon geübt -- nichts zurückzunehmen
+      else wsEl(`${plus}_save_prof`).checked = true;
+    }
+    if(applied.hp){
+      wsEl('maxHp').value = String((parseInt(wsEl('maxHp').value, 10) || 0) + applied.hp);
+      wsEl('curHp').value = String((parseInt(wsEl('curHp').value, 10) || 0) + applied.hp);
+    }
+    const detail = [plus ? `+1 ${ABIL_DE[plus]}` : '', f.saveProf && plus ? `Übung ${ABIL_DE[plus]}-Rettung` : '',
+                    f.id === 'fey' ? `Misty Step, ${ff.text || f.spell}` : '', f.cantrip && ff.cantrip ? ff.cantrip : '',
+                    applied.hp ? `+${applied.hp} TP` : ''].filter(Boolean).join(' · ');
+    const feats = readFeats();
+    feats.push({ id:f.id, name, detail, level:lvl, applied });
+    wsEl('levelFeats').value = JSON.stringify(feats);
+    featForm = { id:'', plus:'', text:'', cantrip:'', name:'', err:'' };
+    renderFeatAdd();
+    setStatus(`Talent „${name}“ hinzugefügt (Stufe ${lvl}) ✓`);
+    noteChange();
+  }
+  function removeFeat(i){
+    const feats = readFeats(), f = feats[i];
+    if(!f) return;
+    const a = f.applied || {};
+    const undo = [a.plus ? `−1 ${ABIL_NAMES[a.plus]}` : '', a.saveProf ? `Übung im ${ABIL_DE[a.saveProf]}-Rettungswurf` : '', a.hp ? `−${a.hp} max. TP` : ''].filter(Boolean);
+    if(!confirm(`Talent „${f.name}“ entfernen?` + (undo.length ? `\n\nDabei wird zurückgenommen: ${undo.join(', ')}.` : ''))) return;
+    if(a.plus) wsEl(`${a.plus}_score`).value = String(scoreOf(a.plus) - 1);
+    if(a.saveProf) wsEl(`${a.saveProf}_save_prof`).checked = false;
+    if(a.hp){
+      const max = Math.max(1, (parseInt(wsEl('maxHp').value, 10) || 0) - a.hp);
+      wsEl('maxHp').value = String(max);
+      wsEl('curHp').value = String(Math.min(max, parseInt(wsEl('curHp').value, 10) || max));
+    }
+    feats.splice(i, 1);
+    wsEl('levelFeats').value = JSON.stringify(feats);
+    setStatus(`Talent „${f.name}“ entfernt`);
+    noteChange();
+    renderFeatAdd();
+  }
+  document.getElementById('featList').addEventListener('click', (e)=>{
+    const b = e.target.closest('[data-feat-del]');
+    if(b) removeFeat(parseInt(b.dataset.featDel, 10));
+  });
+  const featAddEl = document.getElementById('featAdd');
+  featAddEl.addEventListener('change', (e)=>{
+    const k = e.target.dataset.ff; if(!k) return;
+    featForm[k] = e.target.value;
+    if(e.target.tagName !== 'SELECT') return;   // Textfelder: kein Neuaufbau (sonst geht z. B. der Klick auf „Hinzufügen“ verloren)
+    featForm.err = '';
+    if(k === 'id'){ featForm.plus = ''; featForm.text = ''; featForm.cantrip = ''; }
+    renderFeatAdd();
+  });
+  featAddEl.addEventListener('input', (e)=>{
+    const k = e.target.dataset.ff;
+    if(k && e.target.tagName === 'INPUT') featForm[k] = e.target.value;   // Textfelder: nicht neu aufbauen (Cursor bleibt)
+  });
+  featAddEl.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && e.target.matches('input')){ e.preventDefault(); addFeatFromSheet(); } });
+  featAddEl.addEventListener('click', (e)=>{ if(e.target.closest('[data-ff-add]')) addFeatFromSheet(); });
+
+  var luState = null;
+  const luOverlay = document.getElementById('levelUpOverlay');
+  const luBody = document.getElementById('luBody');
+  const ABIL_NAMES = { str:'Stärke', dex:'Geschicklichkeit', con:'Konstitution', int:'Intelligenz', wis:'Weisheit', cha:'Charisma' };
+  function luScores(){ const s = {}; ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(k => { s[k] = scoreOf(k); }); return s; }
+  // Abgeleitete Werte für einen Satz Attribute auf einer Stufe
+  function luDerive(sc, lvl, feats){
+    const pb = profOfLevel(lvl), m = {};
+    Object.keys(sc).forEach(k => { m[k] = modOf(sc[k]); });
+    const has = id => feats.some(f => f.id === id);
+    const percProf = wsEl('skill_11_prof').checked;
+    const perc = m.wis + (percProf ? pb : 0);
+    return {
+      m, pb, dc: 8 + pb + m.wis, atk: pb + m.wis, perc, pp: 10 + perc + (has('observant') ? 5 : 0),
+      init: m.dex + (has('alert') ? 5 : 0), prepared: m.wis + lvl,
+      conSave: m.con + (wsEl('con_save_prof').checked ? pb : 0)
+    };
+  }
+  function openLevelUp(){
+    const from = currentLevel(), to = from + 1;
+    luState = { from, to, roll:'', asiMode:'', a1:'wis', a2:'con', a2b:'wis', featId:'', featPlus:'', featText:'', featName:'', featCantrip:'', cantrips:[] };
+    hideTip();
+    renderLevelUp();
+    luOverlay.classList.add('show');
+    luBody.scrollTop = 0;
+  }
+  function closeLevelUp(){ luOverlay.classList.remove('show'); }
+  // Gewählte Änderungen ausrechnen (für Vorschau und Übernehmen)
+  function luPlan(){
+    const s = luState, P = DRUID_PROG[s.to], Pf = DRUID_PROG[s.from] || DRUID_PROG[2];
+    const before = luScores(), after = Object.assign({}, before), errors = [];
+    const featsBefore = readFeats(), featsAfter = featsBefore.slice();
+    let saveProf = null, newFeat = null;
+    if(P && P.asi){
+      if(s.asiMode === 'plus2') after[s.a1] = before[s.a1] + 2;
+      if(s.asiMode === 'plus11'){
+        if(s.a2 === s.a2b) errors.push('Für +1/+1 zwei verschiedene Attribute wählen.');
+        after[s.a2] = before[s.a2] + 1; after[s.a2b] = before[s.a2b] + 1;
+      }
+      if(s.asiMode === 'feat'){
+        const f = featDef(s.featId);
+        if(!f) errors.push('Ein Talent auswählen.');
+        else{
+          const plus = f.plus ? (f.plus.includes(s.featPlus) ? s.featPlus : f.plus[f.plus.includes('wis') ? f.plus.indexOf('wis') : 0]) : null;
+          if(plus) after[plus] = before[plus] + 1;
+          if(f.saveProf && plus) saveProf = plus;
+          const detail = [plus ? `+1 ${ABIL_DE[plus]}` : '', f.saveProf && plus ? `Übung ${ABIL_DE[plus]}-Rettung` : '',
+                          f.id === 'fey' ? `Misty Step, ${s.featText || f.spell}` : '', f.cantrip && s.featCantrip ? s.featCantrip : ''].filter(Boolean).join(' · ');
+          const name = f.custom ? (s.featName || '').trim() : f.name;
+          if(f.custom && !name) errors.push('Namen des Talents eintragen.');
+          newFeat = { id:f.id, name: name || f.name, detail, level: s.to,
+                      applied:{ plus: plus || '', saveProf: (f.saveProf && plus) || '', hp: f.hpPerLevel ? f.hpPerLevel * s.to : 0 } };
+          featsAfter.push(newFeat);
+        }
+      }
+      ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(k => { if(after[k] > 20) errors.push(`${ABIL_NAMES[k]} kann nicht über 20 steigen.`); });
+    }
+    // Trefferpunkte
+    const roll = parseInt(s.roll, 10);
+    if(!(roll >= 1 && roll <= 8)) errors.push('TP: Würfelergebnis (1–8) eintragen oder „Durchschnitt“ wählen.');
+    const conB = modOf(before.con), conA = modOf(after.con);
+    const tough = featsAfter.some(f => f.id === 'tough'), toughNew = newFeat && newFeat.id === 'tough';
+    const hpGain = (roll >= 1 ? roll : 0) + conA + (conA - conB) * s.from + (tough ? 2 : 0) + (toughNew ? 2 * s.from : 0);
+    const maxBefore = parseInt(wsEl('maxHp').value, 10) || 0, curBefore = parseInt(wsEl('curHp').value, 10) || 0;
+    const db = luDerive(before, s.from, featsBefore), da = luDerive(after, s.to, featsAfter);
+    if(saveProf === 'con') da.conSave = da.m.con + da.pb;
+    return { P, Pf, before, after, featsAfter, newFeat, saveProf, roll, conB, conA, hpGain, maxBefore, curBefore,
+             maxAfter: maxBefore + hpGain, db, da, errors };
+  }
+  function luRow(label, a, b, note){
+    return a === b ? '' : `<tr><td>${label}</td><td>${a}</td><td>→</td><td><strong>${b}</strong></td><td class="lu-note">${note || ''}</td></tr>`;
+  }
+  function renderLevelUp(){
+    const s = luState, P = DRUID_PROG[s.to], Pf = DRUID_PROG[s.from];
+    const supported = levelOptions().includes(s.to);
+    const head = `<div class="sb-name">⬆ Stufenaufstieg: Druide ${s.from} → ${s.to}</div>` +
+      `<div class="sb-subtitle">Kreis des Mondes · 2014-Regeln · Werte der aktuellen Stufe ${s.from} als Grundlage</div><div class="sb-rule"></div>`;
+    if(!P || !supported){
+      luBody.innerHTML = head + `<p class="lu-p">Stufe ${s.to} ist im Bogen noch nicht eingebaut${P ? ` (dafür fehlen z. B. die Zauber ${P.maxSpell}. Grades)` : ''}. ` +
+        `Sag Bescheid, dann bereite ich sie vor.</p>` + (P ? `<h3>Was Stufe ${s.to} bringt</h3><ul class="lu-list">${P.feats.map(f => `<li>${f}</li>`).join('')}</ul>` : '') +
+        `<div class="lu-actions"><button type="button" class="lu-btn" data-lu="close">Schließen</button></div>`;
+      return;
+    }
+    const exists = !!readProfiles()[s.to];
+    const plan = luPlan();
+    const cantripGain = P.cantrips - Pf.cantrips;
+    const known = spells.map((sp, i) => ({ sp, i })).filter(x => x.sp[0] === 'C' && wsEl(`spell_${x.i}_prepared`).checked).map(x => x.sp[1]);
+    const cantripOpts = spells.filter(sp => sp[0] === 'C' && !known.includes(sp[1])).map(sp => sp[1]);
+    const auto = [];
+    auto.push(`Trefferwürfel ${s.from} → <strong>${s.to}</strong> (W8)`);
+    if(profOfLevel(s.to) !== profOfLevel(s.from)) auto.push(`Übungsbonus ${fmtBonus(profOfLevel(s.from))} → <strong>${fmtBonus(profOfLevel(s.to))}</strong> (wirkt auf Rettungswürfe, Fertigkeiten, Zauber, Waffen)`);
+    const gr = ['1.', '2.', '3.', '4.'];
+    P.slots.forEach((n, i) => { const o = Pf.slots[i] || 0; if(n !== o) auto.push(`Zauberplätze ${gr[i]} Grad: ${o} → <strong>${n}</strong>`); });
+    if(P.maxSpell > Pf.maxSpell) auto.push(`Neu: Zauber <strong>${P.maxSpell}. Grades</strong> vorbereitbar`);
+    if(cantripGain > 0) auto.push(`Zaubertricks: ${Pf.cantrips} → <strong>${P.cantrips}</strong> (Auswahl unten)`);
+    auto.push(`Vorbereitete Zauber: WEI-Mod + Stufe = <strong>${plan.da.prepared}</strong> (bisher ${plan.db.prepared}) – nach jeder langen Rast neu wählbar`);
+    if(P.swim && !Pf.swim) auto.push('Wilde Gestalt: <strong>Bestien mit Schwimmen</strong> erlaubt (im Bogen mit 🌊 markiert)');
+    if(P.fly && !Pf.fly) auto.push('Wilde Gestalt: <strong>Bestien mit Fliegen</strong> erlaubt');
+    if(P.cr !== Pf.cr) auto.push(`Wilde Gestalt bis <strong>HG ${P.cr}</strong>`);
+    if(P.hours !== Pf.hours) auto.push(`Dauer der Wilden Gestalt: ${Pf.hours} → <strong>${P.hours} Std.</strong>`);
+    P.feats.filter(f => !/Attributswerterhöhung|Schwimmen|Fliegen|Übungsbonus|Zauber \d\. Grades/.test(f)).forEach(f => auto.push(f));
+
+    const abilOpts = sel => ['str', 'dex', 'con', 'int', 'wis', 'cha'].map(k => `<option value="${k}"${sel === k ? ' selected' : ''}>${ABIL_NAMES[k]} (${scoreOf(k)})</option>`).join('');
+    const f = featDef(s.featId);
+    let asiHtml = '';
+    if(P.asi){
+      asiHtml = `<h3>2. Attributswerterhöhung oder Talent</h3>
+        <p class="lu-p">Auf Stufe ${s.to} gibt es entweder <strong>+2 Attributspunkte</strong> (auf eins oder je +1 auf zwei, max. 20) oder – wenn eure SL Talente erlaubt – ein <strong>Talent</strong>. Ungerade Werte (z. B. WEI 17) lohnen sich besonders: +1 hebt den Modifikator.</p>
+        <div class="lu-choice">
+          <label><input type="radio" name="luAsi" value="plus11"${s.asiMode === 'plus11' ? ' checked' : ''}> +1 / +1 auf zwei Attribute</label>
+          <span class="lu-sub" ${s.asiMode === 'plus11' ? '' : 'hidden'}><select data-lu-k="a2">${abilOpts(s.a2)}</select> und <select data-lu-k="a2b">${abilOpts(s.a2b)}</select></span>
+          <label><input type="radio" name="luAsi" value="plus2"${s.asiMode === 'plus2' ? ' checked' : ''}> +2 auf ein Attribut</label>
+          <span class="lu-sub" ${s.asiMode === 'plus2' ? '' : 'hidden'}><select data-lu-k="a1">${abilOpts(s.a1)}</select></span>
+          <label><input type="radio" name="luAsi" value="feat"${s.asiMode === 'feat' ? ' checked' : ''}> Talent statt Attributspunkten</label>
+          <span class="lu-sub lu-feat" ${s.asiMode === 'feat' ? '' : 'hidden'}>
+            <select data-lu-k="featId"><option value="">– Talent wählen –</option>${LU_FEATS.map(x => `<option value="${x.id}"${s.featId === x.id ? ' selected' : ''}>${x.name}${x.src ? ` (${x.src})` : ''}</option>`).join('')}</select>
+            ${f ? `<span class="lu-feat-text">${f.text}</span>` : ''}
+            ${f && f.plus ? `<label class="lu-inline">+1 auf <select data-lu-k="featPlus">${f.plus.map(k => `<option value="${k}"${(s.featPlus || (f.plus.includes('wis') ? 'wis' : f.plus[0])) === k ? ' selected' : ''}>${ABIL_NAMES[k]} (${scoreOf(k)})</option>`).join('')}</select></label>` : ''}
+            ${f && f.id === 'fey' ? `<label class="lu-inline">Zweiter Zauber: <input data-lu-k="featText" value="${escHtml(s.featText || f.spell)}" placeholder="z. B. Bless"></label>` : ''}
+            ${f && f.cantrip ? `<label class="lu-inline">Zaubertrick: <select data-lu-k="featCantrip"><option value="">– wählen –</option>${cantripOpts.map(c => `<option${s.featCantrip === c ? ' selected' : ''}>${c}</option>`).join('')}</select></label>` : ''}
+            ${f && f.custom ? `<label class="lu-inline">Name: <input data-lu-k="featName" value="${escHtml(s.featName)}" placeholder="z. B. Healer"></label>` : ''}
+          </span>
+          <label><input type="radio" name="luAsi" value=""${s.asiMode === '' ? ' checked' : ''}> Noch nicht entscheiden (später im Bogen eintragen)</label>
+        </div>`;
+    }
+    let cantripHtml = '';
+    if(cantripGain > 0){
+      cantripHtml = `<h3>${P.asi ? 3 : 2}. Neue${cantripGain > 1 ? '' : 'r'} Zaubertrick${cantripGain > 1 ? 's' : ''}</h3>` +
+        Array.from({length:cantripGain}, (_, n) => `<label class="lu-inline">Zaubertrick: <select data-lu-cantrip="${n}"><option value="">– später im Bogen anhaken –</option>` +
+          cantripOpts.map(c => `<option${s.cantrips[n] === c ? ' selected' : ''}>${c}</option>`).join('') + '</select></label>' +
+          (s.cantrips[n] && SPELL_INFO[s.cantrips[n]] ? `<div class="lu-spellinfo">${fillStats(SPELL_INFO[s.cantrips[n]])}</div>` : '')).join('');
+    }
+    const st = plan, da = st.da, db = st.db;
+    const diff = [
+      ...['str', 'dex', 'con', 'int', 'wis', 'cha'].map(k => luRow(ABIL_NAMES[k], `${st.before[k]} (${fmtBonus(db.m[k])})`, `${st.after[k]} (${fmtBonus(da.m[k])})`)),
+      luRow('Übungsbonus', fmtBonus(db.pb), fmtBonus(da.pb)),
+      luRow('Zauber-Rettungswurf-SG', db.dc, da.dc, 'Gegner müssen höher würfeln'),
+      luRow('Zauberangriff', fmtBonus(db.atk), fmtBonus(da.atk)),
+      luRow('Vorbereitete Zauber', db.prepared, da.prepared),
+      luRow('Wahrnehmung', fmtBonus(db.perc), fmtBonus(da.perc), 'gilt auch in Tiergestalt'),
+      luRow('Passive Wahrnehmung', db.pp, da.pp),
+      luRow('Initiative', fmtBonus(db.init), fmtBonus(da.init)),
+      luRow('KON-Rettungswurf (Konzentration)', fmtBonus(db.conSave), fmtBonus(da.conSave), 'Konzentration halten bei Schaden'),
+      luRow('Shillelagh-Schaden / Healing Word', `1W8${fmtBonus(db.m.wis)} / heilt 1W4${fmtBonus(db.m.wis)}`, `1W8${fmtBonus(da.m.wis)} / heilt 1W4${fmtBonus(da.m.wis)}`)
+    ].join('');
+    const rollOk = st.roll >= 1 && st.roll <= 8;
+    const hpParts = rollOk ? [`Wurf ${st.roll}`, `KON ${fmtBonus(st.conA)}`] : [];
+    if(rollOk && st.conA !== st.conB) hpParts.push(`+${(st.conA - st.conB) * s.from} rückwirkend (KON-Mod steigt, je +1 für ${s.from} Stufen)`);
+    if(rollOk && st.featsAfter.some(x => x.id === 'tough')) hpParts.push(`Tough +2${st.newFeat && st.newFeat.id === 'tough' ? ` und +${2 * s.from} rückwirkend` : ''}`);
+    luBody.innerHTML = head +
+      (exists ? `<div class="lu-warn">Stufe ${s.to} ist schon vorbereitet. Übernehmen ersetzt deren TP, Attribute und Zaubertricks durch die Werte von hier.</div>` : '') +
+      `<h3>Das passiert automatisch</h3><ul class="lu-list">${auto.map(x => `<li>${x}</li>`).join('')}</ul>
+      <h3>1. Trefferpunkte</h3>
+      <p class="lu-p">Würfle <strong>1W8</strong> (Trefferwürfel des Druiden) und trag die Augenzahl ein. Den <strong>KON-Modifikator (${fmtBonus(st.conA)})</strong> rechnet der Bogen selbst dazu. Wer nicht würfeln will, nimmt den Durchschnitt: <strong>5</strong>. Steigt KON, wachsen die TP rückwirkend um 1 pro bisheriger Stufe.</p>
+      <div class="lu-hp"><label>W8-Wurf <input data-lu-k="roll" type="number" min="1" max="8" inputmode="numeric" value="${escHtml(s.roll)}" placeholder="1–8"></label>
+        <button type="button" class="lu-btn soft" data-lu="avg">Durchschnitt (5)</button>
+        <span class="lu-hp-res">${rollOk ? `Max. TP <strong>${st.maxBefore} → ${st.maxAfter}</strong> <span class="lu-note">(${hpParts.join(' · ')} = +${st.hpGain})</span>` : 'Noch kein Wert eingetragen.'}</span></div>
+      ${asiHtml}${cantripHtml}
+      <h3>Auswirkungen auf den Bogen</h3>
+      ${diff ? `<table class="lu-diff"><tbody>${diff}</tbody></table>` : '<p class="lu-p">Außer den automatischen Änderungen oben ändert sich nichts an den Werten.</p>'}
+      ${st.newFeat ? `<p class="lu-p">Talent <strong>${escHtml(st.newFeat.name)}</strong>${st.newFeat.detail ? ` (${escHtml(st.newFeat.detail)})` : ''} wird bei den Rassen- &amp; Klassenmerkmalen eingetragen.</p>` : ''}
+      ${st.errors.length ? `<div class="lu-errors">${st.errors.map(e => `<div>• ${e}</div>`).join('')}</div>` : ''}
+      <div class="lu-actions">
+        <button type="button" class="lu-btn" data-lu="close">Abbrechen</button>
+        <button type="button" class="lu-btn soft" data-lu="prepare" ${st.errors.length ? 'disabled' : ''} title="Werte für Stufe ${s.to} anlegen, aber weiter auf Stufe ${s.from} spielen">Stufe ${s.to} vorbereiten</button>
+        <button type="button" class="lu-btn primary" data-lu="apply" ${st.errors.length ? 'disabled' : ''}>Aufsteigen – jetzt Stufe ${s.to}</button>
+      </div>
+      <div class="lu-hint">„Vorbereiten“ legt Stufe ${s.to} an, ihr spielt aber weiter auf Stufe ${s.from}; umschalten geht jederzeit oben über die Stufen-Auswahl.</div>`;
+  }
+  function luApply(activate){
+    const s = luState, plan = luPlan();
+    if(plan.errors.length) return;
+    const profiles = readProfiles();
+    const base = pickPerLevel(collectState());
+    profiles[s.from] = base;
+    const prof = levelUp(completeProfile(base, s.from), s.to);
+    prof.maxHp = String(plan.maxAfter);
+    prof.curHp = String(Math.min(plan.maxAfter, plan.curBefore + plan.hpGain));
+    ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(k => { prof[`${k}_score`] = String(plan.after[k]); });
+    if(plan.saveProf) prof[`${plan.saveProf}_save_prof`] = true;
+    s.cantrips.forEach(c => { const i = spells.findIndex(sp => sp[0] === 'C' && sp[1] === c); if(i >= 0) prof[`spell_${i}_prepared`] = true; });
+    prof.levelFeats = JSON.stringify(plan.featsAfter);
+    profiles[s.to] = prof;
+    wsEl('levelProfiles').value = JSON.stringify(profiles);
+    closeLevelUp();
+    if(activate){
+      switchLevel(s.to);
+      setStatus(`⬆ Aufgestiegen: Druide ${s.to} – max. TP ${plan.maxAfter} ✓`);
+    }else{
+      noteChange();
+      setStatus(`Stufe ${s.to} vorbereitet (max. TP ${plan.maxAfter}) – weiter auf Stufe ${s.from} ✓`);
+    }
+  }
+  luBody.addEventListener('input', (e)=>{
+    const k = e.target.dataset.luK;
+    if(k){
+      luState[k] = e.target.value;
+      if(k === 'featId'){ luState.featPlus = ''; }
+      // Eingabefelder nicht bei jedem Tastendruck neu aufbauen (Cursor bleibt): nur bei Auswahllisten sofort
+      if(e.target.tagName === 'SELECT') renderLevelUp(); else luRefreshSoon(e.target);
+    }
+  });
+  var luTimer = null;
+  function luRefreshSoon(input){
+    clearTimeout(luTimer);
+    luTimer = setTimeout(()=>{
+      const k = input.dataset.luK, pos = input.selectionStart;
+      renderLevelUp();
+      const again = luBody.querySelector(`[data-lu-k="${k}"]`);
+      if(again){ again.focus(); try{ again.setSelectionRange(pos, pos); }catch(err){} }
+    }, 250);
+  }
+  luBody.addEventListener('change', (e)=>{
+    if(e.target.name === 'luAsi'){ luState.asiMode = e.target.value; renderLevelUp(); }
+    if(e.target.dataset.luCantrip !== undefined){ luState.cantrips[+e.target.dataset.luCantrip] = e.target.value; renderLevelUp(); }
+  });
+  luBody.addEventListener('click', (e)=>{
+    const b = e.target.closest('[data-lu]'); if(!b) return;
+    if(b.dataset.lu === 'close') closeLevelUp();
+    if(b.dataset.lu === 'avg'){ luState.roll = '5'; renderLevelUp(); }
+    if(b.dataset.lu === 'prepare') luApply(false);
+    if(b.dataset.lu === 'apply') luApply(true);
+  });
+  document.getElementById('levelUpBtn').addEventListener('click', openLevelUp);
+  renderFeatAdd();
+  document.getElementById('levelUpClose').addEventListener('click', closeLevelUp);
+  luOverlay.addEventListener('click', (e)=>{ if(e.target === luOverlay) closeLevelUp(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && luOverlay.classList.contains('show')) closeLevelUp(); });
+  renderFeatList();
 
   /* ============ Flaum (Eulenbär-Junges) ============
      Kurzwerte und eigene TP auf dem Bogen (Felder flaum_hp / flaum_hpmax),
@@ -4427,7 +5196,7 @@ SOFTWARE.
       const canSave = wsEl('flaum_present').checked && freeCount('flaum_anchor_') > 0;
       if(left === 0) flaumMessage(box, 'Flaum fällt auf 0 TP!');
       else if(flaumPhase() === 1) flaumMessage(box, `−${n} TP. Ängstliches Junges: WEI-Rettungswurf SG 10 (+1), sonst flieht sie.`);
-      else if(canSave && left <= Math.ceil(max / 4)) flaumMessage(box, `−${n} TP – Flaum ist kurz vor tot! ⚓ Notfall-Rückruf möglich.`);
+      else if(canSave && left <= Math.ceil(max / 4)) flaumMessage(box, `−${n} TP – Flaum ist kurz vor tot! Notfall-Rückruf mit Flaums Anker möglich.`);
       else flaumMessage(box, `−${n} TP.`);
     }else{
       const healed = Math.min(max, hp + n) - hp;
@@ -4466,8 +5235,8 @@ SOFTWARE.
       return;
     }
     cb.checked = false;
-    flaumMessage(box, '⚓ Flaums Anker: Flaum ist in Sicherheit – zurück in ihrer Zuflucht.', true);
-    setStatus('⚓ Flaum per Anker in die Zuflucht geholt');
+    flaumMessage(box, 'Flaums Anker: Flaum ist in Sicherheit – zurück in ihrer Zuflucht.', true);
+    setStatus('Flaum per Anker in die Zuflucht geholt ✓');
     noteChange();
   }
   function openFlaumModal(){
@@ -4475,7 +5244,8 @@ SOFTWARE.
     hideTip();
     const phase = flaumPhase();
     const max = Math.max(1, flaumInt('flaum_hpmax', 18)), hp = Math.max(0, flaumInt('flaum_hp', max));
-    sbName.textContent = '🦉 Flaum';
+    sbName.textContent = 'Flaum';
+    document.getElementById('sbPortrait').hidden = false;
     sbSubtitle.textContent = 'Kleine Monstrosität (Eulenbär-Junges), gesinnungslos';
     sbAC.textContent = '11';
     sbHP.textContent = `13 (3W8) · gerade ${hp} / ${max}`;
@@ -4489,7 +5259,7 @@ SOFTWARE.
       ['Scharfe Sicht und scharfer Geruch', 'Flaum hat Vorteil bei Weisheit (Wahrnehmung)-Proben, die auf Sicht oder Geruch beruhen.'],
       ['Ängstliches Junges', 'Wird Flaum bedroht oder fällt ein Verbündeter auf 0 TP, muss sie einen WEI-Rettungswurf SG 10 schaffen, sonst flieht sie in ihrem nächsten Zug zum nächsten vertrauten Charakter oder in Deckung.' +
         (phase === 2 ? ' <em>(Phase 2: nur noch, wenn die Trägerin des Ankers auf 0 TP fällt.)</em>' : phase === 3 ? ' <em>(Phase 3: entfällt.)</em>' : '')],
-      ['Flaums Anker', 'An das Bronzeamulett gebunden: Die Trägerin kann sie in die Zuflucht schicken und zurückholen (siehe „Flaums Zuflucht“).']
+      ['<span class="fl-amulet sm" aria-hidden="true"></span>Flaums Anker', 'An das Bronzeamulett gebunden: Die Trägerin kann sie in die Zuflucht schicken und zurückholen (siehe „Flaums Zuflucht“).']
     ].map(([n, t]) => `<div class="sb-entry"><span class="sb-entry-name">${n}.</span> ${t}</div>`).join('');
     sbActions.innerHTML = [
       ['Schnabel', 'Nahkampfwaffenangriff: +3 zum Treffen, Reichweite 5 Fuß, ein Ziel. Treffer: 4 (1W6+1) Stichschaden.'],
